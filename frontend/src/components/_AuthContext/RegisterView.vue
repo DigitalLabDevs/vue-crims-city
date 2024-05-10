@@ -5,15 +5,15 @@
     <form @submit.prevent="submitForm">
       <div class="form-group">
         <label for="email">{{ t('registration.emailLabel') }}</label>
-        <input type="email" id="email" :placeholder="t('registration.emailLabel')"  v-model="email" required>
+        <input type="email" id="email" :placeholder="t('registration.emailLabel')" autocomplete="email"  v-model="email" required>
       </div>
       <div class="form-group">
         <label for="password">{{ t('registration.passwordLabel') }}</label>
-        <input type="password" id="password" :placeholder="t('registration.passwordLabel')" v-model="password" required>
+        <input type="password" id="password" :placeholder="t('registration.passwordLabel')" autocomplete="new-password" v-model="password" required>
       </div>
       <div class="form-group">
         <label for="confirmPassword">{{ t('registration.confirmPasswordLabel') }}</label>
-        <input type="password" id="confirmPassword" :placeholder="t('registration.confirmPasswordLabel')" v-model="confirmPassword" required>
+        <input type="password" id="confirmPassword" :placeholder="t('registration.confirmPasswordLabel')" autocomplete="new-password" v-model="confirmPassword" required>
       </div>
       <div class="form-group captcha">
         <label for="captcha">{{ t('captcha.captchaLabel') }}</label>
@@ -21,11 +21,11 @@
 
         <div class="chapta-flex">
           <img class="chapta-img" :src="captchaSrc" alt="captcha" @click="refreshCaptcha">
-          <button class="refresh-button" type="button" @click="refreshCaptcha">{{ t('captcha.refreshCaptcha') }}</button>
+          <button class="w30p" type="button" @click="refreshCaptcha">{{ t('captcha.refreshCaptcha') }}</button>
         </div>
         
       </div>
-      <button type="submit" :disabled="!isValid">{{ t('registration.registrationButton') }}</button>
+      <button class="w30p" type="submit" :disabled="!isValid">{{ t('registration.registrationButton') }}</button>
     </form>
   </div>
 </template>
@@ -69,6 +69,20 @@ function refreshCaptcha() {
   captchaSrc.value = newCaptchaData.src
   captchaText = newCaptchaData.text
 }
+
+function submitForm() {
+  if (captchaInput.value === captchaText) {
+    console.log('Formularz wysłany:', { 
+      email: email.value,
+      password: password.value,
+      confirmPassword: confirmPassword.value,
+      captchaInput: captchaInput.value,
+    })
+  } else {
+    alert(t('forgotPassword.invalidCaptcha'))
+    refreshCaptcha()
+  }
+}
 </script>
 
 <style scoped>
@@ -103,14 +117,7 @@ input[type="email"],
 input[type="text"],
 input[type="password"] {
   width: 100%;
-  padding: 10px;
-  font-size: 16px;
-}
-
-.refresh-button {
-  margin-left: 10px;
-  padding: 5px 10px;
-  font-size: 14px;
-  cursor: pointer;
+  /* padding: 10px; */
+  /* font-size: 14px; */
 }
 </style>

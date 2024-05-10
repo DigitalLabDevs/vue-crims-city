@@ -3,25 +3,45 @@
     <router-view></router-view>
   </div>
 
+  <div v-if="!isLoggedIn" class="topbar-isLoggedInFalse">
+    <div class="lang-title">{{ t('global.chooseLanguage') }} </div>
+    <div>
+      <LanguageSelector />
+    </div>
+  </div>
+
   <div v-if="!isLoggedIn" class="isLoggedInFalse">
+
     <router-view></router-view>
   </div>
-  
+
 </template>
 
 <script setup>
-import Topbar from './components/Topbar/Topbar.vue';
-import X1 from './components/GameCenter/X1.vue';
-import X3 from './components/GameCenter/X3.vue';
-import MenuCenter from './components/MenuCenter/MenuCenter.vue';
-import Resources from './components/Resources/Resources.vue';
+import { useI18n } from 'vue-i18n';
+import LanguageSelector from './components/Language/LanguageSelector.vue';
 
-
+const { t } = useI18n();
+const isLoggedIn = false;
 
 </script>
 
 <style scoped>
-
+.topbar-isLoggedInFalse {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3px;
+  box-shadow: 0 0 10px rgb(0, 255, 0);
+}
+.topbar-isLoggedInFalse>div {
+  margin-left: 2px;
+  margin-right: 2px;
+}
+.lang-title {
+  width: 12%;
+  text-align: center;
+}
 .isLoggedInFalse {
   position: fixed;
   top: 50%;
@@ -31,7 +51,7 @@ import Resources from './components/Resources/Resources.vue';
   border-radius: 10px;
   box-shadow: 0 0px 10px rgb(17, 255, 0);
 
-  background-image: url(/public/site/logo.jpg);
+  background-image: url(/site/logo.jpg);
   background-repeat: no-repeat;
   background-size: 100% 100%;
   background-size: cover;
@@ -62,9 +82,10 @@ import Resources from './components/Resources/Resources.vue';
 
 
 
-.psa{
+.psa {
   position: relative;
 }
+
 .height300 {
   min-height: 300px;
   /* border: 1px solid greenyellow; */

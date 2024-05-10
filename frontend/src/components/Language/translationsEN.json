@@ -1,16 +1,15 @@
 {
   "menu": {
-    "view": "Browse",
-	"pub": "Pub",
-	"rubs": "Rub",
-	"rubs": "Rub",
-	"maps": "Mapa",
-	"quest": "Quest",
-	"shop": "Shop",
-	"race": "races",
-	"changepassword": "Change Password",
-	"character": "Your Character",	
-	"market": "Market",	
+    "view": "Press",
+    "pub": "Bar",
+    "rubs": "Robbery",
+    "maps": "Map",
+    "quest": "Quests",
+    "shop": "Shop",
+    "race": "Races",
+    "changepassword": "Change Password",
+    "character": "Your Character",
+    "market": "Market",
     "settings": "Settings",
     "help": "Help"
   },
@@ -21,5 +20,36 @@
   },
   "menuCenter": {
     "messages": "Messages"
+  },
+  "main": {
+    "loginLabel": "Login",
+    "registerLabel": "Registration"
+  },
+  "login": {
+    "login": "Email",
+    "password": "Password",
+    "loginButton": "Log In",
+    "forgotPasswordLink": "Forgot Password",
+    "backToLogin": "Back to Login"
+  },
+  "registration": {
+    "title": "Registration",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "confirmPasswordLabel": "Confirm Password",
+    "registrationButton": "Register"
+  },
+  "global": {
+    "submit": "Submit",
+    "backToMain": "Back to Main Page",
+    "chooseLanguage": "Choose Language"
+  },
+  "forgotPassword": {
+    "title": "Forgot Password",
+    "emailLabel": "Email"
+  },
+  "captcha": {
+    "refreshCaptcha": "Refresh",
+    "captchaLabel": "Enter the code from the image"
   }
 }

@@ -44,7 +44,8 @@
   },
   "global":{
 	  "submit": "Wyslij",
-	  "backToMain": "Wróć do strony głownej"
+	  "backToMain": "Wróć do strony głownej",
+    "chooseLanguage": "Wybierz język"
   },
   "forgotPassword": {
 	  "title": "Przypomnij hasło",
@@ -52,6 +53,7 @@
   },
   "captcha":{
 	 "refreshCaptcha": "Odśwież",
-	 "captchaLabel": "Przepisz kod z obrazka"
+	 "captchaLabel": "Przepisz kod z obrazka",
+   "invalidCaptcha": "Nieprawidłowy kod"
   }
 }

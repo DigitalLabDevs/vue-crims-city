@@ -1,18 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
-import ViewGame from '../GameCenter/Menu/ViewGame.vue';
-import Rubs from '../GameCenter/Menu/Rubs.vue';
-import Maps from '../GameCenter/Menu/Maps.vue';
-import Messages from '../MenuCenter/Messages.vue';
-import Character from '../GameCenter/Menu/Character.vue';
-import Settings from '../Settings/Settings.vue';
+import GameMain from '../Game/GameMain.vue';
 
 import Login from '../_AuthContext/LoginView.vue'
 import MainView from '../_AuthContext/MainView.vue';
 import RegisterView from '../_AuthContext/RegisterView.vue';
 import ForgotPassword from '../_AuthContext/ForgotPassword.vue';
 
-import ChangePassword from '../Settings/ChangePassword.vue';
 
 
 // Sprawdzamy stan zalogowania
@@ -26,7 +20,6 @@ const isAuthenticated = () => {
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    // Trasa do logowania
     {
       path: '/',
       name: 'Main',
@@ -54,19 +47,14 @@ const router = createRouter({
     // Pozostałe trasy
     { 
       path: '/',
-      redirect: isAuthenticated() ? '/ViewGame' : '/' // Przekierowujemy na widok gry lub logowanie, w zależności od stanu zalogowania
+      redirect: isAuthenticated() ? '/crims-city' : '/' // Przekierowujemy na widok gry lub logowanie, w zależności od stanu zalogowania
     },
     { 
-      path: '/ViewGame', 
+      path: '/crims-city', 
       name: 'main',
-      component: ViewGame,
+      component: GameMain,
       meta: { requiresAuth: true } // Wymaga autoryzacji
     },
-    { path: '/rubs', component: Rubs, meta: { requiresAuth: true } },
-    { path: '/maps', component: Maps, meta: { requiresAuth: true } },
-    { path: '/messages', component: Messages, meta: { requiresAuth: true } },
-    { path: '/character', component: Character, meta: { requiresAuth: true } },
-    { path: '/settings', component: Settings, meta: { requiresAuth: true } },
   ],
 });
 

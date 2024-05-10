@@ -44,6 +44,11 @@
   </script>
   
   <style scoped>
+  select{
+    background-color: black;
+    color: white;
+    border: 1px solid rgb(37, 118, 37);
+  }
 /* select {
   padding: 8px 12px; 
   font-size: 16px; 

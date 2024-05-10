@@ -40,8 +40,12 @@ const loginUser = () => {
   padding: 10px 40px 10px 40px;
   border-radius: 7px;
   box-shadow: 0 0 10px black;
+  border: 1px solid rgba(0, 200, 0, 0.4);
+  width: 30%;
+  text-align: center;
 }
 .main-links>*:hover {
   background-color: rgba(0, 0, 0, 0.9);
+  border: 1px solid rgba(0, 200, 0, 0.9);
 }
 </style>
