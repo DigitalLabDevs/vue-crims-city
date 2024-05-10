@@ -1,0 +1,14 @@
+  
+  :root {
+    --color-background: #141414;
+    --font-color: white; 
+    --primary: #256273;
+    --box-shadow:var(--primary);
+    --font-color-active: #25cece;
+    --font-color-hover: #43b2c1;
+
+    --primary-transparent: rgba(37, 98, 115, 0.9);
+    
+    --primary-color:#ffffff;
+  }
+  

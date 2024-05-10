@@ -1,0 +1,25 @@
+{
+  "menu": {
+    "view": "Browse",
+	"pub": "Pub",
+	"rubs": "Rub",
+	"rubs": "Rub",
+	"maps": "Mapa",
+	"quest": "Quest",
+	"shop": "Shop",
+	"race": "races",
+	"changepassword": "Change Password",
+	"character": "Your Character",	
+	"market": "Market",	
+    "settings": "Settings",
+    "help": "Help"
+  },
+  "topbar": {
+    "chooseLanguage": "Choose Language",
+    "profile": "Profile",
+    "logout": "Logout"
+  },
+  "menuCenter": {
+    "messages": "Messages"
+  }
+}

@@ -1,0 +1,49 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  position: relative;
+  font-weight: normal;
+}
+
+input, button{
+  outline: none;
+  padding: 8px;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+}
+
+html, body, #app{
+  height: 100vh;
+}
+
+body {
+  color: var(--font-color);
+  background: var(--color-background);
+
+  font-family: monospace;
+  font-size: 12px;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+a{
+  color: white;
+  transition: 200ms;
+}
+a:hover{
+  color: rgb(26, 227, 12);
+}
+
+.border{
+  border: 1px solid green;
+}
+button{
+  cursor: pointer;
+}
+
+button[disabled] {
+  cursor: not-allowed;
+  /* opacity: 0.5; */
+}

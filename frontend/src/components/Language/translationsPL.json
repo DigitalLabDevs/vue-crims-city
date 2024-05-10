@@ -1,0 +1,57 @@
+{
+  "menu": {
+    "view": "Prasa",
+	"pub": "Bar",
+	"rubs": "Napad",
+		
+	"maps": "Mapa",
+	"quest": "Zadania",
+	"shop": "Sklep",
+	"race": "Wyścigi",
+	"changepassword": "Zmień hasło",
+	"character": "Twoja postać",
+	"market": "Targowisko",
+	
+	
+    "settings": "Ustawienia",
+    "help": "Pomoc"
+  },
+  "topbar": {
+    "chooseLanguage": "Wybierz język",
+    "profile": "Profil",
+    "logout": "Wyloguj się"
+  },
+  "menuCenter": {
+    "messages": "Wiadomości"
+  },
+  "main": {
+    "loginLabel": "Zaloguj się",
+	"registerLabel": "Rejestracja"
+  },
+  "login": {
+    "login": "E-mail",
+	"password": "Hasło",
+	"loginButton": "Zaloguj",
+	"forgotPasswordLink": "Przypomnij hasło",
+	"backToLogin": "Wróć do logowania"
+  },
+  "registration": {
+    "title": "Rejestracja",
+	"emailLabel": "E-mail",
+	"passwordLabel": "Hasło",
+	"confirmPasswordLabel": "Powtórz hasło",
+	"registrationButton": "Rejestracja"
+  },
+  "global":{
+	  "submit": "Wyslij",
+	  "backToMain": "Wróć do strony głownej"
+  },
+  "forgotPassword": {
+	  "title": "Przypomnij hasło",
+	  "emailLabel": "E-mail"
+  },
+  "captcha":{
+	 "refreshCaptcha": "Odśwież",
+	 "captchaLabel": "Przepisz kod z obrazka"
+  }
+}

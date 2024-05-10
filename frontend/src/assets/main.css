@@ -1,0 +1,87 @@
+@import './root.css';
+@import './base.css';
+
+.ct {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.mega-button {
+  background: transparent;
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--font-color);
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.mega-button:hover {
+  color: orange;
+  animation: buttonPulse 0.5s infinite alternate;
+}
+
+.btn-pulse{
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  background: transparent;
+  color: rgb(0, 255, 247);
+  animation: buttonPulse 0.5s infinite alternate;
+  transition: 0.3s;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg); /* Początkowy kąt obrotu */
+  }
+  100% {
+    transform: rotate(360deg); /* Końcowy kąt obrotu */
+  }
+}
+
+@keyframes buttonPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+a {
+  text-decoration: none;
+}
+
+hr {
+  width: 100%;
+  /* border: 1px solid var(--font-color-active); */
+}
+
+/* Dostosowanie wyglądu paska przewijania dla przeglądarek opartych na silniku Chromium */
+::-webkit-scrollbar {
+  width: 8px;
+  /* Szerokość paska przewijania */
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-background);
+  /* Kolor tła ścieżki przewijania */
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  /* Kolor samego paska przewijania */
+  /* border-radius: 0px; /* Zaokrąglenie rogów paska przewijania */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+  /* Kolor paska przewijania po najechaniu myszką */
+}
