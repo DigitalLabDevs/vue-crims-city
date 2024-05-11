@@ -23,7 +23,8 @@
   },
   "main": {
     "loginLabel": "Login",
-    "registerLabel": "Registration"
+    "registerLabel": "Registration",
+    "joinUs": "Join us"
   },
   "login": {
     "login": "Email",
@@ -51,5 +52,8 @@
   "captcha": {
     "refreshCaptcha": "Refresh",
     "captchaLabel": "Enter the code from the image"
+  },
+  "descriptions":{
+    "descriptionGame": "Take on the role of a ruthless boss, leading an organization to control over the city's territories."
   }
 }

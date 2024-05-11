@@ -45,9 +45,9 @@
   
   <style scoped>
   select{
-    background-color: black;
-    color: white;
-    border: 1px solid rgb(37, 118, 37);
+    background-color: rgb(7 21 22);
+    color: deepskyblue;
+    border: 1px solid rgb(27 82 102);
   }
 /* select {
   padding: 8px 12px; 

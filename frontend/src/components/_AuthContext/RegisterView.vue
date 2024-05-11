@@ -5,7 +5,7 @@
     <form @submit.prevent="submitForm">
       <div class="form-group">
         <label for="email">{{ t('registration.emailLabel') }}</label>
-        <input type="email" id="email" :placeholder="t('registration.emailLabel')" autocomplete="email"  v-model="email" required>
+        <input type="email" id="email" :placeholder="t('global.emailLabel')" autocomplete="email"  v-model="email" required>
       </div>
       <div class="form-group">
         <label for="password">{{ t('registration.passwordLabel') }}</label>
@@ -31,8 +31,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { ref, computed, defineEmits } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { API_URL } from '../../config.js';
+import { eventBus } from '../_Core/EventBus.js';
 
 const { t } = useI18n()
 
@@ -61,6 +63,7 @@ let captchaText = captchaData.text
 function generateCaptcha() {
   const captchaText = Math.random().toString(36).slice(2, 8)
   const captchaSrc = `https://dummyimage.com/150x50/000/fff&text=${captchaText}`
+  // captchaInput.value = captchaText; // Delete
   return { text: captchaText, src: captchaSrc }
 }
 
@@ -70,7 +73,7 @@ function refreshCaptcha() {
   captchaText = newCaptchaData.text
 }
 
-function submitForm() {
+function submitForm(router) {
   if (captchaInput.value === captchaText) {
     console.log('Formularz wysłany:', { 
       email: email.value,
@@ -78,11 +81,48 @@ function submitForm() {
       confirmPassword: confirmPassword.value,
       captchaInput: captchaInput.value,
     })
+
+   register();
+   
   } else {
     alert(t('forgotPassword.invalidCaptcha'))
     refreshCaptcha()
   }
 }
+
+
+// ================== REGISTRATION =====================
+const emit = defineEmits(['registrationError']);
+async function register() {
+  try {
+    const response = await fetch(`${API_URL}/api/registration`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email: email.value, password: password.value })
+    });
+
+    const data = await response.json();
+
+  
+    console.log(`${JSON.stringify(data)}`);
+
+    // registrationStatus.value.status = 'success';
+    // registrationStatus.value.message = data.message;
+    // Rejestracja zakończona sukcesem, emituj zdarzenie z informacją o sukcesie
+    emit('registrationError', { message: data.message, success: data.success });
+    
+
+    if (!response.ok) {
+      throw new Error('Błąd rejestracji');
+    }
+    // Rejestracja zakończona sukcesem, można przekierować użytkownika lub wyświetlić komunikat
+  } catch (error) {
+    console.error('Błąd rejestracji:', error);
+  }
+}
+// ================== END REGISTRATION =====================
 </script>
 
 <style scoped>

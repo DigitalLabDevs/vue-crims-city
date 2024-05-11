@@ -5,11 +5,11 @@
     <form @submit.prevent="submitForm">
       <div class="form-group">
         <label for="email">{{ t('forgotPassword.emailLabel') }}</label>
-        <input type="email" id="email" autocomplete="email" v-model="email" @input="validateForm" required>
+        <input type="email" id="email" :placeholder="t('global.emailLabel')" autocomplete="email"  v-model="email" @input="validateForm" required>
       </div>
       <div class="form-group captcha">
         <label for="captcha">{{ t('captcha.captchaLabel') }}</label>
-        <input type="text" id="captcha" v-model="captchaInput" @input="validateForm" required>
+        <input type="text" id="captcha" :placeholder="t('captcha.captchaLabel')" v-model="captchaInput" @input="validateForm" required>
         <div class="chapta-flex">
           <img class="chapta-img" :src="captchaSrc" alt="captcha" @click="refreshCaptcha">
           <button type="button" class="w30p" @click="refreshCaptcha">{{ t('captcha.refreshCaptcha') }}</button>
