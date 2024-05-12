@@ -1,29 +1,26 @@
 <template>
-  <div v-if="shouldShowMessage" :class="messageClass">{{ message }}</div>
+  <div v-if="shouldShowErrorMessage" :class="errorMessageClass">{{ errorMessage }}</div>
 </template>
 
 <script setup>
-import { onMounted, ref, computed } from 'vue';
-import { eventBus } from './EventBus';
+import { ref, computed } from 'vue';
 
-const message = ref('');
-const status = ref(false);
+const errorMessage = ref('');
+const success = ref('');
+const hasResponse = ref(false); 
 
-onMounted(() => {
-  eventBus.on('serverMessage', ({ message, status }) => {
-    showMessage(message, status);
-  });
-});
-
-const showMessage = (msg, stat) => {
-  message.value = msg;
-  status.value = stat;
+const handleRegistrationError = ({ message, success: isSuccess }) => {
+  errorMessage.value = message;
+  success.value = isSuccess;
+  hasResponse.value = true; 
 };
 
-const shouldShowMessage = ref(false);
+const shouldShowErrorMessage = computed(() => {
+  return errorMessage.value !== '' && hasResponse.value;
+});
 
-const messageClass = computed(() => {
-  return status.value ? 'success' : 'error';
+const errorMessageClass = computed(() => {
+  return success.value ? 'success' : 'error';
 });
 </script>
 

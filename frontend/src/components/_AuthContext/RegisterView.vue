@@ -4,12 +4,12 @@
     <h2>{{ t('registration.title') }}</h2>
     <form @submit.prevent="submitForm">
       <div class="form-group">
-        <label for="email">{{ t('registration.emailLabel') }}</label>
+        <label for="email">{{ t('global.emailLabel') }}</label>
         <input type="email" id="email" :placeholder="t('global.emailLabel')" autocomplete="email"  v-model="email" required>
       </div>
       <div class="form-group">
-        <label for="password">{{ t('registration.passwordLabel') }}</label>
-        <input type="password" id="password" :placeholder="t('registration.passwordLabel')" autocomplete="new-password" v-model="password" required>
+        <label for="password">{{ t('global.passwordLabel') }}</label>
+        <input type="password" id="password" :placeholder="t('global.passwordLabel')" autocomplete="new-password" v-model="password" required>
       </div>
       <div class="form-group">
         <label for="confirmPassword">{{ t('registration.confirmPasswordLabel') }}</label>
@@ -34,7 +34,6 @@
 import { ref, computed, defineEmits } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { API_URL } from '../../config.js';
-import { eventBus } from '../_Core/EventBus.js';
 
 const { t } = useI18n()
 
@@ -42,6 +41,11 @@ const email = ref('');
 const password = ref('');
 const confirmPassword = ref('');
 const captchaInput = ref('');
+
+// const email = ref('gelidet672@facais.com');
+// const password = ref('zaq1@wsx');
+// const confirmPassword = ref('zaq1@wsx');
+// const captchaInput = ref('');
 
 function validateEmail(email: string): boolean {
   const re = /\S+@\S+\.\S+/;
@@ -103,21 +107,17 @@ async function register() {
       body: JSON.stringify({ email: email.value, password: password.value })
     });
 
-    const data = await response.json();
+   
 
-  
+    // Rejestracja zakończona sukcesem, można przekierować użytkownika lub wyświetlić komunikat
+    const data = await response.json(); 
     console.log(`${JSON.stringify(data)}`);
-
-    // registrationStatus.value.status = 'success';
-    // registrationStatus.value.message = data.message;
-    // Rejestracja zakończona sukcesem, emituj zdarzenie z informacją o sukcesie
-    emit('registrationError', { message: data.message, success: data.success });
+    emit('registrationError', { message: data.message, code: data.code , success: data.success });
     
-
     if (!response.ok) {
       throw new Error('Błąd rejestracji');
     }
-    // Rejestracja zakończona sukcesem, można przekierować użytkownika lub wyświetlić komunikat
+    
   } catch (error) {
     console.error('Błąd rejestracji:', error);
   }

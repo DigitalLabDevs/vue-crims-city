@@ -1,57 +1,28 @@
 {
-  "menu": {
-    "view": "Prasa",
-	"pub": "Bar",
-	"rubs": "Napad",
-		
-	"maps": "Mapa",
-	"quest": "Zadania",
-	"shop": "Sklep",
-	"race": "Wyścigi",
-	"changepassword": "Zmień hasło",
-	"character": "Twoja postać",
-	"market": "Targowisko",
-	
-	
-    "settings": "Ustawienia",
-    "help": "Pomoc"
-  },
-  "topbar": {
-    "chooseLanguage": "Wybierz język",
-    "profile": "Profil",
-    "logout": "Wyloguj się"
-  },
-  "menuCenter": {
-    "messages": "Wiadomości"
-  },
   "main": {
     "loginLabel": "Zaloguj się",
 	  "registerLabel": "Rejestracja",
     "joinUs": "Dołącz do nas"
   },
   "login": {
-    "login": "E-mail",
-	"password": "Hasło",
-	"loginButton": "Zaloguj",
-	"forgotPasswordLink": "Przypomnij hasło",
-	"backToLogin": "Wróć do logowania"
+    "loginButton": "Zaloguj",
+    "forgotPasswordLink": "Przypomnij hasło",
+    "backToLogin": "Wróć do logowania"
   },
   "registration": {
     "title": "Rejestracja",
-	"emailLabel": "E-mail",
-	"passwordLabel": "Hasło",
-	"confirmPasswordLabel": "Powtórz hasło",
-	"registrationButton": "Rejestracja"
+    "confirmPasswordLabel": "Powtórz hasło",
+    "registrationButton": "Rejestracja"
   },
   "global":{
 	  "submit": "Wyslij",
 	  "backToMain": "Wróć do strony głownej",
     "chooseLanguage": "Wybierz język",
-    "emailLabel": "E-mail"
+    "emailLabel": "E-mail",
+    "passwordLabel": "Hasło"
   },
   "forgotPassword": {
-	  "title": "Przypomnij hasło",
-	  "emailLabel": "E-mail"
+	  "title": "Przypomnij hasło"
   },
   "captcha":{
 	 "refreshCaptcha": "Odśwież",
@@ -60,5 +31,10 @@
   },
   "descriptions":{
     "descriptionGame": "Wciel się w rolę bezwzględnego bossa, prowadząc organizację o kontrolę nad obszarami miasta."
+  },
+  "serverMessage":{
+    "PASSWORD_TOO_SHORT": "Hasło musi mieć minimum 6 znaków, 1 cyfrę i 1 znak specjalny.",
+    "EMAIL_EXIST": "Adres e-mail już istnieje.",
+    "REGISTRATION_SUCCESS": "Pomyślnie zarejestrowano nowego użytkownika."
   }
 }

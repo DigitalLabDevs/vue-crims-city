@@ -10,7 +10,14 @@
         <TopbarView />
       </div>
 
-      <div v-if="shouldShowErrorMessage" :class="errorMessageClass">{{ errorMessage }}</div>
+      <div v-if="shouldShowErrorMessage" :class="errorMessageClass">
+        <span v-if="success">
+          <span>{{ errorMessage }}</span>
+          <router-link to="/login">{{ t('main.loginLabel') }}</router-link></span>
+        <span v-else>
+          {{ errorMessage }}
+        </span>
+      </div>
 
 
 
@@ -62,12 +69,13 @@ const isLoggedIn = false;
 
 const errorMessage = ref('');
 const success = ref('');
-const hasResponse = ref(false); 
+const hasResponse = ref(false);
 
-const handleRegistrationError = ({ message, success: isSuccess }) => {
-  errorMessage.value = message;
+const handleRegistrationError = ({ code, success: isSuccess }) => {
+  errorMessage.value = t(`serverMessage.${code}`);
+  console.log(errorMessage.value);
   success.value = isSuccess;
-  hasResponse.value = true; 
+  hasResponse.value = true;
 };
 
 const shouldShowErrorMessage = computed(() => {
@@ -93,6 +101,7 @@ const errorMessageClass = computed(() => {
   padding: 10px;
   color: greenyellow;
 }
+
 .desc {
   min-height: 75px;
   display: flex;

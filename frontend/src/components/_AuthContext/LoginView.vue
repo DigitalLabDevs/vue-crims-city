@@ -4,10 +4,10 @@
     <form action="#" method="post">
       <router-link to="/">{{ t('global.backToMain') }}</router-link>
       <br>
-      <label for="login">{{ t('login.login') }}</label>
-      <input v-model="login" type="text" id="login" :placeholder="t('login.login')" autocomplete="email"/>
-      <label for="password">{{ t('login.password') }}</label>
-      <input v-model="password" type="password" id="password" :placeholder="t('login.password')" autocomplete="current-password"/>
+      <label for="login">{{ t('global.emailLabel') }}</label>
+      <input v-model="login" type="text" id="login" :placeholder="t('global.emailLabel')" autocomplete="email"/>
+      <label for="password">{{ t('global.passwordLabel') }}</label>
+      <input v-model="password" type="password" id="password" :placeholder="t('global.passwordLabel')" autocomplete="current-password"/>
       <button @click="loginUser">{{ t('login.loginButton') }}</button>
       <router-link to="/forgot-password">{{ t('login.forgotPasswordLink') }}</router-link>
     </form>

@@ -4,7 +4,7 @@
     <h2>{{ t('forgotPassword.title') }}</h2>
     <form @submit.prevent="submitForm">
       <div class="form-group">
-        <label for="email">{{ t('forgotPassword.emailLabel') }}</label>
+        <label for="email">{{ t('global.emailLabel') }}</label>
         <input type="email" id="email" :placeholder="t('global.emailLabel')" autocomplete="email"  v-model="email" @input="validateForm" required>
       </div>
       <div class="form-group captcha">

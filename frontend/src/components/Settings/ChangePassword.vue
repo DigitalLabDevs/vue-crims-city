@@ -4,7 +4,7 @@
         <button @click.stop="closeModal" class="close-btn">X</button>
 
         <div class="Language-Selector">
-            <div>{{ $t("topbar.chooseLanguage") }}</div>
+            <div>{{ $t("global.chooseLanguage") }}</div>
             <div>
                 <LanguageSelector />
             </div>

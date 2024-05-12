@@ -6,6 +6,7 @@ import Login from '../_AuthContext/LoginView.vue'
 import MainView from '../_AuthContext/MainView.vue';
 import RegisterView from '../_AuthContext/RegisterView.vue';
 import ForgotPassword from '../_AuthContext/ForgotPassword.vue';
+import ActivateAccount from '../_AuthContext/ActivateAccount.vue';
 
 
 
@@ -43,6 +44,12 @@ const router = createRouter({
       name: 'ForgotPassword',
       component: ForgotPassword,
       meta: { requiresAuth: false } // Nie wymaga autoryzacji
+    },
+    {
+      path: '/activation/:token',
+      name: 'Activation',
+      component: ActivateAccount,
+      props: true, // Przekazanie parametrów z trasy do komponentu jako props
     },
     // Pozostałe trasy
     { 
