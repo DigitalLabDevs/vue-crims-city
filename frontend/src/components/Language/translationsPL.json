@@ -35,6 +35,10 @@
   "serverMessage":{
     "PASSWORD_TOO_SHORT": "Hasło musi mieć minimum 6 znaków, 1 cyfrę i 1 znak specjalny.",
     "EMAIL_EXIST": "Adres e-mail już istnieje.",
-    "REGISTRATION_SUCCESS": "Pomyślnie zarejestrowano nowego użytkownika."
+    "REGISTRATION_SUCCESS": "Pomyślnie zarejestrowano nowego użytkownika. Sprawdź adres E-mail",
+    "INCOMPLETE_DATA": "Uzupełnij Dane",
+    "ACCOUNT_ACTIVATE": "Twoje konto zostało pomyślnie aktywowane. Możesz się zalogować",
+    "ACCOUNT_ACTIVATE_DONE": "To konto zostało już aktywowane",
+    "ACCOUNT_ACTIVATE_DONE_MESSAGE": "Konto aktywowane, możesz się zalogować"
   }
 }

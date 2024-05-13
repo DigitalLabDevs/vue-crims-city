@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 
+const { generateToken } = require('./tokenUtils');
 const { sendEmail } = require('./emailUtils');
 const { checkPasswordStrength } = require('./passwordUtils');
 
@@ -27,7 +28,6 @@ if (process.env.NODE_ENV === 'production') {
 app.use(express.json());
 
 // Middleware dla CORS
-
 app.use(
   cors({
     origin: '*',
@@ -40,22 +40,9 @@ app.use(
   })
 );
 
-
-// Funkcja do generowania tokena
-function generateToken(length) {
-  const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let token = '';
-  for (let i = 0; i < length; i++) {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    token += characters[randomIndex];
-  }
-  return token;
-}
-
-
 // app.use(express.static(path.join(__dirname, 'public')));
 
-// Obsługa żądania rejestracji
+// ====================== /api/registration ===============================
 app.post('/api/registration', (req, res) => {
   const { email, password } = req.body;
 
@@ -65,6 +52,8 @@ app.post('/api/registration', (req, res) => {
   if (!email || !password) {
     res.status(400).json({
       message: `${SYSTEM} Uzupełnij Dane`,
+      code: `INCOMPLETE_DATA`,
+      success: false,
     });
     return;
   }
@@ -81,9 +70,9 @@ app.post('/api/registration', (req, res) => {
   const isStrongPassword = checkPasswordStrength(password, 6, 1, 1);
   if (!isStrongPassword) {
     res.status(400).json({
-      message: `${SYSTEM} Hasło musi mieć minimum 6 znaków, 1 cyfrę i 1 znak specjalny.`,
+      messages: 'warning',
       code: 'PASSWORD_TOO_SHORT',
-      success: false,
+      success: true,
     });
     return;
   }
@@ -95,20 +84,21 @@ app.post('/api/registration', (req, res) => {
       console.error('Błąd podczas sprawdzania adresu e-mail:', error);
       res.status(500).json({
         message: `${SYSTEM} Błąd podczas sprawdzania adresu e-mail.`,
+        success: false
       });
       return;
     } else if (results.length > 0) {
       res.status(400).json({
-        message: `${SYSTEM} Adres e-mail już istnieje.`,
+        messages: 'warning',
         code: 'EMAIL_EXIST',
-        success: false,
+        success: true,
       });
       return;
     } else {
       // Haszuj hasło przed dodaniem użytkownika do bazy danych
       const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-      // Generuj token JWT
+      // Generuj token aktywacyjny
       const token = generateToken(64);
 
       // Dodaj nowego użytkownika do bazy danych
@@ -117,7 +107,8 @@ app.post('/api/registration', (req, res) => {
       db.query(insertUserQuery, [email, hashedPassword, token], (insertError, insertResults) => {
         if (insertError) {
           res.status(500).json({
-            message: `${SYSTEM} Błąd podczas dodawania nowego użytkownika.`,
+            messages: `${SYSTEM} Błąd podczas dodawania nowego użytkownika.`,
+            success: false
           });
           return;
         } else {
@@ -129,7 +120,9 @@ app.post('/api/registration', (req, res) => {
             from: 'activation@crims-city.ct8.pl',
             to: email,
             subject: 'Aktywacja konta crims-city.ct8.pl',
-            html: `<p>Kliknij <a href="${activationLink}">tutaj</a>, aby aktywować swoje konto.</p>`,
+            html: `<p>Odblokuj bramy Crims City i zanurzyć się w podziemnych przygodach, aktywuj swoje konto teraz!</p>
+            <p>Kliknij <a href="${activationLink}">tutaj</a>, aby aktywować swoje konto.</p>
+            `,
           };
 
           // Wyślij e-mail
@@ -139,7 +132,7 @@ app.post('/api/registration', (req, res) => {
 
           // Odpowiedz klientowi z sukcesem
           res.status(200).json({
-            message: `${SYSTEM} Pomyślnie zarejestrowano nowego użytkownika.`,
+            messages: 'success',
             code: 'REGISTRATION_SUCCESS',
             success: true,
           });
@@ -150,11 +143,7 @@ app.post('/api/registration', (req, res) => {
   });
 });
 
-
-
-
-
-
+// ============================== /activation/:token =============================
 // Obsługa żądania aktywacji konta
 app.get('/activation/:token', (req, res) => {
   const token = req.params.token;
@@ -164,22 +153,48 @@ app.get('/activation/:token', (req, res) => {
   findUserByToken(token)
     .then((user) => {
       if (user) {
-        // Aktualizuj pole userBlock w bazie danych
-        updateUserBlock(user)
-          .then(() => {
-            res.send('Twoje konto zostało pomyślnie aktywowane.');
+        // Sprawdź status blokady użytkownika
+        checkUserBlock(user)
+          .then((userBlock) => {
+            if (userBlock === 0) {
+              // Jeśli blokada użytkownika wynosi 0, zaktualizuj pole userBlock na 1
+              updateUserBlock(user)
+                .then(() => {
+                  // Jeśli operacja zakończyła się sukcesem, zwróć sukces
+                  res.redirect(`/activation?success=true`);
+                })
+                .catch((error) => {
+                  console.error('Błąd podczas aktualizacji pola userBlock:', error);
+                  res.status(500).json({
+                    success: false,
+                    message: 'Wystąpił błąd podczas aktywacji konta.',
+                  });
+                });
+            } else {
+              // Jeśli blokada użytkownika wynosi 1, wysłać odpowiedź z niepowodzeniem
+              res.redirect(`/activation?success=false`);
+            }
           })
           .catch((error) => {
-            console.error('Błąd podczas aktualizacji pola userBlock:', error);
-            res.status(500).send('Wystąpił błąd podczas aktywacji konta.');
+            console.error('Błąd podczas sprawdzania pola userBlock:', error);
+            res.status(500).json({
+              success: false,
+              message: 'Wystąpił błąd podczas aktywacji konta.',
+            });
           });
       } else {
-        res.status(400).send('Nieprawidłowy token aktywacyjny.');
+        res.status(400).json({
+          success: false,
+          message: 'Nieprawidłowy token aktywacyjny.',
+        });
       }
     })
     .catch((error) => {
       console.error('Błąd podczas aktywacji konta:', error);
-      res.status(500).send('Wystąpił błąd podczas aktywacji konta.');
+      res.status(500).json({
+        success: false,
+        message: 'Wystąpił błąd podczas aktywacji konta.',
+      });
     });
 });
 
@@ -222,10 +237,36 @@ async function updateUserBlock(user) {
   });
 }
 
+// Funkcja do sprawdzania statusu blokady użytkownika
+async function checkUserBlock(user) {
+  return new Promise((resolve, reject) => {
+    // Tutaj wykonaj zapytanie do bazy danych, aby sprawdzić pole userBlock
+    const query = 'SELECT userBlock FROM users WHERE ids = ?';
+    db.query(query, [user.ids], (error, results) => {
+      if (error) {
+        console.error('Błąd podczas sprawdzania pola userBlock:', error);
+        reject(error);
+      } else {
+        // Jeśli zapytanie zwróciło wynik, zwróć status blokady użytkownika (0 lub 1)
+        if (results.length > 0) {
+          resolve(results[0].userBlock);
+        } else {
+          reject(new Error('Nie znaleziono użytkownika'));
+        }
+      }
+    });
+  });
+}
 
-// Obsługa żądań, które nie pasują do żadnego endpointu
-app.use((req, res) => {
-  res.status(404).send('404 Not Found');
+// ================ Obsługa żądań, które nie pasują do żadnego endpointu =======================
+
+const staticFileMiddleware = express.static(path.join(__dirname, '..', 'frontend/dist'));
+app.use(staticFileMiddleware);
+app.get('/', function (req, res) {
+  res.render(path.join(__dirname, '..', 'frontend/dist/index.html'));
+});
+app.get('*', function (req, res) {
+  res.sendFile(path.join(__dirname, '..', 'frontend/dist/index.html'));
 });
 
 // Nasłuchiwanie na określonym porcie

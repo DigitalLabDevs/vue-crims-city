@@ -13,7 +13,8 @@
       <div v-if="shouldShowErrorMessage" :class="errorMessageClass">
         <span v-if="success">
           <span>{{ errorMessage }}</span>
-          <router-link to="/login">{{ t('main.loginLabel') }}</router-link></span>
+          <!-- <router-link to="/login">{{ t('main.loginLabel') }}</router-link> -->
+        </span>
         <span v-else>
           {{ errorMessage }}
         </span>
@@ -67,14 +68,16 @@ import MediaView from './components/_App/MainSite/MediaView.vue';
 const { t } = useI18n();
 const isLoggedIn = false;
 
-const errorMessage = ref('');
 const success = ref('');
+const errorMessage = ref('');
+const message = ref('');
 const hasResponse = ref(false);
 
-const handleRegistrationError = ({ code, success: isSuccess }) => {
+const handleRegistrationError = ({ code, messages, success: isSuccess }) => {
   errorMessage.value = t(`serverMessage.${code}`);
   console.log(errorMessage.value);
   success.value = isSuccess;
+  message.value = messages;
   hasResponse.value = true;
 };
 
@@ -83,23 +86,48 @@ const shouldShowErrorMessage = computed(() => {
 });
 
 const errorMessageClass = computed(() => {
-  return success.value ? 'success' : 'error';
+  switch (message.value) {
+    case 'success':
+      return 'success';
+    case 'warning':
+      return 'warning';
+    case 'info':
+      return 'info';
+    case 'error':
+      return 'error';
+  }
 });
+
+
 </script>
 
 <style scoped>
 .error {
-  background-color: rgba(226, 7, 7, 0.1);
+  background-color: rgba(221, 38, 38, 0.1);
   font-size: 16px;
   padding: 10px;
   color: rgb(255, 47, 47);
 }
 
 .success {
-  background-color: rgba(7, 226, 7, 0.1);
+  background-color: rgba(18, 225, 18, 0.1);
   font-size: 16px;
   padding: 10px;
   color: greenyellow;
+}
+
+.info {
+  background-color: rgba(7, 171, 226, 0.1);
+  font-size: 16px;
+  padding: 10px;
+  color: #0ab8ff;
+}
+
+.warning {
+  background-color: rgba(226, 211, 7, 0.1);
+  font-size: 16px;
+  padding: 10px;
+  color: rgb(255, 170, 0);
 }
 
 .desc {

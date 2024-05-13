@@ -53,7 +53,7 @@ function validateEmail(email: string): boolean {
 }
 
 function validateForm() {
-  return validateEmail(email.value) && password.value === confirmPassword.value && captchaInput.value === captchaText;
+  return validateEmail(email.value) && password.value === confirmPassword.value && captchaInput.value === captchaText && password.value !== '' && confirmPassword.val !== '';
 }
 
 const isValid = computed(() => {
@@ -112,7 +112,7 @@ async function register() {
     // Rejestracja zakończona sukcesem, można przekierować użytkownika lub wyświetlić komunikat
     const data = await response.json(); 
     console.log(`${JSON.stringify(data)}`);
-    emit('registrationError', { message: data.message, code: data.code , success: data.success });
+    emit('registrationError', { messages: data.messages, code: data.code, success: data.success});
     
     if (!response.ok) {
       throw new Error('Błąd rejestracji');

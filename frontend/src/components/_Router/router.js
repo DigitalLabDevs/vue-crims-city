@@ -46,10 +46,18 @@ const router = createRouter({
       meta: { requiresAuth: false } // Nie wymaga autoryzacji
     },
     {
-      path: '/activation/:token',
+      path: '/activation',
       name: 'Activation',
       component: ActivateAccount,
+      // props: false, // Przekazanie parametrów z trasy do komponentu jako props
+      props: (route) => ({ success: route.query.success }),
+    },
+    {
+      path: '/activation/:token',
+      name: 'ActivationWithToken',
+      component: ActivateAccount,
       props: true, // Przekazanie parametrów z trasy do komponentu jako props
+      // props: (route) => ({ token: route.query.token }),
     },
     // Pozostałe trasy
     { 
