@@ -10,35 +10,44 @@
     "backToLogin": "Wróć do logowania"
   },
   "registration": {
-    "title": "Rejestracja",
-    "confirmPasswordLabel": "Powtórz hasło",
-    "registrationButton": "Rejestracja"
+    "title": "Rejestracja"
   },
   "global":{
 	  "submit": "Wyslij",
 	  "backToMain": "Wróć do strony głownej",
     "chooseLanguage": "Wybierz język",
     "emailLabel": "E-mail",
-    "passwordLabel": "Hasło"
+    "passwordLabel": "Hasło",
+    "confirmPasswordLabel": "Powtórz hasło",
+    "registrationButton": "Rejestracja"
   },
   "forgotPassword": {
 	  "title": "Przypomnij hasło"
   },
+  "password_reset":{
+    "title": "Reset hasła"
+  },
   "captcha":{
+   "title": "Captcha",
 	 "refreshCaptcha": "Odśwież",
 	 "captchaLabel": "Przepisz kod z obrazka",
-   "invalidCaptcha": "Nieprawidłowy kod"
+   "invalidCaptcha": "Nieprawidłowy kod",
+   "placeholder": "Przepisz kod z obrazka"
   },
   "descriptions":{
     "descriptionGame": "Wciel się w rolę bezwzględnego bossa, prowadząc organizację o kontrolę nad obszarami miasta."
   },
   "serverMessage":{
-    "PASSWORD_TOO_SHORT": "Hasło musi mieć minimum 6 znaków, 1 cyfrę i 1 znak specjalny.",
+    "PASSWORD_TOO_SHORT": "Hasło musi mieć minimum 6 znaków, 1 duża, 1 mała (litera) 1 cyfrę i 1 znak specjalny.",
     "EMAIL_EXIST": "Adres e-mail już istnieje.",
     "REGISTRATION_SUCCESS": "Pomyślnie zarejestrowano nowego użytkownika. Sprawdź adres E-mail",
     "INCOMPLETE_DATA": "Uzupełnij Dane",
     "ACCOUNT_ACTIVATE": "Twoje konto zostało pomyślnie aktywowane. Możesz się zalogować",
     "ACCOUNT_ACTIVATE_DONE": "To konto zostało już aktywowane",
-    "ACCOUNT_ACTIVATE_DONE_MESSAGE": "Konto aktywowane, możesz się zalogować"
+    "ACCOUNT_ACTIVATE_DONE_MESSAGE": "Konto aktywowane, możesz się zalogować",
+    "USER_NOT_FOUND": "Nie ma użytkownika z tym adresem e-mail",
+    "EMAIL_WITH_RESET": "E-mail z linkiem do resetowania hasła został wysłany.",
+    "ACTIVATION_ERROR": "Błąd, spróbuj poźniej, lub skontaktuj się z supportem.",
+    "PASSWORD_SUCCESS_UPDATE": "Hasło zostało pomyślnie zaktualizowane."
   }
 }

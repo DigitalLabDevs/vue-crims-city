@@ -5,47 +5,45 @@
     <form @submit.prevent="submitForm">
       <div class="form-group">
         <label for="email">{{ t('global.emailLabel') }}</label>
-        <input type="email" id="email" :placeholder="t('global.emailLabel')" autocomplete="email"  v-model="email" required>
+        <input type="email" id="email" :placeholder="t('global.emailLabel')" autocomplete="email" v-model="email"
+          required>
       </div>
       <div class="form-group">
         <label for="password">{{ t('global.passwordLabel') }}</label>
-        <input type="password" id="password" :placeholder="t('global.passwordLabel')" autocomplete="new-password" v-model="password" required>
+        <input type="password" id="password" :placeholder="t('global.passwordLabel')" autocomplete="new-password"
+          v-model="password" required>
       </div>
       <div class="form-group">
-        <label for="confirmPassword">{{ t('registration.confirmPasswordLabel') }}</label>
-        <input type="password" id="confirmPassword" :placeholder="t('registration.confirmPasswordLabel')" autocomplete="new-password" v-model="confirmPassword" required>
+        <label for="confirmPassword">{{ t('global.confirmPasswordLabel') }}</label>
+        <input type="password" id="confirmPassword" :placeholder="t('global.confirmPasswordLabel')"
+          autocomplete="new-password" v-model="confirmPassword" required>
       </div>
       <div class="form-group captcha">
-        <label for="captcha">{{ t('captcha.captchaLabel') }}</label>
-        <input type="text" id="captcha" :placeholder="t('captcha.captchaLabel')" v-model="captchaInput" required>
-
-        <div class="chapta-flex">
-          <img class="chapta-img" :src="captchaSrc" alt="captcha" @click="refreshCaptcha">
-          <button class="w30p" type="button" @click="refreshCaptcha">{{ t('captcha.refreshCaptcha') }}</button>
-        </div>
-        
+        <Captcha :onCaptchaValid="handleCaptcha"/>
       </div>
-      <button class="w30p" type="submit" :disabled="!isValid">{{ t('registration.registrationButton') }}</button>
+      <button class="w30p" type="submit" :disabled="!isValid">{{ t('global.registrationButton') }}</button>
     </form>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, defineEmits } from 'vue';
+import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { API_URL } from '../../config.js';
+import Captcha from '../_Core/Captcha.vue';
 
 const { t } = useI18n()
 
 const email = ref('');
 const password = ref('');
 const confirmPassword = ref('');
-const captchaInput = ref('');
 
-// const email = ref('gelidet672@facais.com');
-// const password = ref('zaq1@wsx');
-// const confirmPassword = ref('zaq1@wsx');
-// const captchaInput = ref('');
+// const email = ref('hesidak940@bsomek.com');
+// const password = ref('Zaq1@wsx');
+// const confirmPassword = ref('Zaq1@wsx');
+
+
+const isCaptchaValid = ref(false);
 
 function validateEmail(email: string): boolean {
   const re = /\S+@\S+\.\S+/;
@@ -53,44 +51,24 @@ function validateEmail(email: string): boolean {
 }
 
 function validateForm() {
-  return validateEmail(email.value) && password.value === confirmPassword.value && captchaInput.value === captchaText && password.value !== '' && confirmPassword.val !== '';
+  return validateEmail(email.value) && password.value === confirmPassword.value && password.value !== '' && isCaptchaValid.value && confirmPassword.value !== '';
+}
+
+function handleCaptcha(isValid) {
+  console.log('Props onCaptchaValid wysłany. Wartość:', isValid);
+  isCaptchaValid.value = isValid;
 }
 
 const isValid = computed(() => {
   return validateForm();
 });
 
-const captchaData = generateCaptcha()
-const captchaSrc = ref(captchaData.src)
-let captchaText = captchaData.text
-
-function generateCaptcha() {
-  const captchaText = Math.random().toString(36).slice(2, 8)
-  const captchaSrc = `https://dummyimage.com/150x50/000/fff&text=${captchaText}`
-  // captchaInput.value = captchaText; // Delete
-  return { text: captchaText, src: captchaSrc }
-}
-
-function refreshCaptcha() {
-  const newCaptchaData = generateCaptcha()
-  captchaSrc.value = newCaptchaData.src
-  captchaText = newCaptchaData.text
-}
-
-function submitForm(router) {
-  if (captchaInput.value === captchaText) {
-    console.log('Formularz wysłany:', { 
-      email: email.value,
-      password: password.value,
-      confirmPassword: confirmPassword.value,
-      captchaInput: captchaInput.value,
-    })
-
-   register();
-   
+function submitForm() {
+  if (!isCaptchaValid.value) {
+    console.log("FALSE: " + isCaptchaValid.value);
   } else {
-    alert(t('forgotPassword.invalidCaptcha'))
-    refreshCaptcha()
+    console.log("TRUE: " + isCaptchaValid.value);
+    register();
   }
 }
 
@@ -107,17 +85,17 @@ async function register() {
       body: JSON.stringify({ email: email.value, password: password.value })
     });
 
-   
+
 
     // Rejestracja zakończona sukcesem, można przekierować użytkownika lub wyświetlić komunikat
-    const data = await response.json(); 
+    const data = await response.json();
     console.log(`${JSON.stringify(data)}`);
-    emit('registrationError', { messages: data.messages, code: data.code, success: data.success});
-    
+    emit('registrationError', { messages: data.messages, code: data.code, success: data.success });
+
     if (!response.ok) {
       throw new Error('Błąd rejestracji');
     }
-    
+
   } catch (error) {
     console.error('Błąd rejestracji:', error);
   }

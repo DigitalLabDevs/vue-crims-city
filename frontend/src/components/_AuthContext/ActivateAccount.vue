@@ -7,48 +7,37 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { API_URL } from '../../config';
 
 
 const { t } = useI18n()
+const route = useRoute();
 const router = useRouter();
 const emit = defineEmits(['registrationError']);
 const props = defineProps<{
-  token: string;
-  success: string;
-}>(); // Odbierz token z trasy jako props
+  token?: string;
+  success?: string;
+}>();
 
-const activationStatus = ref(""); // Status aktywacji 
+const activationStatus = ref(''); // Status aktywacji 
+// Odbieranie propsów z adresu URL
+const token = route.query.token;
+console.log(token);
 
-
-onMounted(() => {
-  if (props.token) {
-    activateAccount(props.token);
-  } else {
-    if (props.success !== undefined) {
-      if (props.success === 'true') {
-        
-     
-        activationStatus.value = t('serverMessage.ACCOUNT_ACTIVATE');
-        emit('registrationError', {code: 'ACCOUNT_ACTIVATE' , messages: 'success', success: true });
-        setTimeout(() => {
-          router.push('/login');
-        }, 3000);
-      } else if (props.success === 'false') {
-
-        activationStatus.value = t('serverMessage.ACCOUNT_ACTIVATE_DONE');
-        emit('registrationError', {code: 'ACCOUNT_ACTIVATE_DONE_MESSAGE' , messages: 'info', success: true });
-        
-        setTimeout(() => {
-          router.push('/login');
-        }, 3000);
-      } else {
-        // activationStatus.value = 'Błąd Y, nie kombinuj';
-        activationStatus.value = 'Niepoprawna wartość parametru success w URL.';
-      }
+onMounted(async () => {
+  if (token) {
+    const { success, message, code } = await activateAccount(token);
+    if (success) {
+      activationStatus.value = message || t('serverMessage.ACCOUNT_ACTIVATE');
+      emit('registrationError', { code: code, messages: 'success', success: true });
+      setTimeout(() => {
+        router.push('/login');
+      }, 3000);
     } else {
-      activationStatus.value = 'Brak tokena aktywacyjnego lub parametru success w URL.'
+      // Obsłuż przypadki, gdy aktywacja konta nie powiodła się
+      activationStatus.value = message || t('serverMessage.ACTIVATION_ERROR');
+      // activationStatus.value = t('serverMessage.ACTIVATION_ERROR');
     }
   }
 });
@@ -59,14 +48,16 @@ async function activateAccount(token: string) {
   try {
     // Wyślij żądanie do serwera w celu aktywacji konta na podstawie otrzymanego tokenu
     const response = await fetch(`${API_URL}/activation/${token}`);
-    // const data = await response.json(); // Odczytaj dane z odpowiedzi
+    console.log(response);
+    const data = await response.json(); // Odczytaj dane z odpowiedzi
+    console.log(data);
     if (response.ok) {
       console.log('Konto zostało pomyślnie aktywowane.');
-
+      return { success: data.success, message: data.message, code: data.code };
     } else {
       // Obsłuż błąd aktywacji konta
       console.error('Wystąpił błąd podczas aktywacji konta.');
-      activationStatus.value = 'Wystąpił błąd podczas aktywacji konta.';
+      return { success: data.success, message: data.message, code: data.code };
     }
   } catch (error) {
     console.error('Wystąpił błąd podczas aktywacji konta:', error);

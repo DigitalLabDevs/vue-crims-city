@@ -11,8 +11,8 @@ async function sendEmail(options) {
       secure: false, // use TLS
       // ignoreTLS: true,
       auth: {
-        user: "activation@crims-city.ct8.pl",
-        pass: "UPTSIcdYLmRX6oKIsNOfGWDY}285</",
+        user: "support@crims-city.ct8.pl",
+        pass: "Z.tc+W+x4XrIz3gN6eFGkL7w848:}?",
       },
       tls: { rejectUnauthorized: false },
       debug: true,

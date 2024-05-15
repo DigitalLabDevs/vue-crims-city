@@ -8,12 +8,7 @@
         <input type="email" id="email" :placeholder="t('global.emailLabel')" autocomplete="email"  v-model="email" @input="validateForm" required>
       </div>
       <div class="form-group captcha">
-        <label for="captcha">{{ t('captcha.captchaLabel') }}</label>
-        <input type="text" id="captcha" :placeholder="t('captcha.captchaLabel')" v-model="captchaInput" @input="validateForm" required>
-        <div class="chapta-flex">
-          <img class="chapta-img" :src="captchaSrc" alt="captcha" @click="refreshCaptcha">
-          <button type="button" class="w30p" @click="refreshCaptcha">{{ t('captcha.refreshCaptcha') }}</button>
-      </div>
+        <Captcha :onCaptchaValid="handleCaptcha"/>
       </div>
       <button type="submit" class="w30p" :disabled="!isValid">{{ t('global.submit') }}</button>
     </form>
@@ -21,16 +16,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { ref, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { API_URL } from '../../config.js';
+import Captcha from '../_Core/Captcha.vue';
+
+const { t } = useI18n();
 
 // Dane do wygenerowania captcha
-const captchaData = generateCaptcha()
-const captchaSrc = ref(captchaData.src)
-let captchaText = captchaData.text
-const captchaInput = ref('')
-const email = ref('')
-const { t } = useI18n()
+const email = ref('');
+// const email = ref('hesidak940@bsomek.com');
+const isCaptchaValid = ref(false);
 
 // Sprawdzanie poprawności adresu e-mail
 function validateEmail(email: string): boolean {
@@ -38,41 +34,57 @@ function validateEmail(email: string): boolean {
   return re.test(email)
 }
 
-// Logika odświeżania captcha
-function refreshCaptcha() {
-  const newCaptchaData = generateCaptcha()
-  captchaSrc.value = newCaptchaData.src
-  captchaText = newCaptchaData.text
-  captchaInput.value = ''
+function validateForm() {
+  return validateEmail(email.value) && isCaptchaValid.value;
 }
 
-// Logika wysyłania formularza
-function submitForm() {
-  if (captchaInput.value === captchaText) {
-    // Wysyłanie formularza, np. do serwera
-    console.log('Formularz wysłany:', { email: email.value })
-  } else {
-    alert(t('forgotPassword.invalidCaptcha'))
-    refreshCaptcha()
-  }
-}
-
-// Funkcja do generowania captcha
-function generateCaptcha() {
-  const captchaText = Math.random().toString(36).slice(2, 8)
-  const captchaSrc = `https://dummyimage.com/150x50/000/fff&text=${captchaText}`
-  return { text: captchaText, src: captchaSrc }
+function handleCaptcha(isValid) {
+  console.log('Props onCaptchaValid wysłany. Wartość:', isValid);
+  isCaptchaValid.value = isValid;
 }
 
 // Sprawdzenie poprawności formularza
 const isValid = computed(() => {
-  return validateEmail(email.value) && captchaInput.value === captchaText
+  return validateForm();
 })
 
-// Wywołanie sprawdzania poprawności po wprowadzeniu danych
-function validateForm() {
-  isValid.value
+
+
+
+// Logika wysyłania formularza
+function submitForm() {
+  if (!isCaptchaValid.value) {
+    console.log("FALSE: " + isCaptchaValid.value);
+  } else {
+    console.log("TRUE: " + isCaptchaValid.value);
+    forgotPassword();
+    email.value = '';
+  }
 }
+
+const emit = defineEmits(['registrationError']);
+async function forgotPassword() {
+  try {
+    const response = await fetch(`${API_URL}/api/forgot-password`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email: email.value })
+    });
+    const data = await response.json(); 
+    console.log(`${JSON.stringify(data)}`);
+    emit('registrationError', { messages: data.messages, code: data.code, success: data.success});
+    
+    if (!response.ok) {
+      throw new Error('Błąd rejestracji');
+    }
+    
+  } catch (error) {
+    console.error('Błąd rejestracji:', error);
+  }
+}
+
 </script>
 
 <style scoped>

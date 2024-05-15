@@ -2,43 +2,52 @@
   "main": {
     "loginLabel": "Log in",
     "registerLabel": "Register",
-    "joinUs": "Join us"
+    "joinUs": "Join Us"
   },
   "login": {
-    "loginButton": "Log in",
-    "forgotPasswordLink": "Forgot password",
-    "backToLogin": "Back to login"
+    "loginButton": "Log In",
+    "forgotPasswordLink": "Forgot Password",
+    "backToLogin": "Back to Login"
   },
   "registration": {
-    "title": "Registration",
-    "confirmPasswordLabel": "Confirm password",
-    "registrationButton": "Register"
+    "title": "Registration"
   },
   "global": {
     "submit": "Submit",
-    "backToMain": "Back to main page",
-    "chooseLanguage": "Choose language",
+    "backToMain": "Back to Main Page",
+    "chooseLanguage": "Choose Language",
     "emailLabel": "Email",
-    "passwordLabel": "Password"
+    "passwordLabel": "Password",
+    "confirmPasswordLabel": "Confirm Password",
+    "registrationButton": "Register"
   },
   "forgotPassword": {
-    "title": "Forgot password"
+    "title": "Forgot Password"
+  },
+  "password_reset": {
+    "title": "Password Reset"
   },
   "captcha": {
+    "title": "Captcha",
     "refreshCaptcha": "Refresh",
     "captchaLabel": "Enter the code from the image",
-    "invalidCaptcha": "Invalid code"
+    "invalidCaptcha": "Invalid code",
+    "placeholder": "Enter the code from the image"
   },
   "descriptions": {
-    "descriptionGame": "Take on the role of a ruthless boss, leading an organization to control areas of the city."
+    "descriptionGame": "Step into the role of a ruthless boss, leading an organization to control areas of the city."
   },
   "serverMessage": {
-    "PASSWORD_TOO_SHORT": "Password must be at least 6 characters long, contain 1 digit, and 1 special character.",
-    "EMAIL_EXIST": "Email address already exists.",
+    "PASSWORD_TOO_SHORT": "Password must be at least 6 characters long, contain 1 uppercase, 1 lowercase letter, 1 digit, and 1 special character.",
+    "EMAIL_EXIST": "Email already exists.",
     "REGISTRATION_SUCCESS": "Successfully registered a new user. Check your email address.",
-    "INCOMPLETE_DATA": "Incomplete data",
-    "ACCOUNT_ACTIVATE": "Your account has been successfully activated. You can now log in.",
+    "INCOMPLETE_DATA": "Incomplete Data",
+    "ACCOUNT_ACTIVATE": "Your account has been successfully activated. You can log in now.",
     "ACCOUNT_ACTIVATE_DONE": "This account has already been activated.",
-    "ACCOUNT_ACTIVATE_DONE_MESSAGE": "Account activated, you can now log in."
+    "ACCOUNT_ACTIVATE_DONE_MESSAGE": "Account activated, you can log in now.",
+    "USER_NOT_FOUND": "No user found with this email address.",
+    "EMAIL_WITH_RESET": "Email with the password reset link has been sent.",
+    "ACTIVATION_ERROR": "Error, please try again later or contact support.",
+    "PASSWORD_SUCCESS_UPDATE": "Password has been successfully updated."
   }
 }

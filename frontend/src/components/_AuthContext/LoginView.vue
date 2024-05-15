@@ -1,7 +1,7 @@
 <template>
 
   <div class="login-form">
-    <form action="#" method="post">
+    <form @submit.prevent="submitForm">
       <router-link to="/">{{ t('global.backToMain') }}</router-link>
       <br>
       <label for="login">{{ t('global.emailLabel') }}</label>
@@ -20,17 +20,16 @@ import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
+
 const login = ref('');
 const password = ref('');
+
+// const login = ref('hesidak940@bsomek.com');
+// const password = ref('Zaq1@wsx');
 const isLoggedIn = ref(false);
 
-const loginUser = () => {
-  if (login.value === 'abc' && password.value === 'abc') {
-    isLoggedIn.value = true;
-    console.log('Logged in successfully!');
-  } else {
-    console.log('Invalid login credentials!');
-  }
+const submitForm = async () => {
+ console.log(`SIEMANO`);
 };
 </script>
 

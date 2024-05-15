@@ -7,6 +7,9 @@ import MainView from '../_AuthContext/MainView.vue';
 import RegisterView from '../_AuthContext/RegisterView.vue';
 import ForgotPassword from '../_AuthContext/ForgotPassword.vue';
 import ActivateAccount from '../_AuthContext/ActivateAccount.vue';
+import ResetPassword from '../_AuthContext/ResetPassword.vue';
+
+import Test from '../_Test/Test.vue';
 
 
 
@@ -49,17 +52,29 @@ const router = createRouter({
       path: '/activation',
       name: 'Activation',
       component: ActivateAccount,
-      // props: false, // Przekazanie parametrów z trasy do komponentu jako props
-      props: (route) => ({ success: route.query.success }),
+      props: true, // Przekazanie parametrów z trasy do komponentu jako props
+      meta: { requiresAuth: false } // Nie wymaga autoryzacji
     },
     {
       path: '/activation/:token',
       name: 'ActivationWithToken',
       component: ActivateAccount,
       props: true, // Przekazanie parametrów z trasy do komponentu jako props
-      // props: (route) => ({ token: route.query.token }),
+      meta: { requiresAuth: false } // Nie wymaga autoryzacji
     },
-    // Pozostałe trasy
+    {
+      path: '/reset-password',
+      name: 'ResetPassword',
+      component: ResetPassword,
+      props: true, // Przekazanie parametrów z trasy do komponentu jako props
+      meta: { requiresAuth: false } // Nie wymaga autoryzacji
+    },
+    {
+      path: '/test',
+      name: 'Test',
+      component: Test,
+      meta: { requiresAuth: false } // Nie wymaga autoryzacji
+    },
     { 
       path: '/',
       redirect: isAuthenticated() ? '/crims-city' : '/' // Przekierowujemy na widok gry lub logowanie, w zależności od stanu zalogowania
