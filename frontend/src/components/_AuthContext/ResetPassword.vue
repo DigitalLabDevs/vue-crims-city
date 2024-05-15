@@ -25,6 +25,8 @@ const confirmPassword = ref('Zaq1@wsx');
 const route = useRoute();
 const router = useRouter();
 
+// const token = ref(route.query.token);
+
 const token = route.query.token;
 console.log(token);
 
@@ -45,7 +47,7 @@ const isValid = computed(() => {
 const submitForm = async () => {
   if (isValid.value) {
     try {
-      setNewPassword();
+      await setNewPassword();
     } catch (error) {
 
     }
@@ -58,7 +60,7 @@ async function setNewPassword() {
   console.log(`TOKEN: ${token}`);
   console.log(`NEW PASSWORD: ${password.value}`);
   try {
-    const response = await fetch(`${API_URL}/api/set-new-password?token=${token}`, {
+    const response = await fetch(`${API_URL}/api/set-new-password`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -67,17 +69,21 @@ async function setNewPassword() {
     });
 
     if (!response.ok) {
+      const data = await response.json();
+      emit('registrationError', { messages: data.messages, code: data.code, success: data.success });
       throw new Error('Błąd aktualizacji hasła');
     } else {
       // Rejestracja zakończona sukcesem, można przekierować użytkownika lub wyświetlić komunikat
       const data = await response.json();
       console.log(`${JSON.stringify(data)}`);
-      emit('registrationError', { messages: data.messages, code: data.code, success: data.success });
+      emit('registrationError', { messages: data.messages, code: data.code, success: data.success }); 
       setTimeout(() => {
         router.push('/login');
       }, 3000);
     }
 
+    
+    
   } catch (error) {
     console.error('Błąd aktualizacji hasła:', error);
   }

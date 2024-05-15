@@ -13,7 +13,6 @@
       <div v-if="shouldShowErrorMessage" :class="errorMessageClass">
         <span v-if="success">
           <span>{{ errorMessage }}</span>
-          <!-- <router-link to="/login">{{ t('main.loginLabel') }}</router-link> -->
         </span>
         <span v-else>
           {{ errorMessage }}

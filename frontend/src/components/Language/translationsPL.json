@@ -48,6 +48,7 @@
     "USER_NOT_FOUND": "Nie ma użytkownika z tym adresem e-mail",
     "EMAIL_WITH_RESET": "E-mail z linkiem do resetowania hasła został wysłany.",
     "ACTIVATION_ERROR": "Błąd, spróbuj poźniej, lub skontaktuj się z supportem.",
-    "PASSWORD_SUCCESS_UPDATE": "Hasło zostało pomyślnie zaktualizowane."
+    "PASSWORD_SUCCESS_UPDATE": "Hasło zostało pomyślnie zaktualizowane.",
+    "NO_TOKEN": "Brak tokenu"
   }
 }

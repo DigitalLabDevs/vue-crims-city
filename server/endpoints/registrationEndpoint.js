@@ -30,18 +30,32 @@ router.post('/api/set-new-password', async (req, res) => {
     });
   }
 
-  console.log(token);
-  console.log(newPassword);
-
   const user = await getUserByResetToken(token);
-  console.log(`/api/set-new-password: ${user}`);
+
+  if(!user){
+    return res.status(500).json({
+      message: 'Brak tokenu resetowania hasła',
+      success: true,
+      code: 'NO_TOKEN',
+      messages: 'error'
+    });
+  }
+
+  const newPass = checkPasswordStrength(newPassword);
+  if(!newPass){
+    return res.status(500).json({
+      message: 'Hasło nie spełnia wymagań',
+      success: true,
+      code: 'EAN',
+      messages: 'warning'
+    });
+  }
 
   const update = await updateUserPassword(user, newPassword);
-  console.log(`/api/set-new-password ${update}`);
 
   if(update){
-    // clearResetToken(user);
-    console.log('XXX');
+
+    clearResetToken(user);
 
     return res.status(200).json({
       message: 'Hasło zostało pomyślnie zaktualizowane',
@@ -56,39 +70,47 @@ router.post('/api/set-new-password', async (req, res) => {
 });
 
 // Endpoint obsługujący resetowanie hasła na podstawie tokena
-router.get('/reset-password', async (req, res) => {
+router.post('/reset-password', async (req, res) => {
   try {
-    const { token } = req.query; // Pobierz token z parametru zapytania
-    console.log("reset-password TOKEN: "+token);
+    const { token, newPassword } = req.body; // Pobierz token i nowe hasło z ciała żądania
+    console.log("reset-password TOKEN: " + token);
 
     // Sprawdź, czy token istnieje w bazie danych
     const user = await getUserByResetToken(token);
 
     if (!user) {
-      // Jeśli nie znaleziono użytkownika z podanym tokenem, przekieruj na stronę błędu
-      return res.redirect('/error'); // Zdefiniuj odpowiednią ścieżkę do strony błędu
+      return res.status(400).json({ error: 'Invalid or expired token' });
     }
 
-    // Przekieruj użytkownika do aplikacji Vue, przekazując token w parametrze adresu URL
-    res.redirect(`/reset-password/${token}`); // Użyj odpowiedniej ścieżki do resetowania hasła w aplikacji Vue
+    // Hashuj nowe hasło
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Zaktualizuj hasło użytkownika i wyczyść token resetowania
+    await updateUserPassword(user, hashedPassword);
+    await clearResetToken(user);
+
+    res.status(200).json({ message: 'Password has been reset successfully' });
+
   } catch (error) {
-    console.error('Błąd podczas resetowania hasła:', error);
-    res.redirect('/error'); // Zdefiniuj odpowiednią ścieżkę do strony błędu
+    console.error('Error resetting password:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
-// ============ Endpoint obsługujący żądanie przypomnienia hasła ==============
+
+// ======== Endpoint obsługujący żądanie przypomnienia hasła ==============
 router.post('/api/forgot-password', async (req, res) => {
   const { email } = req.body;
-
-  if (!email) {
-    return res.status(400).json({
-      message: `${SYSTEM} Podaj adres e-mail`,
-      code: `MISSING_EMAIL`,
-      success: false,
-    });
-  }
-
+  
   try {
+
+    if (!email) {
+      return res.status(400).json({
+        message: `${SYSTEM} Podaj adres e-mail`,
+        code: `MISSING_EMAIL`,
+        success: false,
+      });
+    }
+
     const userExists = await checkEmailExistence(email);
     if (!userExists) {
       return res.status(404).json({
@@ -296,30 +318,31 @@ router.get('/activation/:token', async (req, res) => {
 
 
 
+// // ============= Funkcja do generowania tokena  ====================
+// function generateTokenUnical(length = 64, email) {
+//   const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+//   let token = '';
+//   for (let i = 0; i < length; i++) {
+//     const randomIndex = Math.floor(Math.random() * characters.length);
+//     token += characters[randomIndex];
+//   }
+//   return token;
+// }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// ============= Funkcja do generowania tokena  ====================
+function generateToken(length = 64) {
+  const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let token = '';
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    token += characters[randomIndex];
+  }
+  return token;
+}
 
 // ==================== Sprawdzanie siły hasła =================================
-function checkPasswordStrength(password, minLength, minDigit, minSpecial) {
+function checkPasswordStrength(password, minLength = 6, minDigit = 1, minSpecial = 1) {
   // Sprawdź minimalną długość hasła
   if (password.length < minLength) {
     return false;
@@ -418,17 +441,6 @@ async function checkEmailExistence(email) {
       }
     });
   });
-}
-
-// ============= Funkcja do generowania tokena aktywacyjnego konta ====================
-function generateToken(length = 32) {
-  const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let token = '';
-  for (let i = 0; i < length; i++) {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    token += characters[randomIndex];
-  }
-  return token;
 }
 
 // Funkcja do pobierania użytkownika z bazy danych na podstawie tokenu resetowania hasła
