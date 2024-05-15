@@ -5,9 +5,10 @@
       <router-link to="/">{{ t('global.backToMain') }}</router-link>
       <br>
       <label for="login">{{ t('global.emailLabel') }}</label>
-      <input v-model="login" type="text" id="login" :placeholder="t('global.emailLabel')" autocomplete="email"/>
+      <input v-model="email" type="text" id="login" :placeholder="t('global.emailLabel')" autocomplete="email" />
       <label for="password">{{ t('global.passwordLabel') }}</label>
-      <input v-model="password" type="password" id="password" :placeholder="t('global.passwordLabel')" autocomplete="current-password"/>
+      <input v-model="password" type="password" id="password" :placeholder="t('global.passwordLabel')"
+        autocomplete="current-password" />
       <button @click="loginUser">{{ t('login.loginButton') }}</button>
       <router-link to="/forgot-password">{{ t('login.forgotPasswordLink') }}</router-link>
     </form>
@@ -18,19 +19,57 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import store from './StoreVuex';
+import { API_URL } from '../../config';
+import Cookies from 'js-cookie';
 
 const { t } = useI18n();
+const router = useRouter();
+// const login = ref('');
+// const password = ref('');
 
-const login = ref('');
-const password = ref('');
-
-// const login = ref('hesidak940@bsomek.com');
-// const password = ref('Zaq1@wsx');
-const isLoggedIn = ref(false);
+const email = ref('hesidak940@bsomek.com');
+const password = ref('Zaq1@wsx');
 
 const submitForm = async () => {
- console.log(`SIEMANO`);
+  loginFunc();
 };
+
+
+
+async function loginFunc() {
+  console.log("START");
+  try {
+    const response = await fetch(`${API_URL}/api/login`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email: email.value, password: password.value })
+    });
+
+    if (!response.ok) {
+      // const data = await response.json();
+      throw new Error('Błąd logowania');
+    } else {
+      const data = await response.json();
+      if (data.isLoggedIn) {
+
+        const sessionToken = Cookies.get('session_token');
+        console.log(sessionToken);
+
+        // store.commit('setUser', data.email);
+        store.commit('setSessionToken', sessionToken);
+
+        router.push('/crims-city');
+      }
+    }
+  } catch (error) {
+    console.error('Błąd logowania:', error);
+  }
+}
 </script>
 
 <style scoped>

@@ -9,6 +9,12 @@
     "forgotPasswordLink": "Przypomnij hasło",
     "backToLogin": "Wróć do logowania"
   },
+  "logout":{
+    "logoutButton": "Wyloguj się",
+    "confirmButton": "YEAAA NARA",
+    "cancelButton": "NIEE ZOSTAJE!",
+    "confirmMessage": "Wylogować z burdelu?"
+  },
   "registration": {
     "title": "Rejestracja"
   },

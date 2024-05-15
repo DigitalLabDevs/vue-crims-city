@@ -6,26 +6,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 
-// Refy dla danych logowania oraz flaga isLoggedIn
-const login = ref('abc');
-const password = ref('abc');
-const isLoggedIn = ref(false);
-
-// Funkcja logowania użytkownika
-const loginUser = () => {
-  // Symulacja logowania - sprawdzenie, czy login i hasło są poprawne
-  if (login.value === 'abc' && password.value === 'abc') {
-    isLoggedIn.value = true; // Ustawienie flagi na true po poprawnym zalogowaniu
-    console.log('Logged in successfully!');
-  } else {
-    console.log('Invalid login credentials!');
-  }
-};
 </script>
 
 <style scoped>

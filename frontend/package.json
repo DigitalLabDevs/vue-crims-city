@@ -12,11 +12,13 @@
     "axios": "^1.6.8",
     "gh-pages": "^6.1.1",
     "howler": "^2.2.4",
+    "js-cookie": "^3.0.5",
     "lodash-es": "^4.17.21",
     "vue": "^3.2.47",
     "vue-i18n": "^9.13.1",
     "vue-router": "^4.3.0",
-    "vuedraggable": "^2.24.3"
+    "vuedraggable": "^2.24.3",
+    "vuex": "^4.1.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.0.0",

@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import Cookies from 'js-cookie';
 
 import GameMain from '../Game/GameMain.vue';
 
@@ -11,15 +12,7 @@ import ResetPassword from '../_AuthContext/ResetPassword.vue';
 
 import Test from '../_Test/Test.vue';
 
-
-
-// Sprawdzamy stan zalogowania
-const isAuthenticated = () => {
-  // Tutaj możesz zaimplementować kod do sprawdzenia stanu zalogowania, np. odczytując ciasteczko, zmienną w lokalnym magazynie, itp.
-  const isLoggedIn = false; // Zmienić na true, jeśli użytkownik jest zalogowany
-  console.log(isLoggedIn);
-  return isLoggedIn;
-};
+import store from '../_AuthContext/StoreVuex';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -76,12 +69,8 @@ const router = createRouter({
       meta: { requiresAuth: false } // Nie wymaga autoryzacji
     },
     { 
-      path: '/',
-      redirect: isAuthenticated() ? '/crims-city' : '/' // Przekierowujemy na widok gry lub logowanie, w zależności od stanu zalogowania
-    },
-    { 
       path: '/crims-city', 
-      name: 'main',
+      name: 'Game',
       component: GameMain,
       meta: { requiresAuth: true } // Wymaga autoryzacji
     },
@@ -90,14 +79,39 @@ const router = createRouter({
 
 // Globalna funkcja middleware sprawdzająca autoryzację użytkownika
 router.beforeEach((to, from, next) => {
-  // Sprawdzamy, czy ścieżka wymaga autoryzacji
-  if (to.meta.requiresAuth && !isAuthenticated()) {
+  const sessionToken = Cookies.get('session_token');
+  store.commit('setSessionToken', sessionToken);
+  // const isAuthenticated = store.getters.isAuthenticated;
+  const isAuthenticated = true;
+
+  if (sessionToken !== undefined) {
+    const isAuthenticated = true;
+    console.log('Ciasteczko istnieje:', sessionToken);
+  } else {
+    const isAuthenticated = false;
+    console.log('Ciasteczko nie istnieje.');
+  }
+  
+
+  // const isAuthenticated = false;
+
+  if (to.meta.requiresAuth && !isAuthenticated) {
     // Jeśli użytkownik próbuje uzyskać dostęp do chronionej ścieżki i nie jest zalogowany, przekierowujemy go na stronę logowania
     next('/login');
-  } else {
-    // W przeciwnym razie pozwalamy mu przejść do wybranej ścieżki
-    next();
-  }
+    return; // Dodaj return po przekierowaniu
+  } 
+
+  if (!to.meta.requiresAuth && isAuthenticated) {
+    // Jeśli użytkownik jest zalogowany i próbuje uzyskać dostęp do ścieżek nie wymagających autoryzacji, przekieruj go na inną stronę
+    next('/crims-city'); 
+    return; // Dodaj return po przekierowaniu
+  } 
+
+  // W przeciwnym razie pozwalamy mu przejść do wybranej ścieżki
+  next();
 });
+
+
+
 
 export default router;

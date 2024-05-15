@@ -9,6 +9,7 @@ import './assets/main.css';
 
 import App from './App.vue';
 import router from './components/_Router/router';
+import store from './components/_AuthContext/StoreVuex';
 
 const messages = {
     en: enTranslations,
@@ -26,4 +27,5 @@ const app = createApp(App);
 
 app.use(i18n);
 app.use(router);
+app.use(store);
 app.mount('#app');

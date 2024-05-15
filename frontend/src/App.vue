@@ -5,7 +5,7 @@
 
 
 
-    <div v-if="!isLoggedIn">
+    <div v-else>
       <div class="topbar-isLoggedInFalse">
         <TopbarView />
       </div>
@@ -58,14 +58,28 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import Cookies from 'js-cookie';
+
+import store from './components/_AuthContext/StoreVuex';
 
 import TopbarView from './components/_App/MainSite/TopbarView.vue';
 import NewsView from './components/_App/MainSite/NewsView.vue';
 import MediaView from './components/_App/MainSite/MediaView.vue';
 
+// Odtwórz stan autoryzacji użytkownika po odświeżeniu strony
+const sessionToken = Cookies.get('session_token'); // Pobierz token sesji z ciasteczek
+if (sessionToken) {
+  store.commit('setSessionToken', sessionToken); // Zapisz token sesji do stanu magazynu
+}
+// const isLoggedIn = store.getters.isAuthenticated;
+// const isLoggedIn = computed(() => sessionToken !== undefined);
+// const isLoggedIn = false;
+const isLoggedIn = true;
+
+console.log(isLoggedIn);
+
 
 const { t } = useI18n();
-const isLoggedIn = false;
 
 const success = ref('');
 const errorMessage = ref('');

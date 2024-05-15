@@ -1,8 +1,9 @@
 const express = require('express');
 const db = require('../db');
 const bcrypt = require('bcrypt');
-const { SYSTEM, saltRounds, API_URL } = require('../config'); // Importujemy plik konfiguracyjny
 const { sendEmail } = require('../emailUtils');
+const { SYSTEM, saltRounds, API_URL } = require('../config'); // Importujemy plik konfiguracyjny
+
 
 const router = express.Router();
 
@@ -26,7 +27,8 @@ router.post('/api/set-new-password', async (req, res) => {
     return res.status(400).json({
       message: 'Brak wymaganych danych',
       success: true,
-      code: 'INCOMPLETE_DATA'
+      code: 'INCOMPLETE_DATA',
+      messages: 'warning'
     });
   }
 
@@ -43,7 +45,7 @@ router.post('/api/set-new-password', async (req, res) => {
 
   const newPass = checkPasswordStrength(newPassword);
   if(!newPass){
-    return res.status(500).json({
+    return res.status(400).json({
       message: 'Hasło nie spełnia wymagań',
       success: true,
       code: 'EAN',
@@ -79,17 +81,27 @@ router.post('/reset-password', async (req, res) => {
     const user = await getUserByResetToken(token);
 
     if (!user) {
-      return res.status(400).json({ error: 'Invalid or expired token' });
+      return res.status(400).json({ 
+        message: 'Invalid or expired token',
+        success: true,
+        code: 'NO_TOKEN',
+        messages: 'warning'
+      });
     }
 
     // Hashuj nowe hasło
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
 
     // Zaktualizuj hasło użytkownika i wyczyść token resetowania
     await updateUserPassword(user, hashedPassword);
     await clearResetToken(user);
 
-    res.status(200).json({ message: 'Password has been reset successfully' });
+    res.status(200).json({ 
+      message: 'Password has been reset successfully',
+      messages: 'success',
+      code: 'PASSWORD_SUCCESS_UPDATE',
+      success: true 
+    });
 
   } catch (error) {
     console.error('Error resetting password:', error);
@@ -280,11 +292,8 @@ router.post('/api/registration', async (req, res) => {
 router.get('/activation/:token', async (req, res) => {
   try {
     const token = req.params.token;
-    // res.redirect(`/activation?success=false`);
-    console.log(`TOKEN: ${token}`);
 
     const user = await findUserByToken(token);
-    console.log(`USER: ${JSON.stringify(user)}`);
 
     if (!user) {
       return res.status(400).json({
@@ -302,8 +311,6 @@ router.get('/activation/:token', async (req, res) => {
       code: 'ACCOUNT_ACTIVATE'
     });
 
-
-    // res.redirect(`/activation?success=true`);
   } catch (error) {
     console.error('Błąd podczas aktywacji konta:', error);
     res.status(500).json({
@@ -312,22 +319,6 @@ router.get('/activation/:token', async (req, res) => {
     });
   }
 });
-
-
-
-
-
-
-// // ============= Funkcja do generowania tokena  ====================
-// function generateTokenUnical(length = 64, email) {
-//   const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-//   let token = '';
-//   for (let i = 0; i < length; i++) {
-//     const randomIndex = Math.floor(Math.random() * characters.length);
-//     token += characters[randomIndex];
-//   }
-//   return token;
-// }
 
 
 // ============= Funkcja do generowania tokena  ====================
@@ -407,27 +398,6 @@ async function findUserByToken(token) {
   });
 }
 
-// ============= Funkcja do sprawdzania statusu blokady użytkownika ==============
-async function checkUserBlock(user) {
-  return new Promise((resolve, reject) => {
-    // Tutaj wykonaj zapytanie do bazy danych, aby sprawdzić pole userBlock
-    const query = 'SELECT userBlock FROM users WHERE ids = ?';
-    db.query(query, [user.ids], (error, results) => {
-      if (error) {
-        console.error('Błąd podczas sprawdzania pola userBlock:', error);
-        reject(error);
-      } else {
-        // Jeśli zapytanie zwróciło wynik, zwróć status blokady użytkownika (0 lub 1)
-        if (results.length > 0) {
-          resolve(results[0].userBlock);
-        } else {
-          reject(new Error('Nie znaleziono użytkownika'));
-        }
-      }
-    });
-  });
-}
-
 // =============  Funkcja sprawdzająca istnienie adresu e-mail w bazie danych ==============
 async function checkEmailExistence(email) {
   return new Promise((resolve, reject) => {
@@ -467,9 +437,7 @@ function updateUserPassword(userId, newPassword) {
   return new Promise(async (resolve, reject) => {
     try {
       // Zahaszuj nowe hasło
-      const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
-      console.log("newPassword-HAshed: " + hashedPassword);
-      
+      const hashedPassword = await bcrypt.hash(newPassword, saltRounds);      
       // Zaktualizuj hasło użytkownika w bazie danych
       const query = 'UPDATE users SET pass = ? WHERE ids = ?';
       db.query(query, [hashedPassword, userId.ids], (error, results) => {
