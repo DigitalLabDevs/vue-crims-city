@@ -48,6 +48,45 @@ async function saveSessionTokenInDatabase(userEmail, sessionJwtToken, sessionTok
     });
   });
 }
+// Funkcja usuwa token sesji w bazie danych
+async function deleteSessionTokenFromDatabase(sessionToken) {
+  return new Promise((resolve, reject) => {
+    // Tutaj używamy zapytania DELETE, aby usunąć rekord z danym tokenem sesji
+    const deleteTokenQuery = 'DELETE FROM sessions WHERE session_token = ?';
+    db.query(deleteTokenQuery, [sessionToken], (error, results) => {
+      if (error) {
+        console.error('Błąd podczas usuwania tokenu sesji z bazy danych:', error);
+        reject(error);
+      } else {
+        console.log('Token sesji został pomyślnie usunięty z bazy danych.');
+        resolve();
+      }
+    });
+  });
+}
+
+
+// Funkcja usuwa token sesji w bazie danych
+async function deleteAccessTokenFromDatabase(sessionToken) {
+  return new Promise((resolve, reject) => {
+    // Tutaj używamy zapytania DELETE, aby usunąć rekord z danym tokenem sesji
+    const deleteTokenQuery = 'DELETE FROM sessions WHERE session_token = ?';
+    db.query(deleteTokenQuery, [sessionToken], (error, results) => {
+      if (error) {
+        console.error('Błąd podczas usuwania tokenu sesji z bazy danych:', error);
+        reject(error);
+      } else {
+        console.log('Token sesji został pomyślnie usunięty z bazy danych.');
+        resolve();
+      }
+    });
+  });
+}
+
+
 
 // Eksportowanie obu funkcji
-module.exports = generateAccessToken;
+module.exports = { 
+  generateAccessToken, 
+  deleteSessionTokenFromDatabase 
+};

@@ -26,11 +26,11 @@ import Cookies from 'js-cookie';
 
 const { t } = useI18n();
 const router = useRouter();
-// const login = ref('');
-// const password = ref('');
+const email = ref('');
+const password = ref('');
 
-const email = ref('hesidak940@bsomek.com');
-const password = ref('Zaq1@wsx');
+// const email = ref('hesidak940@bsomek.com');
+// const password = ref('Zaq1@wsx');
 
 const submitForm = async () => {
   loginFunc();
@@ -58,7 +58,7 @@ async function loginFunc() {
       if (data.isLoggedIn) {
 
         const sessionToken = Cookies.get('session_token');
-        console.log(sessionToken);
+        console.log(`LoginView-sessionToken: ${sessionToken}`);
 
         // store.commit('setUser', data.email);
         store.commit('setSessionToken', sessionToken);

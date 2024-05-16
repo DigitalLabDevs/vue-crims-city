@@ -1,10 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import store from '../_AuthContext/StoreVuex';
+
 import Cookies from 'js-cookie';
 
 import GameMain from '../Game/GameMain.vue';
 
-import Login from '../_AuthContext/LoginView.vue'
-import MainView from '../_AuthContext/MainView.vue';
+
+import MainView from '../_App/MainSite/MainView.vue';
+import CookiesInfo from '../_App/CookiesInfo.vue';
+import Login from '../_AuthContext/LoginView.vue';
 import RegisterView from '../_AuthContext/RegisterView.vue';
 import ForgotPassword from '../_AuthContext/ForgotPassword.vue';
 import ActivateAccount from '../_AuthContext/ActivateAccount.vue';
@@ -12,7 +16,8 @@ import ResetPassword from '../_AuthContext/ResetPassword.vue';
 
 import Test from '../_Test/Test.vue';
 
-import store from '../_AuthContext/StoreVuex';
+
+
 
 const router = createRouter({
   history: createWebHistory(),
@@ -21,6 +26,12 @@ const router = createRouter({
       path: '/',
       name: 'Main',
       component: MainView,
+      meta: { requiresAuth: false } // Nie wymaga autoryzacji
+    },
+    {
+      path: '/cookie',
+      name: 'Cookie',
+      component: CookiesInfo,
       meta: { requiresAuth: false } // Nie wymaga autoryzacji
     },
     {
@@ -79,21 +90,22 @@ const router = createRouter({
 
 // Globalna funkcja middleware sprawdzająca autoryzację użytkownika
 router.beforeEach((to, from, next) => {
-  const sessionToken = Cookies.get('session_token');
-  store.commit('setSessionToken', sessionToken);
-  // const isAuthenticated = store.getters.isAuthenticated;
-  const isAuthenticated = true;
-
-  if (sessionToken !== undefined) {
-    const isAuthenticated = true;
-    console.log('Ciasteczko istnieje:', sessionToken);
-  } else {
-    const isAuthenticated = false;
-    console.log('Ciasteczko nie istnieje.');
-  }
+  // const sessionToken = Cookies.get('session_token');
+  // store.commit('setSessionToken', sessionToken);
+  const isAuthenticated = store.getters.isAuthenticated;
+  // const sessionToken = Cookies.get('session_token');
+  // const isAuthenticated = sessionToken !== undefined;
   
+  console.log(`router-isAuthenticated: ${isAuthenticated}`);
 
-  // const isAuthenticated = false;
+  // if (sessionToken !== undefined) {
+  //   const isAuthenticated = true;
+  //   console.log('Ciasteczko istnieje:', sessionToken);
+  // } else {
+  //   const isAuthenticated = false;
+  //   console.log(`${isAuthenticated} : Ciasteczko nie istnieje.`);
+  // }
+  
 
   if (to.meta.requiresAuth && !isAuthenticated) {
     // Jeśli użytkownik próbuje uzyskać dostęp do chronionej ścieżki i nie jest zalogowany, przekierowujemy go na stronę logowania

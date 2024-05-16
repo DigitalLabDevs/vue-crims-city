@@ -1,10 +1,11 @@
 const express = require('express');
 const db = require('../db');
 const bcrypt = require('bcrypt');
+const session = require('express-session');
 // const { sendEmail } = require('../emailUtils');
 const { SYSTEM, saltRounds, API_URL } = require('../config'); // Importujemy plik konfiguracyjny
 
-const generateAccessToken = require('../tools/tokenTools');
+const { generateAccessToken, deleteSessionTokenFromDatabase }  = require('../tools/tokenTools');
 
 const getUserByEmail = require('../tools/loginTools');
 const router = express.Router();
@@ -37,9 +38,20 @@ router.post('/api/login', async (req, res) => {
     const isPasswordValid = await bcrypt.compare(password, user.pass);
     console.log(`isPasswordValid: ${isPasswordValid}`);
 
+    if(!isPasswordValid){
+      return res.status(200).json({
+        message: 'Nieprawidłowe dane logowania',
+        messages: 'warning',
+        success: true,
+        isLoggedIn: false,
+      });
+    }
+
     if (isPasswordValid) {
       const token = await generateAccessToken(email);
       console.log(`ACCESS TOKEN: ${token.accessToken}`);
+
+      // req.session.user = { email };
 
       res.cookie('access_token', token.accessToken, {
         httpOnly: true,
@@ -67,6 +79,8 @@ router.post('/api/login', async (req, res) => {
         // code: 'PASSWORD_SUCCESS_UPDATE',
         // messages: 'success'
       });
+    }else{
+
     }
   } catch (error) {
     console.error('Błąd logowania:', error);
@@ -78,6 +92,36 @@ router.post('/api/login', async (req, res) => {
     });
   }
 });
+// ============================ LOGOUT ================================
+router.post('/api/logout', async (req, res, next) => {
+
+  const sessionToken = req.sessionToken;
+  console.log(`API/LOGOUT ${sessionToken}`);
+
+await deleteSessionTokenFromDatabase(sessionToken);
+
+
+// Usuń dane sesji
+  // req.session.destroy((err) => {
+  //   if (err) {
+  //     console.error('Błąd podczas usuwania sesji:', err);
+  //     return res.status(500).json({
+  //       message: 'Wystąpił błąd podczas wylogowywania',
+  //       success: false,
+  //       code: 'INTERNAL_SERVER_ERROR',
+  //       messages: 'error',
+  //     });
+  //   }
+    // Usuń ciasteczka zawierające token sesji
+    res.clearCookie('access_token');
+    res.clearCookie('session_token');
+    res.status(200).json({
+      message: 'Wylogowanie przebiegło pomyślnie',
+      isLoggedIn: false,
+    });
+  // });
+});
+
 
 // ============= Funkcja do sprawdzania statusu blokady użytkownika ==============
 async function checkUserBlock(email) {

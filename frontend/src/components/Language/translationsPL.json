@@ -30,8 +30,11 @@
   "forgotPassword": {
 	  "title": "Przypomnij hasło"
   },
-  "password_reset":{
+  "password_reset": {
     "title": "Reset hasła"
+  },
+  "cookie": {
+    "title": "Polityka prywatności i wykorzystanie danych"
   },
   "captcha":{
    "title": "Captcha",

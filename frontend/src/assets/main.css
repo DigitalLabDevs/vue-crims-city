@@ -5,6 +5,12 @@
   width: 30%;
 }
 
+.w1 {
+  margin: 10px;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
 .ct {
   display: flex;
   align-content: center;

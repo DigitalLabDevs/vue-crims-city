@@ -3,9 +3,9 @@
     <button @click="confirmLogout">{{ t('logout.logoutButton') }}</button>
     <div v-if="showModal" class="modal">
       <div class="modal-content">
-        <p>{{ t('logout.confirmMessage') }}</p>
-        <button @click="logout">{{ t('logout.confirmButton') }}</button>
-        <button @click="cancelLogout">{{ t('logout.cancelButton') }}</button>
+        <p class="w1">{{ t('logout.confirmMessage') }}</p>
+        <button class="btn-yes" @click="logout">{{ t('logout.confirmButton') }}</button>
+        <button class="btn-no" @click="cancelLogout">{{ t('logout.cancelButton') }}</button>
       </div>
     </div>
   </div>
@@ -17,6 +17,10 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import Cookies from 'js-cookie';
 import store from './StoreVuex';
+import { API_URL } from '../../config';
+
+const isAuthenticated = ref(store.getters.isAuthenticated);
+console.log(isAuthenticated.value);
 
 const { t } = useI18n();
 const router = useRouter();
@@ -32,16 +36,59 @@ const cancelLogout = () => {
 };
 
 const logout = () => {
-  // Usunięcie ciasteczka session_token
-  Cookies.remove('session_token');
-  store.commit('clearSessionToken');
-  router.push('/login');
-
-  showModal.value = false;
+    logoutFunc();
+    showModal.value = false;
 };
+
+
+
+
+async function logoutFunc() {
+  console.log("LOGOUT START");
+  try {
+    // Wywołanie endpointu /api/logout
+    const response = await fetch(`${API_URL}/api/logout`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    // Sprawdzenie, czy odpowiedź jest udana
+    if (!response.ok) {
+      const errorMessage = await response.json();
+      throw new Error(`Błąd podczas wylogowywania: ${errorMessage}`);
+    }
+
+    // Usunięcie ciasteczek sesji po stronie klienta
+    // Cookies.remove('session_token');
+    // Cookies.remove('access_token');
+
+    // Wyczyszczenie tokenów sesji w Vuex Store
+    store.commit('clearSessionToken');
+
+    // Przekierowanie użytkownika na stronę główną
+    router.push('/');
+  } catch (error) {
+    console.error('Błąd podczas wylogowywania:', error);
+    // Obsługa błędu, np. wyświetlenie komunikatu dla użytkownika
+  }
+}
 </script>
 
 <style scoped>
+.btn-yes{
+  background-color: rgb(187, 131, 26);
+}
+
+.btn-no{
+  background-color: rgb(27, 192, 137);
+}
+
+p{
+  color: aqua;
+}
 .logout-form {
   max-width: 300px;
   margin: 0 auto;
@@ -60,7 +107,7 @@ const logout = () => {
 }
 
 .modal-content {
-  background-color: white;
+  background-color: rgb(56, 137, 155);
   padding: 20px;
   border-radius: 5px;
 }

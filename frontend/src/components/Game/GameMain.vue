@@ -1,6 +1,5 @@
 <template>
   <div>GAME
-    <!-- <div v-if="user">Welcome in Crims-City {{ user }}</div> -->
     <div class="logout">
       <LogoutView />
     </div>

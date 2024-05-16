@@ -1,5 +1,6 @@
   <template>
-    <div v-if="isLoggedIn" class="isLoggedInTrue">
+
+    <div v-if="isAuthenticated" class="isLoggedInTrue">
       <router-view></router-view>
     </div>
 
@@ -30,7 +31,7 @@
           </div>
 
           <div class="w1">
-            <router-link to="/registration">{{ t('main.joinUs') }}</router-link>
+            <router-link to="/cookie">{{ t('main.joinUs') }}</router-link>
           </div>
         </div>
 
@@ -48,7 +49,9 @@
         </div>
 
       </div>
-
+      <div class="footer">
+        <router-link to="/cookie">{{ t('cookie.title') }}</router-link>
+      </div>
     </div>
 
 
@@ -56,28 +59,27 @@
   </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Cookies from 'js-cookie';
 
 import store from './components/_AuthContext/StoreVuex';
+import { useStore } from 'vuex';
 
 import TopbarView from './components/_App/MainSite/TopbarView.vue';
 import NewsView from './components/_App/MainSite/NewsView.vue';
 import MediaView from './components/_App/MainSite/MediaView.vue';
 
-// Odtwórz stan autoryzacji użytkownika po odświeżeniu strony
-const sessionToken = Cookies.get('session_token'); // Pobierz token sesji z ciasteczek
-if (sessionToken) {
-  store.commit('setSessionToken', sessionToken); // Zapisz token sesji do stanu magazynu
-}
-// const isLoggedIn = store.getters.isAuthenticated;
-// const isLoggedIn = computed(() => sessionToken !== undefined);
-// const isLoggedIn = false;
-const isLoggedIn = true;
+const isAuthenticated = ref(store.getters.isAuthenticated);
 
-console.log(isLoggedIn);
+console.log(`APP: ${isAuthenticated.value}`);
 
+watch(
+  () => store.getters.isAuthenticated,
+  (newIsAuthenticated) => {
+    isAuthenticated.value = newIsAuthenticated;
+  }
+);
 
 const { t } = useI18n();
 
@@ -115,6 +117,11 @@ const errorMessageClass = computed(() => {
 </script>
 
 <style scoped>
+.footer{
+  position: fixed;
+  bottom: 15px;
+  left: 15px;
+}
 .error {
   background-color: rgba(221, 38, 38, 0.1);
   font-size: 16px;
@@ -153,12 +160,6 @@ const errorMessageClass = computed(() => {
 .desc-img {
   width: 270px;
   height: 260px;
-}
-
-.w1 {
-  margin: 10px;
-  padding: 10px;
-  background-color: rgba(0, 0, 0, 0.7);
 }
 
 .description {
