@@ -1,21 +1,24 @@
 <template>
-  <div>GAME
-    <div class="logout">
-      <LogoutView />
+  <div>
+    <div class="Main-Game-Container">
+      <Topbar></Topbar>
+      <div class="rout">
+        <router-view name="game"></router-view>
+      </div>
+      <Footer></Footer>
     </div>
   </div>
 </template>
 
 <script setup>
-  import { computed } from 'vue';
-  import { useStore } from 'vuex';
-import LogoutView from '../_AuthContext/LogoutView.vue';
-
-  const store = useStore();
-  const user = computed(() => store.state.user);
-
+import Topbar from './View/Topbar.vue';
+import Footer from './View/Footer.vue';
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 </script>
 
 <style scoped>
+.Main-Game-Container{
 
+}
 </style>

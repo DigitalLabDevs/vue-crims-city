@@ -11,6 +11,14 @@
   background-color: rgba(0, 0, 0, 0.7);
 }
 
+.btn-span{
+  transition: 200ms;
+  cursor: pointer;
+}
+
+.btn-span:hover{
+  color: rgb(12, 205, 227);
+}
 .ct {
   display: flex;
   align-content: center;

@@ -1,6 +1,9 @@
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
+
+const i18n = require('./language/i18nSetup');
+
 const crypto = require('crypto');
 const sessionManager = require('./sessionManager');
 
@@ -28,36 +31,15 @@ app.use(
 );
 
 
+app.use(i18n.setLocale); // Dodaj middleware ustawiający język
+app.use(i18n.consoleLogHeaders); 
+
+
+
 
 // sessionManager(app)
 
 // app.use(sessionManager)
-
-
-app.use((req, res, next) => {
-  console.log(`=> req.headers:
-  ${JSON.stringify(req.headers, null, 2)}`);
-
-  // Sprawdzenie, czy nagłówek cookie istnieje
-  if (req.headers.cookie) {
-    const cookies = req.headers.cookie.split('; ').reduce((acc, cookie) => {
-      const [name, value] = cookie.split('=');
-      acc[name] = value;
-      return acc;
-    }, {});
-
-    console.log(`=> Ciasteczko "session_token": ${cookies['session_token']}`);
-    console.log(`=> Ciasteczko "access_token": ${cookies['access_token']}`);
-
-    req.sessionToken = cookies['session_token'];
-    req.accessToken = cookies['access_token'];
-  } else {
-    console.log('=> Brak ciasteczek w nagłówkach.');
-  }
-
-  next();
-});
-
 
 app.use(registrationEndpoint);
 app.use(loginEndpoint);

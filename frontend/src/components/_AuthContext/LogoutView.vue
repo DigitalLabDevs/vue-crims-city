@@ -1,6 +1,6 @@
 <template>
   <div class="logout-form">
-    <button @click="confirmLogout">{{ t('logout.logoutButton') }}</button>
+    <span class="btn-span" @click="confirmLogout">{{ t('logout.logoutButton') }}</span>
     <div v-if="showModal" class="modal">
       <div class="modal-content">
         <p class="w1">{{ t('logout.confirmMessage') }}</p>
@@ -40,9 +40,6 @@ const logout = () => {
     showModal.value = false;
 };
 
-
-
-
 async function logoutFunc() {
   console.log("LOGOUT START");
   try {
@@ -54,22 +51,16 @@ async function logoutFunc() {
         'Content-Type': 'application/json'
       }
     });
-
+    
     // Sprawdzenie, czy odpowiedź jest udana
     if (!response.ok) {
-      const errorMessage = await response.json();
+      const data = await response.json();
       throw new Error(`Błąd podczas wylogowywania: ${errorMessage}`);
+    }else{
+      store.commit('clearSessionToken');
+      // Przekierowanie użytkownika na stronę główną
+      router.push('/');
     }
-
-    // Usunięcie ciasteczek sesji po stronie klienta
-    // Cookies.remove('session_token');
-    // Cookies.remove('access_token');
-
-    // Wyczyszczenie tokenów sesji w Vuex Store
-    store.commit('clearSessionToken');
-
-    // Przekierowanie użytkownika na stronę główną
-    router.push('/');
   } catch (error) {
     console.error('Błąd podczas wylogowywania:', error);
     // Obsługa błędu, np. wyświetlenie komunikatu dla użytkownika
@@ -78,6 +69,9 @@ async function logoutFunc() {
 </script>
 
 <style scoped>
+.btn-logout{
+  cursor: pointer;
+}
 .btn-yes{
   background-color: rgb(187, 131, 26);
 }
@@ -91,7 +85,6 @@ p{
 }
 .logout-form {
   max-width: 300px;
-  margin: 0 auto;
 }
 
 .modal {

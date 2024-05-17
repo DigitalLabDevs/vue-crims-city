@@ -25,6 +25,7 @@ const i18n = createI18n({
     locale: 'pl',
     fallbackLocale: 'en',
     messages,
+    header: 'accept-language',
   });
 
 

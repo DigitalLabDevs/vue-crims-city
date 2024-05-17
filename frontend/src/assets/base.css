@@ -8,15 +8,15 @@
 }
 
 input, button{
-  outline: none;
   padding: 8px;
   border-radius: 3px;
   border: 1px solid #ccc;
 }
-
+input, button, select, textarea{
+  outline: none;
+}
 
 select{
-  outline: none;
   padding: 3px;
   border-radius: 3px;
   border: 1px solid #ccc;

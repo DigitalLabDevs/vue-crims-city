@@ -1,7 +1,7 @@
 <template>
-  <div>
-    
-  </div>
+    <div class="SETTINGS">
+     ELLOOOO
+    </div>
 </template>
 
 <script setup>

@@ -26,11 +26,14 @@ import Cookies from 'js-cookie';
 
 const { t } = useI18n();
 const router = useRouter();
-const email = ref('');
-const password = ref('');
 
-// const email = ref('hesidak940@bsomek.com');
-// const password = ref('Zaq1@wsx');
+const emit = defineEmits(['registrationError']);
+
+// const email = ref('');
+// const password = ref('');
+
+const email = ref('yovasec567@fincainc.com');
+const password = ref('Zaq1@wsx');
 
 const submitForm = async () => {
   loginFunc();
@@ -51,15 +54,14 @@ async function loginFunc() {
     });
 
     if (!response.ok) {
-      // const data = await response.json();
+      const data = await response.json();
+      emit('registrationError', { messages: data.messages, code: data.code, success: data.success });
       throw new Error('Błąd logowania');
     } else {
       const data = await response.json();
+      emit('registrationError', { messages: data.messages, code: data.code, success: data.success });
       if (data.isLoggedIn) {
-
         const sessionToken = Cookies.get('session_token');
-        console.log(`LoginView-sessionToken: ${sessionToken}`);
-
         // store.commit('setUser', data.email);
         store.commit('setSessionToken', sessionToken);
 

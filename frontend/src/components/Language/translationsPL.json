@@ -36,6 +36,16 @@
   "cookie": {
     "title": "Polityka prywatności i wykorzystanie danych"
   },
+  "contact":{
+    "contact": "Kontakt",
+    "message": "Wiadomość",
+    "subject": "Temat",
+    "general_inquiry": "Ogólne zapytanie",
+    "technical_support": "Wsparcie techniczne",
+    "feedback": "Opinia",
+    "sponsors": "Sponsoring",
+    "other": "Inne"
+  },
   "captcha":{
    "title": "Captcha",
 	 "refreshCaptcha": "Odśwież",
@@ -52,12 +62,21 @@
     "REGISTRATION_SUCCESS": "Pomyślnie zarejestrowano nowego użytkownika. Sprawdź adres E-mail",
     "INCOMPLETE_DATA": "Uzupełnij Dane",
     "ACCOUNT_ACTIVATE": "Twoje konto zostało pomyślnie aktywowane. Możesz się zalogować",
-    "ACCOUNT_ACTIVATE_DONE": "To konto zostało już aktywowane",
+    "ACCOUNT_ACTIVATE_DONE": "Użytkownik nie istnieje lub konto zostało już aktywowane",
     "ACCOUNT_ACTIVATE_DONE_MESSAGE": "Konto aktywowane, możesz się zalogować",
     "USER_NOT_FOUND": "Nie ma użytkownika z tym adresem e-mail",
     "EMAIL_WITH_RESET": "E-mail z linkiem do resetowania hasła został wysłany.",
     "ACTIVATION_ERROR": "Błąd, spróbuj poźniej, lub skontaktuj się z supportem.",
     "PASSWORD_SUCCESS_UPDATE": "Hasło zostało pomyślnie zaktualizowane.",
-    "NO_TOKEN": "Brak tokenu"
+    "NO_TOKEN": "Brak tokenu",
+    "USER_BLOCKED": "Użytkownik zablokowany",
+    "SOME_WRONG": "Ups, coś poszło nie tak",
+    "WRONG_DATA": "Niepoprawne dane logowania",
+    "LOGOUT_SUCCESS": "Wylogowano pomyślnie, Miłego dnia",
+    "TRY_LATER": "Wystąpił nieoczekiwany błąd, spóbuj jeszcze raz lub skontaktuj się z supportem",
+    "PASSWORD_ERROR": "Wystąpił błąd przy zmianie hasła, spróbuj później lub skontaktuj się z supportem (405)"
+  },
+  "game":{
+    "settings": "Ustawienia"
   }
 }

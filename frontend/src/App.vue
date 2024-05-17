@@ -1,7 +1,7 @@
   <template>
 
     <div v-if="isAuthenticated" class="isLoggedInTrue">
-      <router-view></router-view>
+      <router-view name="main"></router-view>
     </div>
 
 
@@ -31,14 +31,14 @@
           </div>
 
           <div class="w1">
-            <router-link to="/cookie">{{ t('main.joinUs') }}</router-link>
+            <router-link to="/registration">{{ t('main.joinUs') }}</router-link>
           </div>
         </div>
 
 
 
         <div class="isLoggedInFalse">
-          <router-view @registrationError="handleRegistrationError"></router-view>
+          <router-view name="main" @registrationError="handleRegistrationError"></router-view>
         </div>
 
 
@@ -86,18 +86,15 @@ const { t } = useI18n();
 const success = ref('');
 const errorMessage = ref('');
 const message = ref('');
-const hasResponse = ref(false);
 
 const handleRegistrationError = ({ code, messages, success: isSuccess }) => {
   errorMessage.value = t(`serverMessage.${code}`);
-  console.log(errorMessage.value);
   success.value = isSuccess;
   message.value = messages;
-  hasResponse.value = true;
 };
 
 const shouldShowErrorMessage = computed(() => {
-  return errorMessage.value !== '' && hasResponse.value;
+  return errorMessage.value !== '' && success.value === true;
 });
 
 const errorMessageClass = computed(() => {
@@ -193,7 +190,7 @@ const errorMessageClass = computed(() => {
   align-items: center;
   padding: 3px;
   height: 50px;
-  box-shadow: 0 0 10px rgb(167, 177, 169);
+  box-shadow: 0 0 10px #00bfff;
 
   background-image: url(/site/topbarbg.jpg);
   background-repeat: repeat-x;

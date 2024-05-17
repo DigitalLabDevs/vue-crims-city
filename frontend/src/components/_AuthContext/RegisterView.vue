@@ -34,13 +34,13 @@ import Captcha from '../_Core/Captcha.vue';
 
 const { t } = useI18n()
 
-const email = ref('');
-const password = ref('');
-const confirmPassword = ref('');
+// const email = ref('');
+// const password = ref('');
+// const confirmPassword = ref('');
 
-// const email = ref('hesidak940@bsomek.com');
-// const password = ref('Zaq1@wsx');
-// const confirmPassword = ref('Zaq1@wsx');
+const email = ref('yovasec567@fincainc.com');
+const password = ref('Zaq1@wsx');
+const confirmPassword = ref('Zaq1@wsx');
 
 
 const isCaptchaValid = ref(false);

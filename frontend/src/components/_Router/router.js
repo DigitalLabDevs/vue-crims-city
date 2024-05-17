@@ -15,9 +15,8 @@ import ActivateAccount from '../_AuthContext/ActivateAccount.vue';
 import ResetPassword from '../_AuthContext/ResetPassword.vue';
 
 import Test from '../_Test/Test.vue';
-
-
-
+import ContactForm from '../_App/ContactForm.vue';
+import Settings from '../Game/Tools/Settings.vue';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -25,64 +24,94 @@ const router = createRouter({
     {
       path: '/',
       name: 'Main',
-      component: MainView,
+      components:{
+        main: MainView
+      },
       meta: { requiresAuth: false } // Nie wymaga autoryzacji
     },
     {
       path: '/cookie',
       name: 'Cookie',
-      component: CookiesInfo,
+      components:{
+        main: CookiesInfo
+      },
+      meta: { requiresAuth: false } // Nie wymaga autoryzacji
+    },
+    {
+      path: '/contact',
+      name: 'Contact',
+      components:{
+        main: ContactForm
+      },
       meta: { requiresAuth: false } // Nie wymaga autoryzacji
     },
     {
       path: '/login',
       name: 'Login',
-      component: Login,
+      components:{
+        main: Login
+      },
       meta: { requiresAuth: false } // Nie wymaga autoryzacji
     },
     {
       path: '/registration',
       name: 'Registration',
-      component: RegisterView,
+      components:{
+        main: RegisterView
+      },
       meta: { requiresAuth: false } // Nie wymaga autoryzacji
     },
     {
       path: '/forgot-password',
       name: 'ForgotPassword',
-      component: ForgotPassword,
+      components:{
+        main: ForgotPassword
+      },
       meta: { requiresAuth: false } // Nie wymaga autoryzacji
     },
     {
       path: '/activation',
       name: 'Activation',
-      component: ActivateAccount,
+      components:{
+        main: ActivateAccount
+      },
       props: true, // Przekazanie parametrów z trasy do komponentu jako props
       meta: { requiresAuth: false } // Nie wymaga autoryzacji
     },
     {
       path: '/activation/:token',
       name: 'ActivationWithToken',
-      component: ActivateAccount,
+      components:{
+        main: ActivateAccount
+      },
       props: true, // Przekazanie parametrów z trasy do komponentu jako props
       meta: { requiresAuth: false } // Nie wymaga autoryzacji
     },
     {
       path: '/reset-password',
       name: 'ResetPassword',
-      component: ResetPassword,
+      components:{
+        main: ResetPassword
+      },
       props: true, // Przekazanie parametrów z trasy do komponentu jako props
-      meta: { requiresAuth: false } // Nie wymaga autoryzacji
-    },
-    {
-      path: '/test',
-      name: 'Test',
-      component: Test,
       meta: { requiresAuth: false } // Nie wymaga autoryzacji
     },
     { 
       path: '/crims-city', 
       name: 'Game',
-      component: GameMain,
+      // component: GameMain,
+      components:{
+        main: GameMain
+      },
+      children:[
+        {
+          path: 'settings',
+          components: {
+            // default: Settings,
+            game: Settings // Nazwa komponentu jako wartość settingsView
+          },
+        }
+      ],
       meta: { requiresAuth: true } // Wymaga autoryzacji
     },
   ],

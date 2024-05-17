@@ -1,12 +1,11 @@
 const express = require('express');
 const db = require('../db');
 const bcrypt = require('bcrypt');
+const { i18n } = require('../language/i18nSetup');
 const { sendEmail } = require('../emailUtils');
 const { SYSTEM, saltRounds, API_URL } = require('../config'); // Importujemy plik konfiguracyjny
 
-
 const router = express.Router();
-
 
 // =================================================================
 // =================================================================
@@ -20,72 +19,110 @@ const router = express.Router();
 // =================================================================
 
 router.post('/api/set-new-password', async (req, res) => {
-
   const { token, newPassword } = req.body;
 
   if (!token || !newPassword) {
     return res.status(400).json({
       message: 'Brak wymaganych danych',
-      success: true,
+      success: false,
       code: 'INCOMPLETE_DATA',
-      messages: 'warning'
+      messages: 'warning',
     });
   }
 
-  const user = await getUserByResetToken(token);
+  try {
+    const user = await getUserByResetToken(token);
+    if (!user) {
+      return res.status(400).json({
+        message: 'Nieprawidłowy lub wygasły token resetowania hasła',
+        success: false,
+        code: 'INVALID_TOKEN',
+        messages: 'error',
+      });
+    }
 
-  if(!user){
-    return res.status(500).json({
-      message: 'Brak tokenu resetowania hasła',
-      success: true,
-      code: 'NO_TOKEN',
-      messages: 'error'
-    });
-  }
+    const isStrongPassword = await checkPasswordStrength(newPassword);
+    if (!isStrongPassword) {
+      return res.status(400).json({
+        message: 'Hasło nie spełnia wymagań',
+        success: false,
+        code: 'WEAK_PASSWORD',
+        messages: 'warning',
+      });
+    }
 
-  const newPass = checkPasswordStrength(newPassword);
-  if(!newPass){
-    return res.status(400).json({
-      message: 'Hasło nie spełnia wymagań',
-      success: true,
-      code: 'EAN',
-      messages: 'warning'
-    });
-  }
+    const isPasswordUpdated = await updateUserPassword(user, newPassword);
+    if (!isPasswordUpdated) {
+      return res.status(500).json({
+        message: 'Błąd podczas aktualizacji hasła',
+        success: false,
+        code: 'PASSWORD_UPDATE_ERROR',
+        messages: 'error',
+      });
+    }
 
-  const update = await updateUserPassword(user, newPassword);
-
-  if(update){
-
-    clearResetToken(user);
+    const isTokenCleared = await clearResetToken(user);
+    if (!isTokenCleared) {
+      return res.status(500).json({
+        message: 'Błąd podczas usuwania tokenu resetowania hasła',
+        success: false,
+        code: 'TOKEN_CLEAR_ERROR',
+        messages: 'error',
+      });
+    }
 
     return res.status(200).json({
       message: 'Hasło zostało pomyślnie zaktualizowane',
       success: true,
       code: 'PASSWORD_SUCCESS_UPDATE',
-      messages: 'success'
+      messages: 'success',
+    });
+  } catch (error) {
+    console.error('Error setting new password:', error);
+    return res.status(500).json({
+      message: 'Wystąpił błąd wewnętrzny serwera',
+      success: false,
+      code: 'INTERNAL_SERVER_ERROR',
+      messages: 'error',
     });
   }
-
-  return;
-
 });
 
-// Endpoint obsługujący resetowanie hasła na podstawie tokena
+// ========= Endpoint obsługujący resetowanie hasła na podstawie tokena ==========
 router.post('/reset-password', async (req, res) => {
   try {
     const { token, newPassword } = req.body; // Pobierz token i nowe hasło z ciała żądania
-    console.log("reset-password TOKEN: " + token);
+    console.log('reset-password TOKEN: ' + token);
+
+    if (!token || !newPassword) {
+      return res.status(400).json({
+        message: 'Brak wymaganych danych',
+        success: false,
+        code: 'INCOMPLETE_DATA',
+        messages: 'warning',
+      });
+    }
 
     // Sprawdź, czy token istnieje w bazie danych
     const user = await getUserByResetToken(token);
 
     if (!user) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         message: 'Invalid or expired token',
-        success: true,
+        success: false,
         code: 'NO_TOKEN',
-        messages: 'warning'
+        messages: 'warning',
+      });
+    }
+
+    // Sprawdź siłę hasła
+    const isStrongPassword = checkPasswordStrength(newPassword);
+    if (!isStrongPassword) {
+      return res.status(400).json({
+        message: 'Hasło nie spełnia wymagań',
+        success: false,
+        code: 'WEAK_PASSWORD',
+        messages: 'warning',
       });
     }
 
@@ -93,51 +130,69 @@ router.post('/reset-password', async (req, res) => {
     const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
 
     // Zaktualizuj hasło użytkownika i wyczyść token resetowania
-    await updateUserPassword(user, hashedPassword);
-    await clearResetToken(user);
+    const isPasswordUpdated = await updateUserPassword(user, hashedPassword);
+    if (!isPasswordUpdated) {
+      return res.status(500).json({
+        message: 'Błąd podczas aktualizacji hasła',
+        success: false,
+        code: 'PASSWORD_UPDATE_ERROR',
+        messages: 'error',
+      });
+    }
 
-    res.status(200).json({ 
+    const isTokenCleared = await clearResetToken(user);
+    if (!isTokenCleared) {
+      return res.status(500).json({
+        message: 'Błąd podczas usuwania tokenu resetowania hasła',
+        success: false,
+        code: 'TOKEN_CLEAR_ERROR',
+        messages: 'error',
+      });
+    }
+
+    res.status(200).json({
       message: 'Password has been reset successfully',
-      messages: 'success',
+      success: true,
       code: 'PASSWORD_SUCCESS_UPDATE',
-      success: true 
+      messages: 'success',
     });
-
   } catch (error) {
     console.error('Error resetting password:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({
+      message: 'Wystąpił błąd wewnętrzny serwera',
+      success: false,
+      code: 'INTERNAL_SERVER_ERROR',
+      messages: 'error',
+    });
   }
 });
 
 // ======== Endpoint obsługujący żądanie przypomnienia hasła ==============
 router.post('/api/forgot-password', async (req, res) => {
   const { email } = req.body;
-  
-  try {
 
+  try {
     if (!email) {
       return res.status(400).json({
-        message: `${SYSTEM} Podaj adres e-mail`,
+        message: `Uzupełnij dane`,
         code: `MISSING_EMAIL`,
-        success: false,
+        success: true,
+        messages: 'info',
       });
     }
 
     const userExists = await checkEmailExistence(email);
+
     if (!userExists) {
       return res.status(404).json({
-        message: `${SYSTEM} Nie ma użytkownika z tym adresem e-mail`,
+        message: `Nie ma użytkownika z tym adresem e-mail`,
         code: `USER_NOT_FOUND`,
         success: true,
-        messages: 'warning'
+        messages: 'warning',
       });
     }
 
     const token = generateToken(64);
-    console.log(`TOKEN FORGOT PASSWORD: ${token}`);
-    // const hashedToken = await bcrypt.hash(token, saltRounds);
-    // console.log(`HASHED TOKEN FORGOT PASSWORD: ${hashedToken}`);
-
 
     // Zapisz token w bazie danych
     const updateTokenQuery = 'UPDATE users SET reset_password_token = ? WHERE email = ?';
@@ -146,20 +201,16 @@ router.post('/api/forgot-password', async (req, res) => {
     // Wygeneruj link do resetowania hasła
     const resetLink = `${API_URL}/reset-password?token=${token}`;
 
+    const emailSender = i18n.__('email.emailResetName');
+    const resetPasswordSubject = i18n.__('email.resetPasswordSubject');
+    const resetPasswordBody = i18n.__('email.resetPasswordBody', { resetLink: resetLink });
+
     // Przygotuj e-mail z linkiem do resetowania hasła
     const mailOptions = {
-      from: 'Forgot Password forgotpassword@crims-city.ct8.pl',
+      from: `${emailSender} <forgotpassword@crims-city.ct8.pl>`,
       to: email,
-      subject: 'Reset password',
-      html: `<h4>Zresetuj hasło do Crims City</h4>
-
-      <p>Cześć! Zapomniałeś klucza do swojego wirtualnego biura w Crims City? Nie martw się, możesz łatwo zresetować hasło za pomocą tego linku:</p>
-  
-      <a href="${resetLink}" class="reset-link">Zresetuj hasło</a>
-  
-      <p>Po kliknięciu w link zostaniesz przeniesiony na stronę, gdzie będziesz mógł ustawić nowe hasło.</p>
-  
-      <p>Pamiętaj, aby używać silnego i unikalnego hasła, aby chronić swoje konto.</p>`,
+      subject: resetPasswordSubject,
+      html: resetPasswordBody,
     };
 
     // Wyślij e-mail z linkiem do resetowania hasła
@@ -198,119 +249,129 @@ router.post('/api/registration', async (req, res) => {
   if (!email || !password) {
     res.status(400).json({
       message: `${SYSTEM} Uzupełnij Dane`,
-      code: `INCOMPLETE_DATA`,
-      success: false,
-    });
-    return;
-  }
-
-  if (typeof email !== 'string' || typeof password !== 'string') {
-    res.status(400).json({
-      message: 'Not a string',
-      success: false,
-    });
-    return;
-  }
-
-  // Sprawdź złożoność hasła
-  const isStrongPassword = checkPasswordStrength(password, 6, 1, 1);
-  if (!isStrongPassword) {
-    res.status(400).json({
       messages: 'warning',
-      code: 'PASSWORD_TOO_SHORT',
+      code: `INCOMPLETE_DATA`,
       success: true,
     });
     return;
   }
 
   try {
+    // Sprawdź złożoność hasła
+    const isStrongPassword = await checkPasswordStrength(password, 6, 1, 1);
+
+    if (!isStrongPassword) {
+      return res.status(400).json({
+        message: `${SYSTEM} Hasło jest niepoprawne`,
+        messages: 'warning',
+        code: 'PASSWORD_TOO_SHORT',
+        success: true,
+      });
+    }
+
     const emailExists = await checkEmailExistence(email);
+
     if (emailExists) {
-      res.status(400).json({
+      return res.status(400).json({
+        message: 'EMail nie istieje',
         messages: 'warning',
         code: 'EMAIL_EXIST',
         success: true,
       });
-      return;
     }
 
-    bcrypt.hash(password, saltRounds, async (err, hashedPassword) => {
-      if (err) {
-        res.status(500).json({
-          messages: `${SYSTEM} Błąd podczas hashowania hasła.`,
-          success: false,
-        });
-        return;
-      }
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-      const token = generateToken(64);
+    if (!hashedPassword) {
+      return res.status(400).json({
+        message: 'Błąd podczas hashowania hasła',
+        messages: 'warning',
+        code: 'TRY_LATER',
+        success: true,
+      });
+    }
 
-      const insertUserQuery =
-        'INSERT INTO users (email, pass, registration_date, activation_token) VALUES (?, ?, NOW(), ?)';
-      db.query(insertUserQuery, [email, hashedPassword, token], (insertError, insertResults) => {
-        if (insertError) {
-          res.status(500).json({
-            messages: `${SYSTEM} Błąd podczas dodawania nowego użytkownika.`,
-            success: false,
-          });
-          return;
-        }
+    const token = generateToken(64);
 
-        // Twórz link aktywacyjny zawierający token
-        const activationLink = `${API_URL}/activation?token=${token}`;
-
-        // Przygotuj e-mail z linkiem aktywacyjnym
-        const mailOptions = {
-          from: 'Activation activation@crims-city.ct8.pl',
-          to: email,
-          subject: 'Aktywacja konta crims-city.ct8.pl',
-          html: `<p>Odblokuj bramy <strong style="font-style: italic;">Crims City</strong> i zanurz się w podziemnych przygodach, aktywuj swoje konto teraz!</p>
-          <p>Kliknij <a href="${activationLink}" style="color: #0000ff; text-decoration: underline; font-style: italic;">tutaj</a>, aby aktywować swoje konto.</p>
-          `,
-        };
-
-        // Wyślij e-mail
-        sendEmail(mailOptions)
-          .then(() => console.log('E-mail został wysłany pomyślnie'))
-          .catch(() => console.error('Wystąpił błąd podczas wysyłania e-maila'));
-
-        res.status(200).json({
-          messages: 'success',
-          code: 'REGISTRATION_SUCCESS',
+    const insertUserQuery =
+      'INSERT INTO users (email, pass, registration_date, activation_token) VALUES (?, ?, NOW(), ?)';
+    db.query(insertUserQuery, [email, hashedPassword, token], (insertError, insertResults) => {
+      if (insertError) {
+        return res.status(500).json({
+          message: `${SYSTEM} Błąd podczas dodawania nowego użytkownika.`,
+          messages: 'error',
+          code: 'TRY_LATER',
           success: true,
         });
+      }
+
+      // Twórz link aktywacyjny zawierający token
+      const activationLink = `${API_URL}/activation?token=${token}`;
+
+      // Pobierz tłumaczenie dla "Activation"
+      const emailAcrivateSender = i18n.__('emailActivationSender');
+      const subject = i18n.__('activationEmailSubject');
+      const activationMessage = i18n.__('activationEmailMessage', { activationLink: activationLink });
+      
+
+      // Przygotuj e-mail z linkiem aktywacyjnym
+      const mailOptions = {
+        from: `${emailAcrivateSender} <activation@crims-city.ct8.pl>`,
+        to: email,
+        subject: subject,
+        html: activationMessage,
+      };
+
+      // Wyślij e-mail
+      sendEmail(mailOptions)
+        .then(() => console.log('E-mail został wysłany pomyślnie'))
+        .catch(() => console.error('Wystąpił błąd podczas wysyłania e-maila'));
+
+      return res.status(200).json({
+        messages: 'success',
+        code: 'REGISTRATION_SUCCESS',
+        success: true,
       });
     });
   } catch (error) {
-    res.status(500).json({
-      message: `${SYSTEM} Błąd podczas sprawdzania adresu e-mail.`,
-      success: false,
+    return res.status(500).json({
+      message: `Błąd podczas rejestracji`,
+      messages: `error`,
+      code: `TRY_LATER`,
+      success: true,
     });
   }
 });
-
+// ========================== ACTIVATION ACCOUNT ================================
 router.get('/activation/:token', async (req, res) => {
   try {
     const token = req.params.token;
-
     const user = await findUserByToken(token);
 
     if (!user) {
       return res.status(400).json({
         success: true,
-        message: 'Konto zostało już aktywowane',
-        code: 'ACCOUNT_ACTIVATE_DONE'
+        message: 'Użytkownik nie istnieje lub konto zostało już aktywowane',
+        code: 'ACCOUNT_ACTIVATE_DONE',
       });
     }
 
-    await clearActivationToken(user); // Usunięcie tokenu aktywacyjnego po pomyślnej aktywacji
+    const clearToken = await clearActivationToken(user);
+
+    if (!clearToken) {
+      return res.status(400).json({
+        success: true,
+        messages: 'error',
+        message: 'Wystąpił błąd usuwania tokena z bazy danych',
+        code: 'TRY_LATER',
+      });
+    }
 
     return res.status(200).json({
       success: true,
       message: 'Konto zostało pomyślnie aktywowane.',
-      code: 'ACCOUNT_ACTIVATE'
+      code: 'ACCOUNT_ACTIVATE',
     });
-
   } catch (error) {
     console.error('Błąd podczas aktywacji konta:', error);
     res.status(500).json({
@@ -319,7 +380,6 @@ router.get('/activation/:token', async (req, res) => {
     });
   }
 });
-
 
 // ============= Funkcja do generowania tokena  ====================
 function generateToken(length = 64) {
@@ -333,29 +393,35 @@ function generateToken(length = 64) {
 }
 
 // ==================== Sprawdzanie siły hasła =================================
-function checkPasswordStrength(password, minLength = 6, minDigit = 1, minSpecial = 1) {
-  // Sprawdź minimalną długość hasła
-  if (password.length < minLength) {
-    return false;
-  }
-  // Sprawdź obecność co najmniej jednej cyfry
-  const digitRegex = /\d/;
-  if (!digitRegex.test(password) || (password.match(digitRegex) || []).length < minDigit) {
-    return false;
-  }
-  // Sprawdź obecność co najmniej jednego znaku specjalnego
-  const specialCharRegex = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/;
-  if (!specialCharRegex.test(password) || (password.match(specialCharRegex) || []).length < minSpecial) {
-    return false;
-  }
-  // Sprawdź obecność co najmniej jednej małej i jednej dużej litery
-  const lowerCaseRegex = /[a-z]/;
-  const upperCaseRegex = /[A-Z]/;
-  if (!lowerCaseRegex.test(password) || !upperCaseRegex.test(password)) {
-    return false;
-  }
-  // Hasło spełnia wszystkie kryteria
-  return true;
+async function checkPasswordStrength(password, minLength = 6, minDigit = 1, minSpecial = 1) {
+  return new Promise((resolve, reject) => {
+    // Sprawdź minimalną długość hasła
+    if (password.length < minLength) {
+      return reject(new Error('Password too short'));
+    }
+
+    // Sprawdź obecność co najmniej jednej cyfry
+    const digitRegex = /\d/;
+    if (!digitRegex.test(password) || (password.match(digitRegex) || []).length < minDigit) {
+      return reject(new Error('Password must contain at least one digit'));
+    }
+
+    // Sprawdź obecność co najmniej jednego znaku specjalnego
+    const specialCharRegex = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/;
+    if (!specialCharRegex.test(password) || (password.match(specialCharRegex) || []).length < minSpecial) {
+      return reject(new Error('Password must contain at least one special character'));
+    }
+
+    // Sprawdź obecność co najmniej jednej małej i jednej dużej litery
+    const lowerCaseRegex = /[a-z]/;
+    const upperCaseRegex = /[A-Z]/;
+    if (!lowerCaseRegex.test(password) || !upperCaseRegex.test(password)) {
+      return reject(new Error('Password must contain both lower and upper case letters'));
+    }
+
+    // Hasło spełnia wszystkie kryteria
+    return resolve(true);
+  });
 }
 
 // ============== Funkcja do aktualizacji pola userBlock w bazie danych ===============
@@ -388,7 +454,7 @@ async function findUserByToken(token) {
       } else {
         // Jeśli użytkownik został znaleziony, zwróć go
         if (results.length > 0) {
-          resolve(results[0]);
+          resolve(results[0].ids);
         } else {
           // Jeśli użytkownik nie został znaleziony, zwróć null
           resolve(null);
@@ -437,7 +503,7 @@ function updateUserPassword(userId, newPassword) {
   return new Promise(async (resolve, reject) => {
     try {
       // Zahaszuj nowe hasło
-      const hashedPassword = await bcrypt.hash(newPassword, saltRounds);      
+      const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
       // Zaktualizuj hasło użytkownika w bazie danych
       const query = 'UPDATE users SET pass = ? WHERE ids = ?';
       db.query(query, [hashedPassword, userId.ids], (error, results) => {
@@ -456,8 +522,7 @@ function updateUserPassword(userId, newPassword) {
   });
 }
 
-
-// Funkcja do usuwania tokenu resetowania hasła użytkownika
+// ================ Funkcja do usuwania tokenu resetowania hasła użytkownika ==============
 async function clearResetToken(userId) {
   return new Promise((resolve, reject) => {
     const query = 'UPDATE users SET reset_password_token = NULL WHERE ids = ?';
@@ -472,22 +537,19 @@ async function clearResetToken(userId) {
     });
   });
 }
-// ================ Funkcja do usuwania tokenu aktywacyjnego =====================
-async function clearActivationToken(user) {
+// ===================== Funkcja do usuwania tokenu aktywacyjnego ==========================
+async function clearActivationToken(userId) {
   return new Promise((resolve, reject) => {
     const query = 'UPDATE users SET activation_token = NULL WHERE ids = ?';
-    db.query(query, [user.ids], (error, results) => {
+    db.query(query, [userId], (error, results) => {
       if (error) {
         console.error('Błąd podczas usuwania tokenu aktywacyjnego:', error);
         reject(error);
       } else {
-        resolve(); // Zwróć sukces, jeśli token został usunięty poprawnie
-        console.log('ELOOOO');
+        resolve(true); // Zwróć sukces, jeśli token został usunięty poprawnie
       }
     });
   });
 }
-
-
 
 module.exports = router;

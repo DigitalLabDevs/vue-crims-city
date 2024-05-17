@@ -1,0 +1,13 @@
+{
+  "registration": {
+    "passwordReset": "Password Reset"
+  },
+  "email": {
+    "emailResetName": "Password Reminder",
+    "resetPasswordSubject": "Reset Password",
+    "resetPasswordBody": "<h4>Reset your password for Crims City</h4><p>Hey there! Forgot the key to your virtual office in Crims City? Don't worry, you can easily reset your password using this link:</p><a href=\"{{resetLink}}\" class=\"reset-link\">Reset Password</a><p>Clicking the link will take you to a page where you can set a new password.</p><p>Remember to use a strong and unique password to protect your account.</p>",
+    "emailActivationSender": "Activation",
+    "activationEmailSubject": "Account Activation",
+    "activationEmailMessage": "<p>Unlock the gates of <strong style=\"font-style: italic;\">Crims City</strong> and immerse yourself in underground adventures, activate your account now!</p><p>Click <a href=\"{{activationLink}}\" style=\"color: #0000ff; text-decoration: underline; font-style: italic;\">here</a> to activate your account.</p>"
+  }
+}
