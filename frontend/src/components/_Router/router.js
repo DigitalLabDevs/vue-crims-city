@@ -17,6 +17,7 @@ import ResetPassword from '../_AuthContext/ResetPassword.vue';
 import Test from '../_Test/Test.vue';
 import ContactForm from '../_App/ContactForm.vue';
 import Settings from '../Game/Tools/Settings.vue';
+import Main from '../Game/Game/Main.vue';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -105,11 +106,17 @@ const router = createRouter({
       },
       children:[
         {
+          path: 'maingame',
+          components: {
+            game: Main // Nazwa komponentu jako wartość settingsView
+          },
+        },
+        {
           path: 'settings',
           components: {
-            // default: Settings,
             game: Settings // Nazwa komponentu jako wartość settingsView
           },
+          meta: { requiresAuth: true }
         }
       ],
       meta: { requiresAuth: true } // Wymaga autoryzacji

@@ -10,6 +10,9 @@
   padding: 10px;
   background-color: rgba(0, 0, 0, 0.7);
 }
+.fx{
+  display: flex;
+}
 
 .btn-span{
   transition: 200ms;

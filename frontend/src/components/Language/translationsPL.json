@@ -77,6 +77,7 @@
     "PASSWORD_ERROR": "Wystąpił błąd przy zmianie hasła, spróbuj później lub skontaktuj się z supportem (405)"
   },
   "game":{
-    "settings": "Ustawienia"
+    "settings": "Ustawienia",
+    "main": "Miasto"
   }
 }
