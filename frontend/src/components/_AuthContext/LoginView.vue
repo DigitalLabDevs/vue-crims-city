@@ -61,10 +61,8 @@ async function loginFunc() {
       const data = await response.json();
       emit('registrationError', { messages: data.messages, code: data.code, success: data.success });
       if (data.isLoggedIn) {
-        const sessionToken = Cookies.get('session_token');
-        // store.commit('setUser', data.email);
+        const sessionToken = Cookies.get('Oo!SK');
         store.commit('setSessionToken', sessionToken);
-
         router.push('/crims-city');
       }
     }

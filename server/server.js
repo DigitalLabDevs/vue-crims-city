@@ -1,15 +1,12 @@
 const express = require('express');
+require('dotenv').config();
 const path = require('path');
 const cors = require('cors');
-
 const i18n = require('./language/i18nSetup');
-
 const crypto = require('crypto');
 const sessionManager = require('./sessionManager');
-
 const app = express();
-
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 const { API_URL } = require('./config');
 
 const registrationEndpoint = require('./endpoints/registrationEndpoint');
@@ -19,7 +16,6 @@ app.use(express.json());
 // Middleware dla CORS
 app.use(
   cors({
-    // origin: '*',
     origin: API_URL,
     credentials: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
@@ -30,16 +26,28 @@ app.use(
   })
 );
 
-
-app.use(i18n.setLocale); // Dodaj middleware ustawiający język
+ // Middleware ustawiający język
+app.use(i18n.setLocale);
+// Middleware ustawiający headers
 app.use(i18n.consoleLogHeaders); 
+// Middleware SESSION
+// app.use(sessionManager(app));
+sessionManager(app);
+
+// Middleware zapisujący adres IP użytkownika w danych sesji
+app.use((req, res, next) => {
+  // Odczytaj adres IP użytkownika z żądania
+  const userIp = req.ip;
+  // Jeśli dane sesji nie zawierają jeszcze adresu IP, zainicjuj je jako pusty obiekt
+  if (!req.session.data) {
+    req.session.data = {};
+  }
+  // Zapisz adres IP użytkownika w danych sesji
+  req.session.data.user_ip = userIp;
+  next();
+});
 
 
-
-
-// sessionManager(app)
-
-// app.use(sessionManager)
 
 app.use(registrationEndpoint);
 app.use(loginEndpoint);

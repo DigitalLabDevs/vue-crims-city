@@ -2,9 +2,7 @@
 
 const config = {
     SYSTEM: 'SYSTEM:',
-    saltRounds: 10,
     jwtSecret: 'tajny_klucz',
-    secret_key: '',
   };
   
   if (process.env.NODE_ENV === 'production') {

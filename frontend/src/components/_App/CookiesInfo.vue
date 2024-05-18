@@ -2,10 +2,10 @@
   <div class="w1">
     <router-link to="/">{{ t('global.backToMain') }}</router-link>
     <h2>Informacje o używanych ciasteczkach</h2>
-    <p>Nasza aplikacja korzysta z następujących ciasteczek:</p>
+    <p>Nasza aplikacja korzysta z ciasteczek</p>
     <ul>
-      <li><strong>session_token:</strong> Służy do utrzymania sesji użytkownika.</li>
-      <li><strong>access_token:</strong> Służy do uwierzytelniania i autoryzacji.</li>
+      <li>Które służą do utrzymania sesji użytkownika.</li>
+      <li>oraz do uwierzytelniania i autoryzacji.</li>
       <!-- Dodaj więcej ciasteczek, jeśli są używane -->
     </ul>
     <p>

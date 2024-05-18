@@ -41,15 +41,17 @@ const { t } = useI18n();
   height: 100vh;
   background-image: url(/game/main/main.jpg);
   background-repeat: no-repeat;
-  background-size: 100% 100%;
+  /* background-size: 100% 100%; */
+  background-size: cover;
 }
 .Main-Game-Right{
   border: 1px solid green;
   width: 20%;
+  height: 90%;
 }
 .rout{
-  
   width: 80%;
+
   border: 1px solid green;
 }
 .Main-Game-Topbar,
@@ -57,6 +59,7 @@ const { t } = useI18n();
 {
   background-color: rgb(40 71 81);
   padding: 2px;
+
 }
 .Main-Game-Footer{
   width: 100%;

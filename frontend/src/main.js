@@ -11,7 +11,7 @@ import App from './App.vue';
 import router from './components/_Router/router';
 import store from './components/_AuthContext/StoreVuex';
 
-const sessionToken = Cookies.get('session_token');
+const sessionToken = Cookies.get('Oo!SK');
 if (sessionToken) {
   store.commit('setSessionToken', sessionToken);
 }

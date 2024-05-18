@@ -1,10 +1,7 @@
 const express = require('express');
 const db = require('../db');
 const bcrypt = require('bcrypt');
-const session = require('express-session');
-// const { sendEmail } = require('../emailUtils');
-const { SYSTEM, saltRounds, API_URL } = require('../config'); // Importujemy plik konfiguracyjny
-
+const serverLogs = require('../tools/server_logs');
 const { generateAccessToken, deleteSessionTokenFromDatabase }  = require('../tools/tokenTools');
 
 const getUserByEmail = require('../tools/loginTools');
@@ -73,7 +70,6 @@ router.post('/api/login', async (req, res) => {
     }
 
     const isupdateLoginCount = await updateLoginCount(email);
-    console.log(`updateLoginCount: ${isupdateLoginCount}`);
 
     if(!isupdateLoginCount){
       return res.status(400).json({
@@ -87,24 +83,23 @@ router.post('/api/login', async (req, res) => {
 
     // Pomyślne logowanie
 
-      // req.session.user = { email };
+      req.session.user = { email };
 
-      res.cookie('access_token', token.accessToken, {
+      res.cookie(process.env.AT_NAME, token.accessToken, {
         httpOnly: true,
-        // sameSite: "None",
-        // sameSite: "Lax",
-        // sameSite: "Strict",
-        // Wymagane, jeśli SameSite ustawione na "None" i nie jesteś na HTTPS
-        // secure: true,
-        secure: false,
-        maxAge: 60 * 60 * 1000, // 1h
+        sameSite: process.env.C_SAMESITE,
+        secure: process.env.C_SECURE,
+        maxAge: process.env.C_MAX_AGE,
       });
 
-      res.cookie('session_token', token.sessionToken, {
+      res.cookie(process.env.ST_NAME, token.sessionToken, {
         httpOnly: false,
-        secure: false,
-        maxAge: 60 * 60 * 1000, // 1h
+        sameSite: process.env.C_SAMESITE,
+        secure: process.env.C_SECURE,
+        maxAge: process.env.C_MAX_AGE, // 1h
       });
+
+      // serverLogs('Pomyślne logowanie');
 
       return res.status(200).json({
         message: 'Logowanie przebiegło pomyślnie',
@@ -134,19 +129,20 @@ await deleteSessionTokenFromDatabase(sessionToken);
 
 
 // Usuń dane sesji
-  // req.session.destroy((err) => {
-  //   if (err) {
-  //     console.error('Błąd podczas usuwania sesji:', err);
-  //     return res.status(500).json({
-  //       message: 'Wystąpił błąd podczas wylogowywania',
-  //       success: false,
-  //       code: 'INTERNAL_SERVER_ERROR',
-  //       messages: 'error',
-  //     });
-  //   }
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Błąd podczas usuwania sesji:', err);
+      return res.status(500).json({
+        message: 'Wystąpił błąd podczas wylogowywania',
+        success: false,
+        code: 'INTERNAL_SERVER_ERROR',
+        messages: 'error',
+      });
+    }
     // Usuń ciasteczka zawierające token sesji
-    res.clearCookie('access_token');
-    res.clearCookie('session_token');
+    res.clearCookie(process.env.AT_NAME);
+    res.clearCookie(process.env.ST_NAME);
+    res.clearCookie(process.env.SESSION_NAME);
     res.status(200).json({
       success: true,
       message: 'Wylogowanie przebiegło pomyślnie',
@@ -156,7 +152,7 @@ await deleteSessionTokenFromDatabase(sessionToken);
       
 
     });
-  // });
+  });
 });
 
 

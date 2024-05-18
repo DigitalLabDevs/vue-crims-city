@@ -2,8 +2,8 @@ const express = require('express');
 const db = require('../db');
 const bcrypt = require('bcrypt');
 const { i18n } = require('../language/i18nSetup');
-const { sendEmail } = require('../emailUtils');
-const { SYSTEM, saltRounds, API_URL } = require('../config'); // Importujemy plik konfiguracyjny
+const { sendEmail } = require('../tools/emailUtils');
+const { SYSTEM, API_URL } = require('../config'); // Importujemy plik konfiguracyjny
 
 const router = express.Router();
 
@@ -127,7 +127,7 @@ router.post('/reset-password', async (req, res) => {
     }
 
     // Hashuj nowe hasło
-    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+    const hashedPassword = await bcrypt.hash(newPassword, process.env.BCRYPT_ROUND);
 
     // Zaktualizuj hasło użytkownika i wyczyść token resetowania
     const isPasswordUpdated = await updateUserPassword(user, hashedPassword);
@@ -280,7 +280,7 @@ router.post('/api/registration', async (req, res) => {
       });
     }
 
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const hashedPassword = await bcrypt.hash(password, process.env.BCRYPT_ROUND);
 
     if (!hashedPassword) {
       return res.status(400).json({
@@ -503,7 +503,7 @@ function updateUserPassword(userId, newPassword) {
   return new Promise(async (resolve, reject) => {
     try {
       // Zahaszuj nowe hasło
-      const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+      const hashedPassword = await bcrypt.hash(newPassword, process.env.BCRYPT_ROUND);
       // Zaktualizuj hasło użytkownika w bazie danych
       const query = 'UPDATE users SET pass = ? WHERE ids = ?';
       db.query(query, [hashedPassword, userId.ids], (error, results) => {

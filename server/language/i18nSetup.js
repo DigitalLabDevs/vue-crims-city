@@ -33,10 +33,7 @@ function consoleLogHeaders(req, res, next) {
       return acc;
     }, {});
 
-    console.log(`=> Ciasteczko "session_token": ${cookies['session_token']}`);
-    console.log(`=> Ciasteczko "access_token": ${cookies['access_token']}`);
-
-    req.sessionToken = cookies['session_token'];
+    req.sessionToken = cookies['Oo!SK'];
     req.accessToken = cookies['access_token'];
   } else {
     console.log('=> Brak ciasteczek w nagłówkach.');

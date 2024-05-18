@@ -1,8 +1,6 @@
 const db = require('../db');
 const jwt = require('jsonwebtoken');
-
-const secret = 'tajny_klucz';
-
+// require('dotenv').config();
 const { v4: uuidv4 } = require('uuid');
 const sessionToken = uuidv4();
 
@@ -17,7 +15,7 @@ async function generateAccessToken(userEmail) {
     };
 
     // Wygenerowanie tokenu JWT
-    const sessionJwtToken = jwt.sign(payload, secret, { expiresIn: '1h' }); // Ustawienie czasu wygaśnięcia na 1 godzinę
+    const sessionJwtToken = jwt.sign(payload, process.env.JWT_KEY, { expiresIn: '1h' }); // Ustawienie czasu wygaśnięcia na 1 godzinę
 
     // Tutaj zapisz sesję w sesji, np. z użyciem Express Session
     // req.session.session_token = sessionToken;
@@ -42,7 +40,6 @@ async function saveSessionTokenInDatabase(userEmail, sessionJwtToken, sessionTok
         console.error('Błąd podczas zapisywania tokenu sesji w bazie danych:', error);
         reject(error);
       } else {
-        console.log('Token sesji został pomyślnie zapisany w bazie danych.');
         resolve();
       }
     });

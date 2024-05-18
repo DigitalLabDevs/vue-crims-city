@@ -126,33 +126,17 @@ const router = createRouter({
 
 // Globalna funkcja middleware sprawdzająca autoryzację użytkownika
 router.beforeEach((to, from, next) => {
-  // const sessionToken = Cookies.get('session_token');
-  // store.commit('setSessionToken', sessionToken);
   const isAuthenticated = store.getters.isAuthenticated;
-  // const sessionToken = Cookies.get('session_token');
-  // const isAuthenticated = sessionToken !== undefined;
-  
-  console.log(`router-isAuthenticated: ${isAuthenticated}`);
-
-  // if (sessionToken !== undefined) {
-  //   const isAuthenticated = true;
-  //   console.log('Ciasteczko istnieje:', sessionToken);
-  // } else {
-  //   const isAuthenticated = false;
-  //   console.log(`${isAuthenticated} : Ciasteczko nie istnieje.`);
-  // }
-  
-
   if (to.meta.requiresAuth && !isAuthenticated) {
     // Jeśli użytkownik próbuje uzyskać dostęp do chronionej ścieżki i nie jest zalogowany, przekierowujemy go na stronę logowania
     next('/login');
-    return; // Dodaj return po przekierowaniu
+    return;
   } 
 
   if (!to.meta.requiresAuth && isAuthenticated) {
     // Jeśli użytkownik jest zalogowany i próbuje uzyskać dostęp do ścieżek nie wymagających autoryzacji, przekieruj go na inną stronę
     next('/crims-city'); 
-    return; // Dodaj return po przekierowaniu
+    return;
   } 
 
   // W przeciwnym razie pozwalamy mu przejść do wybranej ścieżki
