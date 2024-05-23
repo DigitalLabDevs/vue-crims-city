@@ -19,7 +19,7 @@
           autocomplete="new-password" v-model="confirmPassword" required>
       </div>
       <div class="form-group captcha">
-        <Captcha :onCaptchaValid="handleCaptcha"/>
+        <Captcha :onCaptchaValid="handleCaptcha" />
       </div>
       <button class="w30p" type="submit" :disabled="!isValid">{{ t('global.registrationButton') }}</button>
     </form>
@@ -104,6 +104,14 @@ async function register() {
 </script>
 
 <style scoped>
+@media (max-width: 480px) {
+  .Registration-form {
+    width: 100%!important;
+    padding: 7px!important;
+  }
+}
+
+
 .Registration-form {
   width: 70%;
   background-color: rgba(0, 0, 0, 0.5);

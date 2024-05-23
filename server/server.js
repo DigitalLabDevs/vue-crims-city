@@ -4,7 +4,7 @@ const path = require('path');
 const cors = require('cors');
 const i18n = require('./language/i18nSetup');
 const crypto = require('crypto');
-const sessionManager = require('./sessionManager');
+const sessionManager = require('./tools/sessionManager');
 const app = express();
 const PORT = process.env.PORT;
 const { API_URL } = require('./config');
@@ -21,7 +21,8 @@ app.use(
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: 'Content-Type,Authorization',
     exposedHeaders: 'Content-Length',
-    maxAge: 600,
+    // maxAge: parseInt(process.env.C_MAX_AGE),
+    maxAge: 3600000,
     optionsSuccessStatus: 204,
   })
 );

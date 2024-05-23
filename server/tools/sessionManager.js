@@ -2,7 +2,8 @@
 require('dotenv').config();
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
-const db = require('./db');
+const db = require('../db');
+const serverLogs = require('./server_logs');
 
 // Opcje sesji
 const sessionOptions = {
@@ -21,7 +22,9 @@ const sessionOptions = {
 // Tworzenie instancji MySQLStore z opcjami
 const sessionStore = new MySQLStore(sessionOptions, db, (error) =>{
   if(error) {
+    serverLogs(`SESSION_ERROR: ${error}`);
     console.log(`SESSION_ERROR: ${error}`);
+    return;
   }
 });
 
@@ -31,7 +34,7 @@ const sessionMiddleware = session({
   secret: process.env.SESSION_KEY,
   resave: false,
   saveUninitialized: true,
-  rolling: false, // Włączenie automatycznego odświeżania sesji
+  rolling: true, // Włączenie automatycznego odświeżania sesji
   name: process.env.SESSION_NAME, // Nazwa sesji
   cookie: {
     maxAge: parseInt(process.env.C_MAX_AGE), // Czas trwania sesji (w milisekundach)

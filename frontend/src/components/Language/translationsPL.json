@@ -1,7 +1,7 @@
 {
   "main": {
     "loginLabel": "Zaloguj się",
-	  "registerLabel": "Rejestracja",
+    "registerLabel": "Rejestracja",
     "joinUs": "Dołącz do nas"
   },
   "login": {
@@ -9,8 +9,8 @@
     "forgotPasswordLink": "Przypomnij hasło",
     "backToLogin": "Wróć do logowania"
   },
-  "logout":{
-    "logoutButton": "Wyloguj się",
+  "logout": {
+    "logoutButton": "Wyloguj",
     "confirmButton": "YEAAA NARA",
     "cancelButton": "NIEE ZOSTAJE!",
     "confirmMessage": "Wylogować z burdelu?"
@@ -18,9 +18,9 @@
   "registration": {
     "title": "Rejestracja"
   },
-  "global":{
-	  "submit": "Wyslij",
-	  "backToMain": "Wróć do strony głownej",
+  "global": {
+    "submit": "Wyslij",
+    "backToMain": "Wróć do strony głownej",
     "chooseLanguage": "Wybierz język",
     "emailLabel": "E-mail",
     "passwordLabel": "Hasło",
@@ -28,7 +28,7 @@
     "registrationButton": "Rejestracja"
   },
   "forgotPassword": {
-	  "title": "Przypomnij hasło"
+    "title": "Przypomnij hasło"
   },
   "password_reset": {
     "title": "Reset hasła"
@@ -36,7 +36,7 @@
   "cookie": {
     "title": "Polityka prywatności i wykorzystanie danych"
   },
-  "contact":{
+  "contact": {
     "contact": "Kontakt",
     "message": "Wiadomość",
     "subject": "Temat",
@@ -46,17 +46,17 @@
     "sponsors": "Sponsoring",
     "other": "Inne"
   },
-  "captcha":{
-   "title": "Captcha",
-	 "refreshCaptcha": "Odśwież",
-	 "captchaLabel": "Przepisz kod z obrazka",
-   "invalidCaptcha": "Nieprawidłowy kod",
-   "placeholder": "Przepisz kod z obrazka"
+  "captcha": {
+    "title": "Captcha",
+    "refreshCaptcha": "Odśwież",
+    "captchaLabel": "Przepisz kod z obrazka",
+    "invalidCaptcha": "Nieprawidłowy kod",
+    "placeholder": "Przepisz kod z obrazka"
   },
-  "descriptions":{
+  "descriptions": {
     "descriptionGame": "Wciel się w rolę bezwzględnego bossa, prowadząc organizację o kontrolę nad obszarami miasta."
   },
-  "serverMessage":{
+  "serverMessage": {
     "PASSWORD_TOO_SHORT": "Hasło musi mieć minimum 6 znaków, 1 duża, 1 mała (litera) 1 cyfrę i 1 znak specjalny.",
     "EMAIL_EXIST": "Adres e-mail już istnieje.",
     "REGISTRATION_SUCCESS": "Pomyślnie zarejestrowano nowego użytkownika. Sprawdź adres E-mail",
@@ -76,8 +76,50 @@
     "TRY_LATER": "Wystąpił nieoczekiwany błąd, spóbuj jeszcze raz lub skontaktuj się z supportem",
     "PASSWORD_ERROR": "Wystąpił błąd przy zmianie hasła, spróbuj później lub skontaktuj się z supportem (405)"
   },
-  "game":{
+  "game": {
     "settings": "Ustawienia",
-    "main": "Miasto"
+    "main": "Miasto",
+    "buildings": "Budynki",
+    "mafia": "Mafia",
+    "trade": "Handel",
+    "equipment": "Wyposażenie",
+    "shops": "Sklepy",
+    "heists": "Napady",
+    "arena": "Arena",
+    "missions": "Misje",
+    "bank": "Bank",
+    "market": "Bazar",
+    "hospital": "Szpital",
+    "police": "Policja",
+    "level": "Level",
+    "messages": "Wiadomości",
+    "postOffice": "Poczta",
+    "statistics": "Ranking"
+  },
+  "buildings":{
+    "title": "Budynki",
+    "detailsTitle": "Nazwa",
+    "level": "Level",
+    "upgrade": "Rozbuduj",
+    "destroy": "Zniszcz",
+    "productionTitle": "Nazwa produkcji"
+  },
+  "bank":{
+    "title": "Bank Crims City",
+    "balance": "Gotówka",
+    "deposit": "Zdeponuj gotówkę",
+    "withdraw": "Wypłać gotówkę",
+    "transactionHistory": "Historia transakcji"
+  },
+  "dashboard":{
+    "level": "Level",
+    "title": "Twoja postać",
+    "experience": "Doświadczenie",
+    "notifications": "Wiadomości",
+    "quickLinks": "Szybki dostęp",
+    "maingame": "Głowne okno",
+    "settings": "Ustawienia",
+    "balance": "Gotówka",
+    "resources": "Zasoby"
   }
 }

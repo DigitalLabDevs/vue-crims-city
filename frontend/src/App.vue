@@ -111,12 +111,85 @@ const errorMessageClass = computed(() => {
 
 </script>
 
+
 <style scoped>
-.footer{
+/* @media (max-width : 992px) {
+  .description-left,
+  .description-right-main {
+    display: none!important;
+  }
+  .isLoggedInFalse{
+    padding: 10px!important;
+    width: 440px!important;
+  }
+} */
+@media (max-width : 1125px) {
+  .description{
+    width: 80%;
+  }
+
+  .description-right-main {
+    display: none !important;
+  }
+
+  .isLoggedInFalse {
+    padding: 3px !important;
+    width: 200px;
+  }
+
+  .topbar-isLoggedInFalse {
+    height: 30px !important;
+  }
+}
+
+@media (max-width : 768px) {
+
+  .description-left,
+  .description-right-main {
+    display: none !important;
+  }
+
+  .isLoggedInFalse {
+    padding: 3px !important;
+    width: 200px;
+  }
+
+  .topbar-isLoggedInFalse {
+    height: 30px !important;
+  }
+  .description{
+    width: 80%;
+  }
+}
+
+/* 
+@media (max-width: 480px) {
+  .description-left,
+  .description-right-main {
+    display: none!important;
+  }
+  .isLoggedInFalse {
+    padding: 3px!important;
+    width: 200px;
+  }
+  .description {
+    position: relative;
+  }
+  .isLoggedInFalse{
+    min-width: 300px!important;
+    min-height: 450px!important;
+  }
+  .topbar-isLoggedInFalse{
+    height: 30px!important;
+  }
+} */
+
+.footer {
   position: fixed;
   bottom: 15px;
   left: 15px;
 }
+
 .error {
   background-color: rgba(221, 38, 38, 0.1);
   font-size: 16px;
@@ -159,12 +232,14 @@ const errorMessageClass = computed(() => {
 
 .description {
   display: flex;
-  flex-direction: row;
+  /* flex-direction: row; */
+  /* justify-content: center; */
+  width: 90%;
+  height: 80%;
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-
 }
 
 .description-left {
@@ -172,8 +247,6 @@ const errorMessageClass = computed(() => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
-  /* background: url(/site/left.jpg); */
   margin-right: 25px;
   width: 280px;
   height: 420px;
@@ -187,9 +260,8 @@ const errorMessageClass = computed(() => {
   justify-content: center;
   align-items: center;
   padding: 3px;
-  height: 50px;
+  height: 30px;
   box-shadow: 0 0 10px #00bfff;
-
   background-image: url(/site/topbarbg.jpg);
   background-repeat: repeat-x;
 }
@@ -208,10 +280,12 @@ const errorMessageClass = computed(() => {
   background-image: url(/site/logo.jpg);
   background-repeat: no-repeat;
   background-size: cover;
-  width: 640px;
-  height: 480px;
+  /* min-width: 300px; */
+  /* width: 80%; */
   display: flex;
   align-items: center;
   justify-content: space-around;
+  flex: 1;
+  /* height: 450px; */
 }
 </style>

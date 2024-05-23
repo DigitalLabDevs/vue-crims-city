@@ -1,30 +1,35 @@
 <template>
   <div class="Game-Topbar">
     <div class="fx">
-      <div class="ssk">Forsa: 345,543</div>
+      <div class="ssk">{{ t('bank.balance') }}: 345,543 $</div>
       <div class="ssk">Zdrowie: 87%</div>
     </div>
 
     <div class="fx">
       <div class="ssk">
-        <router-link to="/crims-city/maingame">{{ t('game.main') }}</router-link>
+        <router-link to="/crims-city">{{ t('game.main') }}</router-link>
+        
       </div>
     </div>
 
     <div class="fx">
-      <div class="ssk">
+      <DropdownMenu>
+      <!-- <div class="ssk"> -->
         <router-link to="/crims-city/settings">{{ t('game.settings') }}</router-link>
-      </div>
-      <div class="ssk">
+      <!-- </div> -->
+      <!-- <div class="ssk"> -->
         <LogoutView />
-      </div>
+      <!-- </div> -->
+    </DropdownMenu>
     </div>
   </div>
 </template>
 
 <script setup>
-import LogoutView from '../../_AuthContext/LogoutView.vue'
 import { useI18n } from 'vue-i18n';
+import DropdownMenu from '../../_Core/DropdownMenu.vue';
+import LogoutView from '../../_AuthContext/LogoutView.vue'
+
 const { t } = useI18n();
 </script>
 

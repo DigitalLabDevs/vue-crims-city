@@ -15,24 +15,27 @@
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import Cookies from 'js-cookie';
 import store from './StoreVuex';
 import { API_URL } from '../../config';
 
 const isAuthenticated = ref(store.getters.isAuthenticated);
-console.log(isAuthenticated.value);
+console.log(`LOGOUT(isAuthenticated): ${isAuthenticated.value}`);
 
 const { t } = useI18n();
 const router = useRouter();
 
 const showModal = ref(false);
+console.log(`LOGOUT(showModal): ${showModal.value}`);
 
 const confirmLogout = () => {
   showModal.value = true;
+  console.log(`LOGOUT: YES`);
+  console.log(`LOGOUT(showModal2): ${showModal.value}`);
 };
 
 const cancelLogout = () => {
   showModal.value = false;
+  console.log(`LOGOUT: NO`);
 };
 
 const logout = () => {
@@ -88,6 +91,7 @@ p{
 }
 
 .modal {
+  z-index: 9999;
   position: fixed;
   top: 0;
   left: 0;
@@ -103,6 +107,7 @@ p{
   background-color: rgb(56, 137, 155);
   padding: 20px;
   border-radius: 5px;
+  
 }
 
 .modal-content button {

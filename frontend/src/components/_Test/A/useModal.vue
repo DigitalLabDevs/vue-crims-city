@@ -16,7 +16,7 @@ const open = ref(false)
 <style scoped>
 .modal {
   position: fixed;
-  z-index: 999;
+  /* z-index: 999; */
   top: 20%;
   left: 50%;
   width: 300px;

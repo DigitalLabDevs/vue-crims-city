@@ -1,7 +1,6 @@
 const express = require('express');
 const db = require('../db');
 const bcrypt = require('bcrypt');
-const serverLogs = require('../tools/server_logs');
 const { generateAccessToken, deleteSessionTokenFromDatabase }  = require('../tools/tokenTools');
 
 const getUserByEmail = require('../tools/loginTools');
@@ -96,10 +95,9 @@ router.post('/api/login', async (req, res) => {
         httpOnly: false,
         sameSite: process.env.C_SAMESITE,
         secure: process.env.C_SECURE,
-        maxAge: process.env.C_MAX_AGE, // 1h
+        maxAge: process.env.C_MAX_AGE,
       });
 
-      // serverLogs('Pomyślne logowanie');
 
       return res.status(200).json({
         message: 'Logowanie przebiegło pomyślnie',

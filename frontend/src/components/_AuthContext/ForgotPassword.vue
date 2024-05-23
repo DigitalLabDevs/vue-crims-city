@@ -88,6 +88,14 @@ async function forgotPassword() {
 </script>
 
 <style scoped>
+@media (max-width: 480px) {
+  .ForgotPassword-form{
+    width: 100%!important;
+    padding: 7px!important;
+  }
+}
+
+
 .chapta-flex{
   display: flex;
   justify-content: space-evenly;

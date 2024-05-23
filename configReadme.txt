@@ -1,0 +1,1 @@
+1. file .env have be to in main dir public_nodejs

@@ -5,20 +5,24 @@
       <div class="Main-Game-Topbar">
         <Topbar></Topbar>
       </div>
+      <div class="fullcenter">
+        <TopbarMenu></TopbarMenu>
+        <div class="fx wwo">
+          <div class="Main-Game-Left">
+            <LeftMenu></LeftMenu>
+          </div>
 
-      <div class="fx">
-      <!-- <div class="Main-Game-Right">
-        <div>MENU</div>
-      </div> -->
+          <div class="rout">
+            <router-view name="game"></router-view>
+          </div>
 
-      <div class="rout">
-        <router-view name="game"></router-view>
+          <div class="Main-Game-Right">
+            <div>XC</div>
+            <router-view name="menu2"></router-view>
+
+          </div>
+        </div>
       </div>
-
-      <div class="Main-Game-Right">
-        <div>MENU 2</div>
-      </div>
-    </div>
 
       <div class="Main-Game-Footer">
         <Footer></Footer>
@@ -29,44 +33,76 @@
 </template>
 
 <script setup>
+import { useI18n } from 'vue-i18n';
 import Topbar from './View/Topbar.vue';
 import Footer from './View/Footer.vue';
-import { useI18n } from 'vue-i18n';
+import LeftMenu from './View/LeftMenu.vue';
+import TopbarMenu from './View/TopbarMenu.vue';
 const { t } = useI18n();
 </script>
 
 <style scoped>
-.Main-Game-Container{
+.fullcenter {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  display: flex;
+  justify-content: center;
+}
+
+.wwo {
+  width: 1100px;
+}
+
+.Main-Game-Topbar {
+  width: 100%;
+}
+
+.Main-Game-Container {
   width: 100vw;
   height: 100vh;
   background-image: url(/game/main/main.jpg);
   background-repeat: no-repeat;
-  /* background-size: 100% 100%; */
   background-size: cover;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-.Main-Game-Right{
-  border: 1px solid green;
-  width: 20%;
-  height: 90%;
-}
-.rout{
-  width: 80%;
 
+.Main-Game-Right {
+  border: 1px solid green;
+  min-width: 360px;
+}
+
+.Main-Game-Left {
   border: 1px solid green;
 }
+
+.Main-Game-Left,
+.Main-Game-Right {
+  height: fit-content;
+}
+
+.rout {
+  width: 80%;
+  background-color: rgba(0, 0, 0, 0.5);
+  border: 1px solid green;
+}
+
 .Main-Game-Topbar,
-.Main-Game-Footer 
-{
+.Main-Game-Footer {
   background-color: rgb(40 71 81);
   padding: 2px;
 
 }
-.Main-Game-Footer{
+
+.Main-Game-Footer {
   width: 100%;
   position: fixed;
   bottom: 0;
 }
-.fx{
+
+.fx {
   justify-content: space-evenly;
 }
 </style>

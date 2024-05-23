@@ -1,5 +1,5 @@
 <template>
-  <div class="w1">
+  <div class="w1 epc">
     <router-link to="/">{{ t('global.backToMain') }}</router-link>
     <h2>Informacje o używanych ciasteczkach</h2>
     <p>Nasza aplikacja korzysta z ciasteczek</p>
@@ -26,6 +26,13 @@ const { t } = useI18n();
 </script>
 
 <style scoped>
+@media (max-width: 480px) {
+  .w1{
+    margin: 0px!important;
+    padding: 7px!important;
+  }
+}
+
 .link-cookie{
   color: #03e0f9;
 }

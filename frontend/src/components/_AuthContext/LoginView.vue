@@ -73,6 +73,11 @@ async function loginFunc() {
 </script>
 
 <style scoped>
+@media (max-width: 480px) {
+  .login-form {
+    padding: 7px!important;
+  }
+}
 .login-form {
   max-width: 300px;
   margin: 0 auto;

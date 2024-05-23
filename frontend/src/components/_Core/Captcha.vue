@@ -6,7 +6,7 @@
     </div>
     <div class="captchaView">
       <canvas ref="captchaCanvas" :width="captchaWidth" :height="captchaHeight"></canvas>
-      <button @click.prevent="refreshCaptcha">{{ t('captcha.refreshCaptcha') }}</button>
+      <button class="btn-captcha" @click.prevent="refreshCaptcha">{{ t('captcha.refreshCaptcha') }}</button>
     </div>
 
     <!-- <p v-if="isCaptchaValid">CAPTCHA is correct!</p> -->
@@ -99,7 +99,6 @@ label{
 .captcha-container {
   display: flex;
   flex-direction: column;
-  margin-top: 10px;
 }
 
 canvas {
