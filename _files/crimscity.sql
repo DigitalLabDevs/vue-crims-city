@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: May 23, 2024 at 06:40 AM
+-- Generation Time: May 25, 2024 at 07:52 AM
 -- Server version: 5.7.24
 -- PHP Version: 8.3.4
 
@@ -24,11 +24,33 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `buildings`
+--
+
+CREATE TABLE `buildings` (
+  `buildings_ids` int(11) NOT NULL,
+  `buildings_name` varchar(30) NOT NULL,
+  `buildings_img` varchar(30) NOT NULL,
+  `buildings_description` varchar(200) NOT NULL,
+  `buildings_capacity` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `buildings`
+--
+
+INSERT INTO `buildings` (`buildings_ids`, `buildings_name`, `buildings_img`, `buildings_description`, `buildings_capacity`) VALUES
+(1, 'Fabryka fałszywek', 'fabfal', 'Fabryka banknotów', 3),
+(2, 'Garaż', 'garage', 'Garaż', 3);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `items`
 --
 
 CREATE TABLE `items` (
-  `id` int(11) NOT NULL,
+  `item_id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
   `description` text NOT NULL,
   `img_url` varchar(255) NOT NULL,
@@ -44,13 +66,63 @@ CREATE TABLE `items` (
 -- Dumping data for table `items`
 --
 
-INSERT INTO `items` (`id`, `name`, `description`, `img_url`, `category`, `attack`, `defense`, `price`, `weight`, `durability`) VALUES
+INSERT INTO `items` (`item_id`, `name`, `description`, `img_url`, `category`, `attack`, `defense`, `price`, `weight`, `durability`) VALUES
 (1, 'Pistolet', 'Mały pistolet kaliber 9mm.', 'pistol1.jpg', 'Weapon', 50, NULL, 100.00, 1.50, 100),
 (2, 'Kamizelka kuloodporna', 'Kamizelka chroniąca przed pociskami.', 'vest1.jpg', 'Defense', NULL, 30, 200.00, 2.00, 200),
 (3, 'Telefon', 'Nowoczesny smartfon.', 'phone1.jpg', 'Items', NULL, NULL, 500.00, 0.50, NULL),
 (4, 'Stare Buty', 'Podarte stare buty.', 'old_shoes.jpg', 'Trash', NULL, NULL, 0.10, 1.00, NULL),
 (5, 'Karabin', 'Szybkostrzelny karabin automatyczny.', 'rifle1.jpg', 'Weapon', 80, NULL, 200.00, 3.00, 150),
 (6, 'Hełm', 'Hełm ochronny.', 'helmet3.jpg', 'Defense', NULL, 40, 150.00, 1.00, 250);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `player_buildings`
+--
+
+CREATE TABLE `player_buildings` (
+  `pb_ids` int(11) NOT NULL,
+  `pb_player_ids` int(11) DEFAULT NULL,
+  `pb_buildings_ids` int(11) NOT NULL,
+  `pb_level` int(11) NOT NULL DEFAULT '0',
+  `pb_capacity` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `player_buildings`
+--
+
+INSERT INTO `player_buildings` (`pb_ids`, `pb_player_ids`, `pb_buildings_ids`, `pb_level`, `pb_capacity`) VALUES
+(1, 77, 1, 1, 3),
+(2, 77, 2, 3, 3);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `player_items`
+--
+
+CREATE TABLE `player_items` (
+  `id` int(11) NOT NULL,
+  `player_id` int(11) DEFAULT NULL,
+  `item_id` int(11) NOT NULL,
+  `quantity` int(11) DEFAULT '1',
+  `current_durability` int(11) DEFAULT NULL,
+  `equipped` tinyint(1) DEFAULT NULL,
+  `item_slot` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `player_items`
+--
+
+INSERT INTO `player_items` (`id`, `player_id`, `item_id`, `quantity`, `current_durability`, `equipped`, `item_slot`) VALUES
+(1, 77, 1, 1, 100, NULL, 0),
+(2, 77, 2, 1, 100, NULL, 0),
+(3, 77, 3, 1, 100, NULL, 0),
+(4, 77, 5, 1, 100, NULL, 0),
+(5, 77, 4, 1, 100, NULL, 0),
+(6, 77, 6, 1, 100, NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -71,26 +143,16 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`ids`, `email`, `access_token`, `session_token`, `login_date`) VALUES
-(70, 'yovasec567@fincainc.com', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ5b3Zhc2VjNTY3QGZpbmNhaW5jLmNvbSIsInNlc3Npb25JZCI6Ijc3MWI4YWE0LTU5MmQtNGFhMy1hNmFhLWI0ZWNhNzE0OGRhYSIsImlhdCI6MTcxNjEzODU3NCwiZXhwIjoxNzE2MTQyMTc0fQ.H26dKBGHsaaWu2VeoGW2j1ggR3I6OpOjdiUiVPQOpKI', '771b8aa4-592d-4aa3-a6aa-b4eca7148daa', '2024-05-19 19:09:34'),
-(71, 'yovasec567@fincainc.com', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ5b3Zhc2VjNTY3QGZpbmNhaW5jLmNvbSIsInNlc3Npb25JZCI6IjlkZjEwY2VkLTJiYTgtNDEyZS1iMDgyLWQxMmIyYTRjYTExMSIsImlhdCI6MTcxNjEzODcwOSwiZXhwIjoxNzE2MTQyMzA5fQ.qAqY5A4wBeX45SL93DwEb5QfA_bIbydyeI5ITz4w2nM', '9df10ced-2ba8-412e-b082-d12b2a4ca111', '2024-05-19 19:11:49'),
-(72, 'yovasec567@fincainc.com', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ5b3Zhc2VjNTY3QGZpbmNhaW5jLmNvbSIsInNlc3Npb25JZCI6IjlkZjEwY2VkLTJiYTgtNDEyZS1iMDgyLWQxMmIyYTRjYTExMSIsImlhdCI6MTcxNjEzODc5MywiZXhwIjoxNzE2MTQyMzkzfQ.xqnwcWJ3Cu-DIM70UdYzlho5JjuIkSPgQyAWMk3boD0', '9df10ced-2ba8-412e-b082-d12b2a4ca111', '2024-05-19 19:13:13'),
-(73, 'yovasec567@fincainc.com', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ5b3Zhc2VjNTY3QGZpbmNhaW5jLmNvbSIsInNlc3Npb25JZCI6ImFmZWFiODM1LTViMWMtNGMzNC1iMjk0LTJmMDBkM2QxMmU3MCIsImlhdCI6MTcxNjEzODk3NywiZXhwIjoxNzE2MTQyNTc3fQ.X_uf1C_UPNeVZZgA-r0N71YlRvB_UW-KMeL80S20NHA', 'afeab835-5b1c-4c34-b294-2f00d3d12e70', '2024-05-19 19:16:17'),
-(74, 'yovasec567@fincainc.com', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ5b3Zhc2VjNTY3QGZpbmNhaW5jLmNvbSIsInNlc3Npb25JZCI6ImFmZWFiODM1LTViMWMtNGMzNC1iMjk0LTJmMDBkM2QxMmU3MCIsImlhdCI6MTcxNjEzOTE0NiwiZXhwIjoxNzE2MTQyNzQ2fQ.mLGzOx9QPOLm6ayUWb93rZAmXYyTrF7XnIAeGvOGJHY', 'afeab835-5b1c-4c34-b294-2f00d3d12e70', '2024-05-19 19:19:06'),
-(75, 'yovasec567@fincainc.com', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ5b3Zhc2VjNTY3QGZpbmNhaW5jLmNvbSIsInNlc3Npb25JZCI6ImFmZWFiODM1LTViMWMtNGMzNC1iMjk0LTJmMDBkM2QxMmU3MCIsImlhdCI6MTcxNjEzOTIwNiwiZXhwIjoxNzE2MTQyODA2fQ.Tdu1JMR_2upM60SwmAd-OnYCVA5tT1wSSm2bFQTrygI', 'afeab835-5b1c-4c34-b294-2f00d3d12e70', '2024-05-19 19:20:06'),
-(76, 'yovasec567@fincainc.com', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ5b3Zhc2VjNTY3QGZpbmNhaW5jLmNvbSIsInNlc3Npb25JZCI6ImFmZWFiODM1LTViMWMtNGMzNC1iMjk0LTJmMDBkM2QxMmU3MCIsImlhdCI6MTcxNjEzOTMyMywiZXhwIjoxNzE2MTQyOTIzfQ.J65ZspmgAhDm57hQaQSQ_jt4-Z4MUTYA8zaITHXKK6k', 'afeab835-5b1c-4c34-b294-2f00d3d12e70', '2024-05-19 19:22:03'),
-(78, 'yovasec567@fincainc.com', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ5b3Zhc2VjNTY3QGZpbmNhaW5jLmNvbSIsInNlc3Npb25JZCI6ImQzYTdjODA4LWJkMmItNGZlMy1hNjIxLWQwNzYwNTkxNGFkYSIsImlhdCI6MTcxNjEzOTQxNCwiZXhwIjoxNzE2MTQzMDE0fQ.0xMrF0gkfdTA4V9n5PDwIt8gUgrASqqAT2SSkgLjkLk', 'd3a7c808-bd2b-4fe3-a621-d07605914ada', '2024-05-19 19:23:34'),
-(79, 'yovasec567@fincainc.com', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ5b3Zhc2VjNTY3QGZpbmNhaW5jLmNvbSIsInNlc3Npb25JZCI6IjA5OTViNDQ3LWU3MTctNGM3Yi04ODRiLWUzM2E4N2NiOGIxYiIsImlhdCI6MTcxNjE4NDg2MCwiZXhwIjoxNzE2MTg4NDYwfQ.-mr8tskGi8Gpo4_j-RsrQ_IZjdl1kKSo33TDS-NpX9o', '0995b447-e717-4c7b-884b-e33a87cb8b1b', '2024-05-20 08:01:00'),
-(80, 'yovasec567@fincainc.com', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ5b3Zhc2VjNTY3QGZpbmNhaW5jLmNvbSIsInNlc3Npb25JZCI6ImU0NDBlOGE5LTAxOTctNDRiZC1hNTQwLWRhMjE4ZGI2YWFhNSIsImlhdCI6MTcxNjMwNjIwNiwiZXhwIjoxNzE2MzA5ODA2fQ.A95IkLLeuwKDlfe0-CLkuqBB5GnAB4yktvQKYFkoZ84', 'e440e8a9-0197-44bd-a540-da218db6aaa5', '2024-05-21 17:43:26'),
-(81, 'yovasec567@fincainc.com', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ5b3Zhc2VjNTY3QGZpbmNhaW5jLmNvbSIsInNlc3Npb25JZCI6ImU0NDBlOGE5LTAxOTctNDRiZC1hNTQwLWRhMjE4ZGI2YWFhNSIsImlhdCI6MTcxNjMxMDA5NCwiZXhwIjoxNzE2MzEzNjk0fQ.eEsu_JzVDGIo0Ducn3xx9uMNehvRCUxAznc8usxRo_I', 'e440e8a9-0197-44bd-a540-da218db6aaa5', '2024-05-21 18:48:14'),
-(82, 'yovasec567@fincainc.com', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ5b3Zhc2VjNTY3QGZpbmNhaW5jLmNvbSIsInNlc3Npb25JZCI6ImU0NDBlOGE5LTAxOTctNDRiZC1hNTQwLWRhMjE4ZGI2YWFhNSIsImlhdCI6MTcxNjMxMzcxOCwiZXhwIjoxNzE2MzE3MzE4fQ.-FQDl5eOy97TPQb8s_Te41wmbc_yBOYqfAty9cUE-xY', 'e440e8a9-0197-44bd-a540-da218db6aaa5', '2024-05-21 19:48:38'),
-(83, 'yovasec567@fincainc.com', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ5b3Zhc2VjNTY3QGZpbmNhaW5jLmNvbSIsInNlc3Npb25JZCI6ImU0NDBlOGE5LTAxOTctNDRiZC1hNTQwLWRhMjE4ZGI2YWFhNSIsImlhdCI6MTcxNjMxOTUxMywiZXhwIjoxNzE2MzIzMTEzfQ.V6ZuKuZMUcCbCzNj8hfjzwBplZV8-MbCsBnWIH-EyXw', 'e440e8a9-0197-44bd-a540-da218db6aaa5', '2024-05-21 21:25:13'),
-(84, 'yovasec567@fincainc.com', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ5b3Zhc2VjNTY3QGZpbmNhaW5jLmNvbSIsInNlc3Npb25JZCI6ImU0NDBlOGE5LTAxOTctNDRiZC1hNTQwLWRhMjE4ZGI2YWFhNSIsImlhdCI6MTcxNjMyMzIxNSwiZXhwIjoxNzE2MzI2ODE1fQ.4XlorUbRF-vzOs062WJIywW0y7I4xGzRYBGkjIRAG8g', 'e440e8a9-0197-44bd-a540-da218db6aaa5', '2024-05-21 22:26:55'),
-(85, 'yovasec567@fincainc.com', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ5b3Zhc2VjNTY3QGZpbmNhaW5jLmNvbSIsInNlc3Npb25JZCI6ImU0NDBlOGE5LTAxOTctNDRiZC1hNTQwLWRhMjE4ZGI2YWFhNSIsImlhdCI6MTcxNjMyNzA4OSwiZXhwIjoxNzE2MzMwNjg5fQ.qrLfyYbqB23JrIXWy0lEo4fviwwich5REKIsEo9Z9ys', 'e440e8a9-0197-44bd-a540-da218db6aaa5', '2024-05-21 23:31:29'),
-(86, 'yovasec567@fincainc.com', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ5b3Zhc2VjNTY3QGZpbmNhaW5jLmNvbSIsInNlc3Npb25JZCI6Ijc1MDgzY2NiLTE5YTYtNGY1ZC1hNGExLTVkNDBiNWI1NjZjYyIsImlhdCI6MTcxNjM2MjI2MywiZXhwIjoxNzE2MzY1ODYzfQ.wY_AYXFNEhU3audAlDExC5OfDGU-vaoC_oGevdMkrQ0', '75083ccb-19a6-4f5d-a4a1-5d40b5b566cc', '2024-05-22 09:17:43'),
-(87, 'yovasec567@fincainc.com', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ5b3Zhc2VjNTY3QGZpbmNhaW5jLmNvbSIsInNlc3Npb25JZCI6Ijc1MDgzY2NiLTE5YTYtNGY1ZC1hNGExLTVkNDBiNWI1NjZjYyIsImlhdCI6MTcxNjM2OTk5MSwiZXhwIjoxNzE2MzczNTkxfQ.ELMu2M7BQYOTJuk_TkfjZP_yOBB1lQoqyuJkVHULIDo', '75083ccb-19a6-4f5d-a4a1-5d40b5b566cc', '2024-05-22 11:26:31'),
-(88, 'yovasec567@fincainc.com', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ5b3Zhc2VjNTY3QGZpbmNhaW5jLmNvbSIsInNlc3Npb25JZCI6IjNhZjI5NjNkLTAzMmQtNDY2OC05NzllLTgwNTI3MGZiNDQzZiIsImlhdCI6MTcxNjQzNjMzMiwiZXhwIjoxNzE2NDM5OTMyfQ.pXdMsCD7CeyF7rcxXiRrx0OWsXB3QwcFdnibA5A_4Lg', '3af2963d-032d-4668-979e-805270fb443f', '2024-05-23 05:52:12'),
-(89, 'yovasec567@fincainc.com', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ5b3Zhc2VjNTY3QGZpbmNhaW5jLmNvbSIsInNlc3Npb25JZCI6IjNhZjI5NjNkLTAzMmQtNDY2OC05NzllLTgwNTI3MGZiNDQzZiIsImlhdCI6MTcxNjQ0MTA4MiwiZXhwIjoxNzE2NDQ0NjgyfQ.P6nEvqoaJk0K-sRZ1R2BLS5lKoyxz9JXnyKbrskYwNQ', '3af2963d-032d-4668-979e-805270fb443f', '2024-05-23 07:11:22'),
-(90, 'yovasec567@fincainc.com', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ5b3Zhc2VjNTY3QGZpbmNhaW5jLmNvbSIsInNlc3Npb25JZCI6IjNhZjI5NjNkLTAzMmQtNDY2OC05NzllLTgwNTI3MGZiNDQzZiIsImlhdCI6MTcxNjQ0NDc1MywiZXhwIjoxNzE2NDQ4MzUzfQ.aI-9YtY86k9Nfq_af3MdtE_6kX-BXUEggMTfkVIquXU', '3af2963d-032d-4668-979e-805270fb443f', '2024-05-23 08:12:33');
+(93, 'yovasec567@fincainc.com', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOiJ5b3Zhc2VjNTY3QGZpbmNhaW5jLmNvbSIsInNlc3Npb25JZCI6IjYxMTIzNDcxLWExMDAtNGM0NS1hNGRiLTU2MmM2Y2Q4YzY2NyIsImlhdCI6MTcxNjUyNzkyNSwiZXhwIjoxNzE2NTMxNTI1fQ.sAscXpHPoI7RLypuOKMkOQjFO34lIBywIYyjEv13pRY', '61123471-a100-4c45-a4db-562c6cd8c667', '2024-05-24 07:18:45'),
+(94, '77', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOjc3LCJzZXNzaW9uSWQiOiI1ZGQ2ODVmYy02MjRmLTQ4OGEtODc5Yi0zZWJiYjQ3ZjJjYjkiLCJpYXQiOjE3MTY1Mjk4NzQsImV4cCI6MTcxNjUzMzQ3NH0.hhe_Z5av-mHXY4ta5Gkq2Sog3FAwppDAyQ9qar5ksTM', '5dd685fc-624f-488a-879b-3ebbb47f2cb9', '2024-05-24 07:51:14'),
+(95, '77', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOjc3LCJzZXNzaW9uSWQiOiIwMGFhYTBkMS1kYmExLTQxODktOWE3OS02OGVhY2I3MWI3NmYiLCJpYXQiOjE3MTY1MzA2MTQsImV4cCI6MTcxNjUzNDIxNH0.6jn582LeOaKkizGWNCNL3xRPUWA2Ywhq8yKodtrmJEg', '00aaa0d1-dba1-4189-9a79-68eacb71b76f', '2024-05-24 08:03:34'),
+(96, '77', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOjc3LCJzZXNzaW9uSWQiOiI5ZDAxOTIzZC1mODg5LTQwOTQtOGViOC02ODcxZDk1ODI3NjgiLCJpYXQiOjE3MTY1NTU1OTUsImV4cCI6MTcxNjU1OTE5NX0.4C5zD6um7_IseUFLgzQphCUqTrDRzk9VWYonE8sQqzk', '9d01923d-f889-4094-8eb8-6871d9582768', '2024-05-24 14:59:55'),
+(97, '77', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOjc3LCJzZXNzaW9uSWQiOiIxZjU3ODdiNy0yYWE2LTRiZDYtOTBlNy1kMjg5NjM0MGNjOTYiLCJpYXQiOjE3MTY1NTkxOTgsImV4cCI6MTcxNjU2Mjc5OH0.F3P04jN2jl0IAyDrdxb7vrFlT1i4QZkxiQjV4wgavJA', '1f5787b7-2aa6-4bd6-90e7-d2896340cc96', '2024-05-24 15:59:58'),
+(98, '77', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOjc3LCJzZXNzaW9uSWQiOiIxZjU3ODdiNy0yYWE2LTRiZDYtOTBlNy1kMjg5NjM0MGNjOTYiLCJpYXQiOjE3MTY1NjI5NjksImV4cCI6MTcxNjU2NjU2OX0.fLk9iEm-m3zlOgVOlMtYETcb0WY-MoWQ3vXrMn4nyn4', '1f5787b7-2aa6-4bd6-90e7-d2896340cc96', '2024-05-24 17:02:49'),
+(99, '77', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOjc3LCJzZXNzaW9uSWQiOiJkY2ZmNmMyOC1iMjdlLTRiODAtOWE0Yi1kNWUxMGYxNTkyNDEiLCJpYXQiOjE3MTY1NjkwMjEsImV4cCI6MTcxNjU3MjYyMX0.LOVfFaiV5gXtZ274dxxShBX1rAAGgCw9yV901ZhWy1I', 'dcff6c28-b27e-4b80-9a4b-d5e10f159241', '2024-05-24 18:43:41'),
+(100, '77', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOjc3LCJzZXNzaW9uSWQiOiI3ZjUwMzIxNS04OWI3LTQzMzUtODM2NS03NTk1MTRjZTYzZmUiLCJpYXQiOjE3MTY2MTQzNDYsImV4cCI6MTcxNjYxNzk0Nn0.n1vMA3oyl3i6a36UiVAbPEkQqceCq_yhToLtsff80go', '7f503215-89b7-4335-8365-759514ce63fe', '2024-05-25 07:19:06'),
+(101, '77', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOjc3LCJzZXNzaW9uSWQiOiIzMGQyMjI3OC1mNmU4LTQ2OGUtODQ5Zi1hN2NhMDU0ZDMyNmIiLCJpYXQiOjE3MTY2MTg2NjQsImV4cCI6MTcxNjYyMjI2NH0.8OFiLhl8XyLtqaRnvH1J8q0Ft2tAlOsbKe2NufhTW-0', '30d22278-f6e8-468e-849f-a7ca054d326b', '2024-05-25 08:31:04'),
+(102, '77', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOjc3LCJzZXNzaW9uSWQiOiIzZjEyMDhkMC00NjJlLTQ2OWMtODJlYy01YmZiNTZjNzUyYzUiLCJpYXQiOjE3MTY2MjIzNjksImV4cCI6MTcxNjYyNTk2OX0.D_llhWpBwITl4mYrQZkl1xrA7sZt3mUHvwZPTHXlVyA', '3f1208d0-462e-469c-82ec-5bfb56c752c5', '2024-05-25 09:32:49');
 
 -- --------------------------------------------------------
 
@@ -109,7 +171,10 @@ CREATE TABLE `sessions_store` (
 --
 
 INSERT INTO `sessions_store` (`session_id`, `expires`, `data`) VALUES
-('JOpUU8lA2SHMncEAk1ZoCbM-L5myyokA', 1716448354, '{\"cookie\":{\"originalMaxAge\":3600000,\"expires\":\"2024-05-23T07:12:33.689Z\",\"secure\":false,\"httpOnly\":false,\"path\":\"/\"},\"data\":{\"user_ip\":\"::1\"},\"user\":{\"email\":\"yovasec567@fincainc.com\"}}');
+('CGZMUoMop8HqaO6VEHWbcgwDFE_ISoxl', 1716622507, '{\"cookie\":{\"originalMaxAge\":3600000,\"expires\":\"2024-05-25T07:35:06.753Z\",\"secure\":false,\"httpOnly\":false,\"path\":\"/\"},\"data\":{\"user_ip\":\"::1\"}}'),
+('Yasg37ZusXaaBLlgDAbWbJK076Yk_zDf', 1716622268, '{\"cookie\":{\"originalMaxAge\":3600000,\"expires\":\"2024-05-25T07:31:07.715Z\",\"secure\":false,\"httpOnly\":false,\"path\":\"/\"},\"data\":{\"user_ip\":\"::1\"}}'),
+('ZgoETG5QqAmUTNJCKDIKLJLeaBLF07xs', 1716627159, '{\"cookie\":{\"originalMaxAge\":3600000,\"expires\":\"2024-05-25T06:19:06.703Z\",\"secure\":false,\"httpOnly\":false,\"path\":\"/\"},\"data\":{\"user_ip\":\"::1\"},\"user\":{\"email\":\"yovasec567@fincainc.com\"}}'),
+('deCkiZomOGltJsFcpz3F6dlaq-Vnp1HD', 1716622325, '{\"cookie\":{\"originalMaxAge\":3600000,\"expires\":\"2024-05-25T07:32:04.870Z\",\"secure\":false,\"httpOnly\":false,\"path\":\"/\"},\"data\":{\"user_ip\":\"::1\"}}');
 
 -- --------------------------------------------------------
 
@@ -143,17 +208,38 @@ INSERT INTO `users` (`ids`, `email`, `user`, `pass`, `pin`, `notifications`, `ac
 (3, NULL, 'ADMIN1', '$2b$10$eMau1KnpQaBvqH7sTIx08OOmU4355hMgvfiw8OfaEdFQOXrQggRN2', NULL, NULL, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHMiOjMsInJvbGUiOm51bGwsInVzZXIiOiJBRE1JTjEiLCJleHAiOjE3MDcwMzc0NjIsImlhdCI6MTcwNzAzMzg2Mn0.qiupxDDsYKOXjhZwJOGir9yBYDQa8c1PNkwYbc2NfiQ', NULL, '2024-02-04 09:04:22', NULL, NULL, NULL, 0),
 (4, NULL, '01585', '$2b$10$eMau1KnpQaBvqH7sTIx08OOmU4355hMgvfiw8OfaEdFQOXrQggRN2', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
 (71, 'hesidak940@bsomek.com', NULL, '$2b$10$nhksDTDiaqH/RMniHpx86ejMoq8SVvvNOCs427QQPAYQeSnMcRy8e', NULL, NULL, NULL, NULL, NULL, '2024-05-15 08:56:11', 0, NULL, 0),
-(77, 'yovasec567@fincainc.com', NULL, '$2b$10$Hw9clcQtRnjoOFO8yo69He0gFkxfNfnAlzIq1P8YlASAAShdc/CCO', NULL, NULL, NULL, NULL, '2024-05-23 08:12:33', '2024-05-17 17:40:34', 73, NULL, 0);
+(77, 'yovasec567@fincainc.com', NULL, '$2b$10$Hw9clcQtRnjoOFO8yo69He0gFkxfNfnAlzIq1P8YlASAAShdc/CCO', NULL, NULL, NULL, NULL, '2024-05-25 09:32:49', '2024-05-17 17:40:34', 85, NULL, 0);
 
 --
 -- Indexes for dumped tables
 --
 
 --
+-- Indexes for table `buildings`
+--
+ALTER TABLE `buildings`
+  ADD PRIMARY KEY (`buildings_ids`);
+
+--
 -- Indexes for table `items`
 --
 ALTER TABLE `items`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`item_id`);
+
+--
+-- Indexes for table `player_buildings`
+--
+ALTER TABLE `player_buildings`
+  ADD PRIMARY KEY (`pb_ids`),
+  ADD KEY `pb_player_ids` (`pb_player_ids`);
+
+--
+-- Indexes for table `player_items`
+--
+ALTER TABLE `player_items`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `player_id` (`player_id`),
+  ADD KEY `item_id` (`item_id`);
 
 --
 -- Indexes for table `sessions`
@@ -178,22 +264,51 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `buildings`
+--
+ALTER TABLE `buildings`
+  MODIFY `buildings_ids` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `items`
 --
 ALTER TABLE `items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `player_buildings`
+--
+ALTER TABLE `player_buildings`
+  MODIFY `pb_ids` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `player_items`
+--
+ALTER TABLE `player_items`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `sessions`
 --
 ALTER TABLE `sessions`
-  MODIFY `ids` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=91;
+  MODIFY `ids` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=103;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
   MODIFY `ids` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `player_items`
+--
+ALTER TABLE `player_items`
+  ADD CONSTRAINT `player_items_ibfk_1` FOREIGN KEY (`player_id`) REFERENCES `users` (`ids`),
+  ADD CONSTRAINT `player_items_ibfk_2` FOREIGN KEY (`item_id`) REFERENCES `items` (`item_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
