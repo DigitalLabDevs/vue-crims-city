@@ -1,10 +1,53 @@
+const express = require('express');
 const db = require('../db');
 const jwt = require('jsonwebtoken');
 // require('dotenv').config();
 const { v4: uuidv4 } = require('uuid');
 const sessionToken = uuidv4();
+const cookieParser = require('cookie-parser');
 
-// Tworzenie tokenu JWT httpOnly
+const router = express.Router();
+router.use(cookieParser());
+
+
+
+
+// ==================== Middleware do weryfikacji tokenu JWT ==========================
+async function verifyJwtToken(req, res, next) {
+  try {
+    // Pobierz token JWT z ciasteczek
+    const token = req.cookies['Lz^T1'];
+    if (!token) {
+      return res.status(401).json({ message: 'Brak tokenu uwierzytelniającego' });
+    }
+
+    // Weryfikacja tokenu JWT
+    const decoded = jwt.verify(token, process.env.JWT_KEY);
+
+    // Sprawdzenie, czy token sesji istnieje w bazie danych
+    const sessionToken = decoded.sessionId;
+    const session = await getSessionFromDatabase(sessionToken);
+
+    // console.log(`verifyJwtToken: ${JSON.stringify(session)}`);
+
+    if (!session) {
+      return res.status(401).json({ message: 'Nieprawidłowy token sesji' });
+    }
+
+    // Przypisanie danych użytkownika do requestu
+    req.user = decoded;
+
+    console.log(`${JSON.stringify(req.user)}`);
+
+    // Kontynuowanie do następnego middleware lub trasy
+    next();
+  } catch (error) {
+    console.error('Błąd weryfikacji tokenu JWT:', error);
+    res.status(401).json({ message: 'Nieprawidłowy token uwierzytelniający' });
+  }
+}
+
+// ========================= Tworzenie tokenu JWT httpOnly ==========================
 async function generateAccessToken(userEmail) {
   try {
     // Dane do zapisania w tokenie
@@ -81,9 +124,26 @@ async function deleteAccessTokenFromDatabase(sessionToken) {
 }
 
 
+// Funkcja do pobrania sesji z bazy danych
+async function getSessionFromDatabase(sessionToken) {
+  return new Promise((resolve, reject) => {
+    const query = 'SELECT * FROM sessions WHERE session_token = ?';
+    db.query(query, [sessionToken], (error, results) => {
+      if (error) {
+        console.error('Błąd podczas pobierania sesji z bazy danych:', error);
+        reject(error);
+      } else {
+        resolve(results[0]);
+      }
+    });
+  });
+}
+
+
 
 // Eksportowanie obu funkcji
 module.exports = { 
   generateAccessToken, 
-  deleteSessionTokenFromDatabase 
+  deleteSessionTokenFromDatabase,
+  verifyJwtToken
 };

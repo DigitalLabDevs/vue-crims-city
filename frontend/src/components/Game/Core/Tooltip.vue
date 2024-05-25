@@ -1,46 +1,99 @@
 <template>
-  <div v-if="visible" :style="tooltipStyle" class="tooltip-content">
-    <slot></slot>
+  <div
+    class="tooltip-image"
+    :style="containerStyle"
+  >
+
+    <div v-if="visible" class="tooltipo" :style="tooltipStyle">
+      <slot></slot>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, defineProps } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 
-// Props
 const props = defineProps({
-  visible: Boolean
+  imageSrc: {
+    type: String,
+    required: true
+  },
+  posx: {
+    type: Number,
+    required: true
+  },
+  posy: {
+    type: Number,
+    required: true
+  }
 });
+
+const visible = ref(false);
 
 const tooltipStyle = ref({
   position: 'absolute',
   top: '0px',
   left: '0px',
-  transform: 'translate(10px, 10px)',
   backgroundColor: 'rgba(0, 0, 0, 0.75)',
   color: 'white',
   padding: '5px 10px',
   borderRadius: '4px',
   pointerEvents: 'none',
-  zIndex: 1000
+  zIndex: 1000,
+  transform: 'translate(-40%, -40%)',
 });
 
+const containerStyle = computed(() => ({
+  position: 'absolute',
+  top: `${props.posx}px`,
+  left: `${props.posy}px`,
+}));
+
+const showTooltip = () => {
+  visible.value = true;
+};
+
+const hideTooltip = () => {
+  visible.value = false;
+};
+
 const updateTooltipPosition = (event: MouseEvent) => {
-  tooltipStyle.value.top = `${event.clientY}px`;
-  tooltipStyle.value.left = `${event.clientX}px`;
+  const containerRect = event.currentTarget.getBoundingClientRect();
+  const tooltipWidth = tooltipStyle.value.width || 150; // Domyślna wartość, jeśli width nie jest zdefiniowane
+  const tooltipHeight = tooltipStyle.value.height || 150; // Domyślna wartość, jeśli height nie jest zdefiniowane
+
+  tooltipStyle.value.top = `${event.clientY - containerRect.top - tooltipHeight}px`;
+  tooltipStyle.value.left = `${event.clientX - containerRect.left - tooltipWidth / 2}px`;
 };
 
 onMounted(() => {
-  window.addEventListener('mousemove', updateTooltipPosition);
-});
-
-onUnmounted(() => {
-  window.removeEventListener('mousemove', updateTooltipPosition);
+  tooltipStyle.value.width = document.querySelector('.tooltipo')?.clientWidth || 100; // Pobieranie szerokości tooltipa po załadowaniu komponentu
 });
 </script>
 
 <style scoped>
-.tooltip-content {
-  z-index: 1000;
+.img-items{
+  
+}
+.tooltip-image {
+  display: inline-block;
+}
+
+.gun {
+  cursor: pointer;
+  transition: transform 200ms;
+}
+
+.gun:hover {
+  filter: drop-shadow(2px 2px 10px rgb(211, 93, 24));
+}
+
+.tooltipo {
+  /* position: fixed; */
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 300px;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
 }
 </style>

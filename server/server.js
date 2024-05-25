@@ -12,6 +12,7 @@ const { API_URL } = require('./config');
 const registrationEndpoint = require('./endpoints/registrationEndpoint');
 const loginEndpoint = require('./endpoints/loginEndpoint');
 const playerItems = require('./endpoints/playerItems');
+const buildings = require('./endpoints/buildingsEndpoint');
 
 app.use(express.json());
 // Middleware dla CORS
@@ -54,6 +55,7 @@ app.use((req, res, next) => {
 app.use(registrationEndpoint);
 app.use(loginEndpoint);
 app.use(playerItems);
+app.use(buildings);
 
 
 

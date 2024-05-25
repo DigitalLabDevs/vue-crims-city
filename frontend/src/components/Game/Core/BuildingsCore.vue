@@ -7,7 +7,11 @@
       <span title="Destrukcja">D</span>
     </div>
     <router-link :to="`/crims-city/buildings/${props.imageName}`">
-      <img :title="`${props.name}`" :src="`/game/images/buildings/${props.imageName}.jpg`" :alt="props.imageName" />
+      <img 
+        :title="`${props.name}`" 
+        :src="`/game/images/buildings/${props.imageName}.jpg`" 
+        :alt="props.imageName" 
+      />
     </router-link>
     <div class="BuildingsCorefooter">
       {{ t('game.level') }}: {{ level }}

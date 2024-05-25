@@ -109,7 +109,12 @@
     "balance": "Gotówka",
     "deposit": "Zdeponuj gotówkę",
     "withdraw": "Wypłać gotówkę",
-    "transactionHistory": "Historia transakcji"
+    "transactionHistory": "Historia transakcji",
+    "loan": "Pożyczka",
+    "cancel": "Anuluj",
+    "loanTitle": "Pożyczki w Crims City",
+    "applyForLoan": "Złóż wniosek o pożyczkę",
+    "repayLoan": "Spłać pożyczkę"
   },
   "dashboard":{
     "level": "Level",

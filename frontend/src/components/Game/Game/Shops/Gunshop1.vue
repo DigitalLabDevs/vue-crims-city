@@ -88,6 +88,7 @@ const closeMenu = (event) => {
 </script>
 
 <style scoped>
+
 .Gunshop1 {
   user-select: none;
   width: 600px;

@@ -2,26 +2,46 @@
   <div class="Buildings">
     <h1>{{ t('buildings.title') }}</h1>
     <div class="BuildingsView">
-      <BuildingsCore imageName="fbf" level="4" name="Fabryka Fałszywek"/>
-      <BuildingsCore imageName="kk2" level="1" name="O1"/>
-      <BuildingsCore imageName="kk3" level="3" name="O2"/>
-      <BuildingsCore imageName="kk4" level="2" name="O3"/>
-      <BuildingsCore imageName="kk5" level="7" name="O4"/>
-      <BuildingsCore imageName="kk1" level="4" name="O5"/>
-      <BuildingsCore imageName="kk2" level="1" name="O6"/>
-      <BuildingsCore imageName="kk3" level="3" name="O7"/>
-      <BuildingsCore imageName="kk4" level="2" name="O8"/>
-      <BuildingsCore imageName="kk5" level="7" name="O9"/>
+      <BuildingsCore 
+        v-for="(building, index) in buildings" 
+        :key="index" 
+        :imageName="building.buildings_img" 
+        :name="building.buildings_name"
+        :level="building.pb_level"
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { API_URL } from '../../../config.js';
 import BuildingsCore from '../Core/BuildingsCore.vue';
 
-const { t } = useI18n();
+import { getConfig } from '../../../../getConfig.js';
+const config = getConfig();
 
+const { t } = useI18n();
+const buildings = ref([]);
+
+onMounted(async () => {
+  try {
+    const response = await fetch(`${API_URL}/game/buildings`,{
+      method: config.method,
+      credentials: config.credentials,
+      headers: config.headers
+    });
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const data = await response.json();
+    buildings.value = data;
+    console.log(buildings.value);
+  } catch (error) {
+    console.error('Error fetching buildings data:', error);
+  }
+});
 </script>
 
 <style scoped>
