@@ -121,5 +121,11 @@
     "settings": "Ustawienia",
     "balance": "Gotówka",
     "resources": "Zasoby"
+  },
+  "category":{
+    "Weapon": "Broń",
+    "Defense": "Obrona",
+    "Items": "Przemioty",
+    "Trash": "Śmieci"
   }
 }

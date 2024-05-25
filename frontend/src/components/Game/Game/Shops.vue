@@ -7,7 +7,8 @@
     </div>
     <div class="tab-content">
       <div v-if="currentShop === 0">
-       <GunshopChoose/>
+       <GunshopChoose />
+       <router-view name="gunshops"></router-view>
       </div>
       <div v-else-if="currentShop === 1">
         <h2>Sklep z odzieżą</h2>

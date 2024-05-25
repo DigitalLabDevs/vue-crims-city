@@ -3,7 +3,7 @@ const db = require('../db');
 // Funkcja do pobierania użytkownika z bazy danych na podstawie adresu e-mail
 async function getUserByEmail(email) {
   return new Promise((resolve, reject) => {
-    const query = 'SELECT email, pass FROM users WHERE email = ?';
+    const query = 'SELECT email, pass, ids FROM users WHERE email = ?';
     db.query(query, [email], (error, results) => {
       if (error) {
         console.error('Błąd podczas pobierania użytkownika:', error);

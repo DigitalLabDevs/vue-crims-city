@@ -3,25 +3,25 @@
     <h2>Sklepy z bronią</h2>
     <div class="shops">
     <div class="shop-item">
-      <router-link to="/shop/felk-guns">
+      <router-link to="/crims-city/shops/felk-guns">
         <img src="/game/places/gunshops/gunshop4.jpg" alt="Felek Guns" />
         <p>Felek Guns</p>
       </router-link>
     </div>
     <div class="shop-item">
-      <router-link to="/shop/karabiny-wuela">
+      <router-link to="/crims-city/shops/karabiny-wuela">
         <img src="/game/places/gunshops/gunshop1.jpg" alt="Karabiny Wuela" />
         <p>Karabiny Wuela</p>
       </router-link>
     </div>
     <div class="shop-item">
-      <router-link to="/shop/militaria">
+      <router-link to="/crims-city/shops/militaria">
         <img src="/game/places/gunshops/gunshop2.jpg" alt="Militaria" />
         <p>Militaria</p>
       </router-link>
     </div>
     <div class="shop-item">
-      <router-link to="/shop/klawe-spluwy">
+      <router-link to="/crims-city/shops/klawe-spluwy">
         <img src="/game/places/gunshops/gunshop3.jpg" alt="Klawe spluwy" />
         <p>Klawe spluwy</p>
       </router-link>

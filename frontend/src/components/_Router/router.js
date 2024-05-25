@@ -34,6 +34,11 @@ import Messages from '../Game/Game/Messages.vue';
 import PostOffice from '../Game/Game/PostOffice.vue';
 import Statistics from '../Game/Game/Statistics.vue';
 
+import GunShop1 from '../Game/Game/Shops/Gunshop1.vue';
+import GunShop2 from '../Game/Game/Shops/Gunshop2.vue';
+import GunShop3 from '../Game/Game/Shops/Gunshop3.vue';
+import GunShop4 from '../Game/Game/Shops/Gunshop4.vue';
+
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -162,6 +167,37 @@ const router = createRouter({
           components: {
             game: Shops 
           },
+          children: [
+            {
+              path: 'felk-guns',
+              components: {
+                game: Shops,
+                gunshops: GunShop1,
+              },
+            },
+            {
+              path: 'karabiny-wuela',
+              components: {
+                game: Shops,
+                gunshops: GunShop2,
+              },
+            },
+            {
+              path: 'militaria',
+              components: {
+                game: Shops,
+                gunshops: GunShop3,
+              },
+            },
+            {
+              path: 'klawe-spluwy',
+              components: {
+                game: Shops,
+                gunshops: GunShop4,
+              },
+            },
+            // Dodaj inne sklepy tutaj, jeśli istnieją
+          ],
         },
         {
           path: 'heists',

@@ -21,7 +21,9 @@ select{
   border-radius: 3px;
   border: 1px solid #ccc;
 }
-
+html{
+  user-select: none;
+}
 html, body, #app{
   height: 100vh;
 }

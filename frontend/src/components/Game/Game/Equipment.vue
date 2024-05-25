@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="tabs">
-      <span class="tabs0v" v-for="(tab, index) in tabs" :key="index" @click="currentTab = index">
+      <span class="tabs0v" v-for="(tab, index) in tabsTranslation" :key="index" @click="currentTab = index">
         {{ tab }}
       </span>
     </div>
@@ -21,22 +21,27 @@
     </div>
     <div class="inventory">
       <div class="inventory-grid">
+        <Loader v-if="isLoading" />
         <div
+          v-else
           v-for="(slot, index) in inventorySlots"
           :key="index"
           class="inventory-slot"
+          draggable="true"
           @dragover.prevent
           @drop="onDrop($event, index)"
         >
           <div
-            v-if="filteredItems[index]"
+            v-if="filteredItems[currentTab][index]"
             class="inventory-item"
             draggable="true"
-            @dragstart="onDragStart($event, filteredItems[index], index)"
+            @dragstart="onDragStart($event, filteredItems[currentTab][index], index)"
           >
-            <img v-if="filteredItems[index].img" :src="filteredItems[index].img" :alt="filteredItems[index].name" />
-            <p>{{ filteredItems[index].name }}</p>
-            <p>{{ filteredItems[index].description }}</p>
+            <img 
+            :title="`${filteredItems[currentTab][index].name} - ${filteredItems[currentTab][index].description}`" v-if="filteredItems[currentTab][index].img_url" 
+            :src="`/game/items/${filteredItems[currentTab][index].img_url}`" :alt="filteredItems[currentTab][index].name" />
+            <!-- <p>{{ filteredItems[currentTab][index].name }}</p> -->
+            <!-- <p>{{ filteredItems[currentTab][index].description }}</p> -->
           </div>
         </div>
       </div>
@@ -45,50 +50,34 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 
-const tabs = ['Broń', 'Obrona', 'Przedmioty', 'Śmieci'];
+import Loader from '../../_Core/Loader.vue';
+import { API_URL } from '../../../config';
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
+
+// Przykładowe kategorie pobrane z bazy danych
+const categoriesFromDatabase = ['Weapon', 'Defense', 'Items', 'Trash'];
+
+// Obiekt z przetłumaczonymi nazwami kategorii
+const translatedCategories = {
+  Weapon: t('category.Weapon'),
+  Defense: t('category.Defense'),
+  Items: t('category.Items'),
+  Trash: t('category.Trash')
+};
+
+// Użyj nazw kategorii po angielsku w twojej aplikacji
+const tabs = categoriesFromDatabase;
+
+// Użyj przetłumaczonych nazw kategorii do wyświetlania
+const tabsTranslation = Object.values(translatedCategories);
+
+const isLoading = ref(true);
 const currentTab = ref(0);
 
-const gridItems = ref([
-  {
-    name: 'Pistolet',
-    description: 'Mały pistolet kaliber 9mm.',
-    img: '/game/items/guns/pistol1.jpg',
-    category: 'Broń',
-  },
-  {
-    name: 'Kamizelka kuloodporna',
-    description: 'Kamizelka chroniąca przed pociskami.',
-    img: '/game/items/vest/vest1.jpg',
-    category: 'Obrona',
-  },
-  {
-    name: 'Telefon',
-    description: 'Nowoczesny smartfon.',
-    img: '/game/items/others/phone1.jpg',
-    category: 'Przedmioty',
-  },
-  {
-    name: 'Stare Buty',
-    description: 'Podarte stare buty.',
-    img: 'path/to/old_shoes.jpg',
-    category: 'Śmieci',
-  },
-  {
-    name: 'Karabin',
-    description: 'Szybkostrzelny karabin automatyczny.',
-    img: '/game/items/guns/rifle1.jpg',
-    category: 'Broń',
-  },
-  {
-    name: 'Hełm',
-    description: 'Hełm ochronny.',
-    img: '/game/items/vest/helmet3.jpg',
-    category: 'Obrona',
-  },
-]);
-
+const gridItems = ref(Array.from({ length: 4 }, () => [])); // Inicjalizacja tablicy 2D dla każdej kategorii
 const inventorySlots = ref(40);
 const itemSize = ref(50);
 const columns = ref(6);
@@ -96,11 +85,37 @@ const columns = ref(6);
 const draggedItem = ref(null);
 const draggedIndex = ref(null);
 
+const fetchItems = async () => {
+  try {
+    const promises = categoriesFromDatabase.map(async (category, index) => {
+      const response = await fetch(`${API_URL}/game/player-items`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ category })
+      });
+      const data = await response.json();
+      gridItems.value[index] = data;
+    });
+    await Promise.all(promises);
+    isLoading.value = false;
+  } catch (error) {
+    console.error('Error fetching items:', error);
+  }
+};
+
 const filteredItems = computed(() => {
-  const category = tabs[currentTab.value];
-  const itemsInCategory = gridItems.value.filter(item => item.category === category);
-  // Ensure we have the right number of slots by filling with nulls if needed
-  return [...itemsInCategory, ...Array(inventorySlots.value - itemsInCategory.length).fill(null)];
+  return gridItems.value.map(itemsInCategory => {
+    return [...itemsInCategory, ...Array(inventorySlots.value - itemsInCategory.length).fill(null)];
+  });
+});
+
+// Dodaj obserwację zmiany currentTab
+watch(currentTab, () => {
+  // Wywołaj ponownie computed property filteredItems, aby ponownie obliczyć wartość
+  filteredItems.value;
 });
 
 const onDragStart = (event, item, index) => {
@@ -110,15 +125,17 @@ const onDragStart = (event, item, index) => {
 
 const onDrop = (event, index) => {
   if (draggedIndex.value !== null) {
-    const temp = filteredItems.value[index];
-    filteredItems.value.splice(index, 1, draggedItem.value);
-    filteredItems.value.splice(draggedIndex.value, 1, temp);
+    const temp = filteredItems[currentTab.value][index];
+    filteredItems[currentTab.value].splice(index, 1, draggedItem.value);
+    filteredItems[currentTab.value].splice(draggedIndex.value, 1, temp);
     draggedItem.value = null;
     draggedIndex.value = null;
   }
 };
 
 onMounted(() => {
+  fetchItems();
+
   const handleResize = () => {
     const containerWidth = document.querySelector('.inventory-grid').offsetWidth;
     columns.value = Math.floor(containerWidth / (itemSize.value + 10)); // 10 is the gap size

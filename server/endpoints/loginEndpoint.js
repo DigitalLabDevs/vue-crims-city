@@ -56,7 +56,7 @@ router.post('/api/login', async (req, res) => {
       });
     }
 
-    const token = await generateAccessToken(email);
+    const token = await generateAccessToken(user.ids);
 
     if(!token){
       return res.status(400).json({
