@@ -85,8 +85,10 @@ const { t } = useI18n();
 
 .rout {
   width: 80%;
+  height: min-content;
   background-color: rgba(0, 0, 0, 0.5);
   border: 1px solid green;
+  padding-bottom: 15px;
 }
 
 .Main-Game-Topbar,

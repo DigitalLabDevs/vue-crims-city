@@ -6,13 +6,6 @@
     </div>
 
     <div class="fx">
-      <div class="ssk">
-        <router-link to="/crims-city">{{ t('game.main') }}</router-link>
-        
-      </div>
-    </div>
-
-    <div class="fx">
       <DropdownMenu>
       <!-- <div class="ssk"> -->
         <router-link to="/crims-city/settings">{{ t('game.settings') }}</router-link>

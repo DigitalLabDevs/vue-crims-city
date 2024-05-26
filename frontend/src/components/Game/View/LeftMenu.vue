@@ -1,6 +1,7 @@
 <template>
   <nav>
     <ul class="Menu-ul">
+      <li><router-link to="/crims-city">{{ t('game.main') }}</router-link></li>
       <li><router-link to="/crims-city/buildings">{{ t('game.buildings') }}</router-link></li>
       <li><router-link to="/crims-city/trade">{{ t('game.trade') }}</router-link></li>
       <li><router-link to="/crims-city/equipment">{{ t('game.equipment') }}</router-link></li>
@@ -25,6 +26,7 @@ const { t } = useI18n();
 ul{
   display: flex;
   flex-direction: column;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 nav ul {
   list-style: none;
@@ -34,5 +36,6 @@ nav ul {
 nav li {
   display: inline;
   margin-right: 20px;
+  padding: 5px;
 }
 </style>

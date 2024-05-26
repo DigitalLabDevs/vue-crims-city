@@ -1,11 +1,10 @@
 <template>
   <div class="building-details" :style="`background-image: url(/game/images/buildings/${imageName}.jpg);`">
-    <h1>{{ t('buildings.detailsTitle') }}: {{ imageName }}</h1>
-    <!-- <img :src="imageSrc" :alt="imageName" class="building-image" /> -->
+    <h2>{{ t(`buildings.names.${imageName}`) }}</h2>
     <p>{{ t('buildings.level') }}: {{ level }}</p>
     <div class="building-actions">
-      <button @click="upgradeBuilding">{{ t('buildings.upgrade') }}</button>
-      <button @click="destroyBuilding">{{ t('buildings.destroy') }}</button>
+      <span @click="upgradeBuilding">{{ t('buildings.upgrade') }}</span>
+      <span @click="destroyBuilding">{{ t('buildings.destroy') }}</span>
     </div>
     <div class="building-info">
       <h3>{{ t('buildings.productionTitle') }}</h3>
@@ -15,44 +14,96 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
-import { ref, watch } from 'vue';
+import { getConfig } from '../../../../getConfig';
+
+const config = getConfig();
 
 const { t } = useI18n();
 const route = useRoute();
 
 const imageName = ref(route.params.imageName as string);
-const level = ref(0); // Jeśli nie używamy poziomu, możemy go pominąć
-
-const productionInfo = "This building produces resources necessary for your city's growth.";
-
+// const level = ref(0);
+let level;
+const productionInfo = ref("Loading...");
 const imageSrc = computed(() => `/game/images/buildings/${imageName.value}.jpg`);
 
-const upgradeBuilding = () => {
-  console.log("Upgrading building", imageName.value);
+const fetchBuildingData = async () => {
+  try {
+    const response = await fetch(`${config.API_URL}/game/buildings/${imageName.value}`, {
+      method: config.method,
+      credentials: config.credentials,
+      headers: config.headers
+    });
+    if (response.ok) {
+      const buildingDataArray = await response.json();
+      let buildingData = buildingDataArray[0];
+      console.log(`buildingData.pb_level: ${buildingData.pb_level}`);
+      level = buildingData.pb_level;
+      productionInfo.value = buildingData.pb_capacity;
+    }
+
+  } catch (error) {
+    console.error("Error fetching building data:", error);
+  }
 };
 
-const destroyBuilding = () => {
-  console.log("Destroying building", imageName.value);
+const upgradeBuilding = async () => {
+  try {
+    const response = await fetch(`${config.API_URL}/game/buildings/${imageName.value}/upgrade`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    const updatedBuildingData = await response.json();
+    level = updatedBuildingData.level;
+    productionInfo.value = updatedBuildingData.productionInfo;
+    console.log("Building upgraded", imageName.value);
+  } catch (error) {
+    console.error("Error upgrading building:", error);
+  }
 };
 
+const destroyBuilding = async () => {
+  try {
+    await fetch(`${config.API_URL}/game/buildings/${imageName.value}`, {
+      method: 'DELETE',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    console.log("Building destroyed", imageName.value);
+    // Here you can handle post-destroy logic, such as redirecting the user
+  } catch (error) {
+    console.error("Error destroying building:", error);
+  }
+};
 
 watch(() => route.params.imageName, (newImageName) => {
   imageName.value = newImageName as string;
+  fetchBuildingData(); // Fetch new data when imageName changes
 });
 
-// watch(() => route.params.imageName, () => {
-//   key.value += 1;
-// });
+fetchBuildingData(); // Fetch initial data on component mount
 </script>
 
 <style scoped>
+.span {
+  cursor: pointer;
+}
+
+.building-details * {
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 5px;
+}
+
 .building-details {
   text-align: center;
-  /* margin: 20px; */
-  /* width: 300px; */
   height: 300px;
   background-size: contain;
 }
@@ -64,25 +115,26 @@ watch(() => route.params.imageName, (newImageName) => {
   margin: 10px auto;
 }
 
-.building-actions button {
-  margin: 5px;
-  padding: 10px 15px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+.building-actions {
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 15px;
 }
 
-.building-actions button:hover {
-  background-color: #0056b3;
+.building-actions span {
+  margin-left: 5px;
+  margin-right: 5px;
+  transition: 200ms;
+}
+
+.building-actions span:hover {
+  color: #00ff11;
 }
 
 .building-info {
   margin-top: 20px;
 }
 
-h1,
+h2,
 h3 {
   margin-bottom: 10px;
 }

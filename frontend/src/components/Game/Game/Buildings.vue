@@ -1,12 +1,13 @@
 <template>
-  <div class="Buildings">
+  <Loader v-if="!isLoading"/>
+  <div v-else class="Buildings">
     <h1>{{ t('buildings.title') }}</h1>
     <div class="BuildingsView">
       <BuildingsCore 
         v-for="(building, index) in buildings" 
         :key="index" 
         :imageName="building.buildings_img" 
-        :name="building.buildings_name"
+        :name="t(`buildings.names.${building.buildings_name}`)"
         :level="building.pb_level"
       />
     </div>
@@ -18,12 +19,14 @@ import { ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { API_URL } from '../../../config.js';
 import BuildingsCore from '../Core/BuildingsCore.vue';
+import Loader from '../../_Core/Loader.vue';
 
 import { getConfig } from '../../../../getConfig.js';
 const config = getConfig();
 
 const { t } = useI18n();
 const buildings = ref([]);
+const isLoading = ref(false);
 
 onMounted(async () => {
   try {
@@ -38,6 +41,7 @@ onMounted(async () => {
     const data = await response.json();
     buildings.value = data;
     console.log(buildings.value);
+    isLoading.value = true;
   } catch (error) {
     console.error('Error fetching buildings data:', error);
   }

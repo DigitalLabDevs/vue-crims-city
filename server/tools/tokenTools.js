@@ -48,11 +48,12 @@ async function verifyJwtToken(req, res, next) {
 }
 
 // ========================= Tworzenie tokenu JWT httpOnly ==========================
-async function generateAccessToken(userEmail) {
+async function generateAccessToken(userEmail, userId = null) {
   try {
     // Dane do zapisania w tokenie
     const payload = {
       userEmail: userEmail,
+      ids: userId,
       sessionId: sessionToken // Generowanie unikalnego identyfikatora sesji
       // Dodaj dodatkowe dane, jeśli są potrzebne
     };

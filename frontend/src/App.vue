@@ -92,7 +92,7 @@ const handleRegistrationError = ({ code, messages, success: isSuccess }) => {
 };
 
 const shouldShowErrorMessage = computed(() => {
-  return errorMessage.value !== '' && success.value === true;
+  return errorMessage.value !== '' && success.value === true && errorMessage.value !== undefined;
 });
 
 const errorMessageClass = computed(() => {

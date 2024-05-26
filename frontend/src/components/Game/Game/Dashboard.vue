@@ -1,32 +1,41 @@
 <template>
-  <div class="dashboard">
-    <h1>{{ t('dashboard.title') }}</h1>
+  <Loader v-if="isLoading" />
+  <div v-else class="dashboard">
+    <h1>{{ player.p_nick }}</h1>
     <div class="dashboard-header">
       <div class="player-info">
-        <img src="/game/player/avatar.jpg" alt="Player Avatar" class="player-avatar" />
+        <img :src="`/players/imagesProfile/${player.p_ids_user}.jpg`" alt="Player Avatar" class="player-avatar" />
+
         <div class="player-details">
-          <h2>{{ player.name }}</h2>
-          <p>{{ t('dashboard.level') }}: {{ player.level }}</p>
-          <p>{{ t('dashboard.experience') }}: {{ player.experience }}</p>
+
+          <div class="player-details-col1">
+            <p>{{ t('dashboard.level') }}<span>:</span></p>
+            <p>{{ t('dashboard.experience') }}<span>:</span></p>
+            <p>{{ t('dashboard.healthPoints') }}<span>:</span></p>
+            <p>{{ t('dashboard.reputation') }}<span>:</span></p>
+          </div>
+          <div class="player-details-col2">
+            <p>{{ player.p_level }}</p>
+            <p>{{ player.p_experience }}</p>
+            <p>
+              <meter class="health-progress" :value="player.p_health_points" min="0" max="100">
+                {{ player.p_health_points }}
+              </meter>
+              &nbsp; {{ player.p_health_points }} %
+            </p>
+            <p>{{ player.p_reputation }}</p>
+          </div>
+
         </div>
+
       </div>
       <div class="account-info">
-        <p>{{ t('dashboard.balance') }}: ${{ player.balance }}</p>
-        <p>{{ t('dashboard.resources') }}: {{ player.resources }}</p>
+        <p>{{ t('dashboard.balance') }}: $ {{ player.p_money }}</p>
       </div>
-    </div>
-    <div class="notifications">
-      <h3>{{ t('dashboard.notifications') }}</h3>
-      <ul>
-        <li v-for="notification in player.notifications" :key="notification.id">
-          {{ notification.message }}
-        </li>
-      </ul>
     </div>
     <div class="quick-links">
       <h3>{{ t('dashboard.quickLinks') }}</h3>
       <ul>
-        <li><router-link to="/crims-city/maingame">{{ t('dashboard.maingame') }}</router-link></li>
         <li><router-link to="/crims-city/settings">{{ t('dashboard.settings') }}</router-link></li>
       </ul>
     </div>
@@ -34,23 +43,56 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { getConfig } from 'config';
+import { onMounted } from 'vue';
+import Loader from '../../_Core/Loader.vue';
+
+const config = getConfig();
 const { t } = useI18n();
 
-const player = {
-  name: 'John Doe',
-  level: 10,
-  experience: 2500,
-  balance: 10000,
-  resources: 150,
-  notifications: [
-    { id: 1, message: 'You have successfully completed the mission.' },
-    { id: 2, message: 'Your gang has won the territory war.' }
-  ]
+const isLoading = ref(true);
+const player = ref([]);
+
+const fetchDashboard = async () => {
+  try {
+    const response = await fetch(`${config.API_URL}/game/dashboard`, {
+      method: config.method,
+      credentials: config.credentials,
+      headers: config.headers
+    });
+    if (response.ok) {
+      const playerData = await response.json();
+      player.value = playerData[0];
+      isLoading.value = false;
+      console.log(player);
+    }
+
+  } catch (error) {
+    console.error("Error fetching building data:", error);
+  }
 };
+
+onMounted(() => {
+  fetchDashboard();
+});
 </script>
 
 <style scoped>
+span{
+  color: white;
+  width: auto;
+  margin-left: 5px;
+}
+p{
+  display: flex;
+  justify-content: space-between;
+}
+h1 {
+  margin-bottom: 10px;
+}
+
 .dashboard {
   padding: 20px;
   background-color: rgba(#292929, 0.5);
@@ -60,7 +102,7 @@ const player = {
 .dashboard-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 20px;
 }
 
@@ -76,6 +118,15 @@ const player = {
   margin-right: 20px;
 }
 
+.player-details {
+  display: flex;
+  flex-direction: row;
+}
+
+.player-details-col2 {
+  margin-left: 5px;
+}
+
 .player-details h2 {
   margin: 0;
 }
@@ -84,16 +135,19 @@ const player = {
   margin: 5px 0;
 }
 
-.notifications, .quick-links {
+.notifications,
+.quick-links {
   margin-bottom: 20px;
 }
 
-.notifications ul, .quick-links ul {
+.notifications ul,
+.quick-links ul {
   list-style: none;
   padding: 0;
 }
 
-.notifications li, .quick-links li {
+.notifications li,
+.quick-links li {
   background-color: #393939;
   padding: 10px;
   border-radius: 4px;
@@ -101,11 +155,47 @@ const player = {
 }
 
 .quick-links li a {
-  color: #007bff;
+  color: #00ffdd;
   text-decoration: none;
 }
 
 .quick-links li a:hover {
   text-decoration: underline;
+}
+
+
+
+
+
+.health-meter {
+  display: flex;
+  align-items: center;
+}
+
+.health-progress {
+  width: 100px;
+  /* Dostosuj szerokość paska postępu według potrzeb */
+}
+
+/* Dostosuj styl paska postępu do swoich preferencji */
+.health-progress::-webkit-meter-bar {
+  background-color: #ccc;
+}
+
+.health-progress::-webkit-meter-optimum-value,
+.health-progress::-webkit-meter-suboptimum-value,
+.health-progress::-webkit-meter-even-less-good-value {
+  background-color: #4CAF50;
+  /* Zielony kolor dla wartości dobrych */
+}
+
+.health-progress::-webkit-meter-suboptimum-value {
+  background-color: #FFEB3B;
+  /* Żółty kolor dla wartości przeciętnych */
+}
+
+.health-progress::-webkit-meter-even-less-good-value {
+  background-color: #FF5722;
+  /* Czerwony kolor dla wartości złych */
 }
 </style>

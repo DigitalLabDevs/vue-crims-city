@@ -9,6 +9,11 @@
     "forgotPasswordLink": "Przypomnij hasło",
     "backToLogin": "Wróć do logowania"
   },
+  "settings": {
+    "language": "Język",
+    "changePassword": "Zmień hasło",
+    "changeEmail": "Aktualizuj Email"
+  },
   "logout": {
     "logoutButton": "Wyloguj",
     "confirmButton": "YEAAA NARA",
@@ -78,7 +83,7 @@
   },
   "game": {
     "settings": "Ustawienia",
-    "main": "Miasto",
+    "main": "Tablica",
     "buildings": "Budynki",
     "mafia": "Mafia",
     "trade": "Handel",
@@ -96,15 +101,24 @@
     "postOffice": "Poczta",
     "statistics": "Ranking"
   },
-  "buildings":{
+  "buildings": {
     "title": "Budynki",
     "detailsTitle": "Nazwa",
     "level": "Level",
     "upgrade": "Rozbuduj",
     "destroy": "Zniszcz",
-    "productionTitle": "Nazwa produkcji"
+    "productionTitle": "Nazwa produkcji",
+    "names": {
+      "Garage": "Garaż",
+      "CounterfeitMoneyFactory": "Fabryka Fałszywych Banknotów",
+      "SafeHouse": "Kryjówka",
+      "DrugLab": "Laboratorium Narkotyków",
+      "WeaponsDepot": "Magazyn Broni",
+      "HackersHub": "Centrala Hakerów",
+      "IllegalCasino": "Nielegalne Kasyno"
+    }
   },
-  "bank":{
+  "bank": {
     "title": "Bank Crims City",
     "balance": "Gotówka",
     "deposit": "Zdeponuj gotówkę",
@@ -114,10 +128,19 @@
     "cancel": "Anuluj",
     "loanTitle": "Pożyczki w Crims City",
     "applyForLoan": "Złóż wniosek o pożyczkę",
-    "repayLoan": "Spłać pożyczkę"
+    "repayLoan": "Spłać pożyczkę",
+    "safeDepositBoxes": "Skrytki bankowe",
+    "investment": "Inwestycje",
+    "transfers": "Przelewy",
+    "insurance": "Ubezpieczenia",
+    "specialTasks": "Zadania specialne",
+    "atm": "Bankomat",
+    "depositPlaceholder": "Wprowadź kwotę",
+    "depositTitle": "Wpłać gotówkę na swoje konto",
+    "depositButton": "Wpłać"
   },
-  "dashboard":{
-    "level": "Level",
+  "dashboard": {
+    "level": "Poziom",
     "title": "Twoja postać",
     "experience": "Doświadczenie",
     "notifications": "Wiadomości",
@@ -125,12 +148,15 @@
     "maingame": "Głowne okno",
     "settings": "Ustawienia",
     "balance": "Gotówka",
-    "resources": "Zasoby"
+    "resources": "Zasoby",
+    "healthPoints": "Zdrowie",
+    "reputation": "Reputacja"
   },
-  "category":{
+  "category": {
     "Weapon": "Broń",
     "Defense": "Obrona",
     "Items": "Przemioty",
     "Trash": "Śmieci"
   }
+  
 }
