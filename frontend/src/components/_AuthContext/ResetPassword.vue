@@ -1,6 +1,6 @@
 <template>
   <div class="password-reset">
-    <h2>{{ $t('password_reset.title') }}</h2>
+    <h2>{{ $t('password.title') }}</h2>
     <form @submit.prevent="submitForm">
       <div class="input-group">
         <label>{{ $t('global.passwordLabel') }}:</label>

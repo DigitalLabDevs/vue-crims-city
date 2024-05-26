@@ -9,10 +9,14 @@
     "forgotPasswordLink": "Przypomnij hasło",
     "backToLogin": "Wróć do logowania"
   },
-  "settings": {
+  "changeEmail": {
+    "info": "Na twój adres Email został wysłany kod, przepisz go tutaj."
+  },
+    "settings": {
     "language": "Język",
     "changePassword": "Zmień hasło",
-    "changeEmail": "Aktualizuj Email"
+    "changeEmail": "Aktualizuj Email",
+    "languageSettings": "Ustawienia języka"
   },
   "logout": {
     "logoutButton": "Wyloguj",
@@ -35,8 +39,12 @@
   "forgotPassword": {
     "title": "Przypomnij hasło"
   },
-  "password_reset": {
-    "title": "Reset hasła"
+  "password": {
+    "title": "Reset hasła",
+    "currentPassword": "Obecne hasło",
+    "newPassword": "Nowe hasło",
+    "confirmNewPassword": "Powtórz nowe hasło",
+    "code": "Wpisz kod"
   },
   "cookie": {
     "title": "Polityka prywatności i wykorzystanie danych"

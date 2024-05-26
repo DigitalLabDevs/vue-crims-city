@@ -2,8 +2,8 @@
     <div class="SETTINGS">
         <div class="settings-links">
             <router-link to="/crims-city/settings/language">{{ t('settings.language') }}</router-link>
-            <router-link to="/crims-city/settings/">{{ t('settings.changePassword') }}</router-link>
-            <router-link to="/crims-city/settings/">{{ t('settings.changeEmail') }}</router-link>
+            <router-link to="/crims-city/settings/change-password">{{ t('settings.changePassword') }}</router-link>
+            <router-link to="/crims-city/settings/change-email">{{ t('settings.changeEmail') }}</router-link>
         </div>
         <div class="settings-rout">
             <router-view name="settings"></router-view>

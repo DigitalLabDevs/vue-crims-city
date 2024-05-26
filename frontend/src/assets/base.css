@@ -10,7 +10,11 @@
 input, button{
   padding: 8px;
   border-radius: 3px;
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
+
+  background-color: rgba(0, 0, 0, 0.6);
+  border: 0px;
+  color: white;
 }
 input, button, select, textarea{
   outline: none;

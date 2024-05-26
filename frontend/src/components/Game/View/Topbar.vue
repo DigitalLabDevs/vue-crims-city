@@ -6,6 +6,7 @@
     </div>
 
     <div class="fx">
+      <MusicPlayer />
       <DropdownMenu>
       <!-- <div class="ssk"> -->
         <router-link to="/crims-city/settings">{{ t('game.settings') }}</router-link>
@@ -22,6 +23,7 @@
 import { useI18n } from 'vue-i18n';
 import DropdownMenu from '../../_Core/DropdownMenu.vue';
 import LogoutView from '../../_AuthContext/LogoutView.vue'
+import MusicPlayer from '../../_Core/MusicPlayer.vue';
 
 const { t } = useI18n();
 </script>

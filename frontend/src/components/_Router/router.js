@@ -40,6 +40,9 @@ import GunShop4 from '../Game/Game/Shops/Gunshop4.vue';
 
 import Desposit from '../Game/Game/Bank/Desposit.vue';
 import LanguageSelector from '../Language/LanguageSelector.vue';
+import LanguageComponent from '../Settings/LanguageComponent.vue';
+import ChangePassword from '../Settings/ChangePassword.vue';
+import ChangeEmail from '../Settings/ChangeEmail.vue';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -281,7 +284,21 @@ const router = createRouter({
               path: 'language',
               components: {
                 game: Settings,
-                settings: LanguageSelector,
+                settings: LanguageComponent,
+              },
+            },
+            {
+              path: 'change-password',
+              components: {
+                game: Settings,
+                settings: ChangePassword,
+              },
+            },
+            {
+              path: 'change-email',
+              components: {
+                game: Settings,
+                settings: ChangeEmail,
               },
             },
           ],

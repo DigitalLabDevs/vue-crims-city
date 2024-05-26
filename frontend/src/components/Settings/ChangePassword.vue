@@ -1,90 +1,100 @@
 <template>
-    <div class="modal-overlay">
-      <div class="modal-content">
-        <button @click.stop="closeModal" class="close-btn">X</button>
+  <hr>
+  <div class="password-overlay">
+    <div class="po0v1">
+      <h2>{{ t('settings.changePassword') }}</h2>
+      <form @submit.prevent="changePassword">
+        <label for="currentPassword">{{ t('password.currentPassword') }}</label>
+        <input type="password" id="currentPassword" v-model="currentPassword">
 
-        <div class="Language-Selector">
-            <div>{{ $t("global.chooseLanguage") }}</div>
-            <div>
-                <LanguageSelector />
-            </div>
-        </div>
+        <label for="newPassword">{{ t('password.newPassword') }}</label>
+        <input type="password" id="newPassword" v-model="newPassword">
 
-        <div>
-            <Button>Zmień hasło</Button>
-        </div>
-        <div>
-        <Button>Zmień emaila</Button>
-        </div>
+        <label for="confirmNewPassword">{{ t('password.confirmNewPassword') }}</label>
+        <input type="password" id="confirmNewPassword" v-model="confirmNewPassword">
+        <!-- <Captcha /> -->
 
-
-
-      </div>
+        <button class="btn-chP" type="submit">{{ t('global.submit') }}</button>
+      </form>
     </div>
-  </template>
-  
-  <script setup>
-  import { useRouter } from 'vue-router';
-  import LanguageSelector from '../Language/LanguageSelector.vue';
-  
-  const router = useRouter();
-  
-  const closeModal = () => {
-    // Zamknij modal poprzez zmianę ścieżki na "/"
-    router.push('/');
-  };
-  </script>
-  
-  <style scoped>
-  .modal-overlay {
-    z-index: 10;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .modal-content {
-    position: relative;
-    width: 800px;
-    height: 600px;
-    background-color: #171717;
-    border: 1px solid rgb(47, 255, 0);
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    padding: 20px;
-  }
-  
-  .close-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 20px;
-    height: 20px;
-    background-color: transparent;
-    border: none;
-    font-size: 18px;
-    color: #fff;
-    cursor: pointer;
-  }
-  
-  .close-btn:hover {
-    color: #ff0000; /* Zmiana koloru na czerwony przy najechaniu myszką */
+    <div class="po0v2">
+      <p>minimum 6 znaków</p>
+      <p>1 cyfra</p>
+      <p>1 znak specialny</p>
+      <p>1 duża litera</p>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { useI18n } from 'vue-i18n';
+import { ref } from 'vue';
+// import Captcha from '../_Core/Captcha.vue';
+
+const { t } = useI18n();
+
+const currentPassword = ref('');
+const newPassword = ref('');
+const confirmNewPassword = ref('');
+
+const changePassword = async () => {
+  if (newPassword.value !== confirmNewPassword.value) {
+    // Handle password mismatch
+    return;
   }
 
-  .Language-Selector {
-    display: flex;
-    align-items: center;
+  try {
+    const response = await fetch('/api/change-password', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        // Add any required headers here
+      },
+      body: JSON.stringify({
+        currentPassword: currentPassword.value,
+        newPassword: newPassword.value,
+      }),
+    });
+
+    if (response.ok) {
+      // Password changed successfully
+    } else {
+      // Handle server error
+    }
+  } catch (error) {
+    // Handle network error
+  }
+};
+</script>
+
+<style scoped>
+.password-overlay {
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  justify-content: space-evenly;
+  align-items: center;
 }
-.Language-Selector > div{
-    margin-left: 2px;
-    margin-right: 2px;
+
+button:hover{
+  background-color: rgba(0, 200, 111, 0.5);
 }
-  </style>
-  ``
-  
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+form * {
+  /* width: 50%; */
+}
+
+.btn-chP {
+  margin-top: 10px;
+}
+
+.po0v2 {
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+}
+</style>
