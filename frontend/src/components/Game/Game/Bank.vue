@@ -1,11 +1,25 @@
 <template>
-  <Loader v-if="isLoading"/>
+  <Loader v-if="isLoading" />
   <div v-else class="bank">
     <h2>{{ t('bank.title') }}</h2>
-    <div class="balance">{{ t('bank.balance') }}: $ {{ money.p_money }}</div>
+    <div class="bank_money">
+      <div class="balance">{{ t('bank.balance') }}: $ {{ getPlayerMoney }}</div>
+      <div class="balance">{{ t('bank.money') }}: $ {{ getBankMoney }}</div>
+    </div>
+    <hr style="margin-top: 10px; margin-bottom: 10px;">
     <div class="bank-actions">
 
-      <span><router-link to="/crims-city/bank/deposit">{{ t('bank.deposit') }}</router-link></span>
+      <!-- <span>
+        <router-link 
+          :pMoney="money.p_money" 
+          to="/crims-city/bank/deposit">{{ t('bank.deposit') }}
+        </router-link>
+      </span> -->
+
+      <span>
+        <router-link to="/crims-city/bank/deposit">{{ t('bank.deposit') }}</router-link>
+      </span>
+
       <span><router-link to="/crims-city/bank/withdraw">{{ t('bank.withdraw') }}</router-link></span>
       <span><router-link to="/crims-city/bank/safedepositboxes">{{ t('bank.safeDepositBoxes') }}</router-link></span>
       <span><router-link to="/crims-city/bank/investment">{{ t('bank.investment') }}</router-link></span>
@@ -18,19 +32,22 @@
     </div>
 
 
-    <router-view name="bank"></router-view>
+    <router-view name="bank" :pMoney="money.p_money"></router-view>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { getConfig } from 'config';
+import Loader from '../../_Core/Loader.vue';
+import GameStore from 'GameVuex';
 
 const config = getConfig();
 const { t } = useI18n();
 const isLoading = ref(true);
-const money = ref([]);
+const money = ref({});
+
 
 onMounted(() => {
   fetchPlayerBankMoney();
@@ -47,17 +64,31 @@ const fetchPlayerBankMoney = async () => {
       const playerMoney = await response.json();
       money.value = playerMoney[0];
       isLoading.value = false;
-      console.log(money.value);
+
+      // console.log(money.value);
+      
+      GameStore.commit('setPlayerMoney', money.value.p_money);
+      GameStore.commit('setBankMoney', money.value.b_player_money);
+
     }
 
   } catch (error) {
     console.error("Error Bank:", error);
   }
 };
+
+
+const getPlayerMoney = computed(() => GameStore.state.player_money);
+const getBankMoney = computed(() => GameStore.state.bank_money);
 </script>
 
 
 <style scoped>
+.bank_money{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
 .balance {
   background-color: rgba(0, 0, 0, 0.7);
   padding: 7px;

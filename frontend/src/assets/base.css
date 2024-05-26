@@ -20,6 +20,18 @@ input, button, select, textarea{
   outline: none;
 }
 
+/* Ukryj strzałki w Chrome, Safari, Edge, Opera */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Ukryj strzałki w Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
 select{
   padding: 3px;
   border-radius: 3px;

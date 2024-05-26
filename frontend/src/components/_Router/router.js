@@ -235,6 +235,7 @@ const router = createRouter({
                 game: Bank,
                 bank: Desposit,
               },
+              props: true
             },
           ],
         },

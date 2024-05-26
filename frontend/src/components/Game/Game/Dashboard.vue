@@ -30,7 +30,7 @@
 
       </div>
       <div class="account-info">
-        <p>{{ t('dashboard.balance') }}: $ {{ player.p_money }}</p>
+        <p>{{ t('dashboard.balance') }}: $ {{ getPlayerMoney }}</p>
       </div>
     </div>
     <div class="quick-links">
@@ -43,11 +43,12 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { getConfig } from 'config';
 import { onMounted } from 'vue';
 import Loader from '../../_Core/Loader.vue';
+import GameStore from 'GameVuex';
 
 const config = getConfig();
 const { t } = useI18n();
@@ -66,7 +67,10 @@ const fetchDashboard = async () => {
       const playerData = await response.json();
       player.value = playerData[0];
       isLoading.value = false;
-      console.log(player);
+      // console.log(player);
+
+      GameStore.commit('setPlayerMoney', player.value.p_money);
+      // GameStore.commit('setBankMoney', money.value.b_player_money);
     }
 
   } catch (error) {
@@ -77,6 +81,8 @@ const fetchDashboard = async () => {
 onMounted(() => {
   fetchDashboard();
 });
+
+const getPlayerMoney = computed(() => GameStore.state.player_money);
 </script>
 
 <style scoped>

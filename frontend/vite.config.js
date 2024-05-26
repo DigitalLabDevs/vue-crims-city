@@ -11,7 +11,8 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
-      'config': fileURLToPath(new URL('./getConfig', import.meta.url))
+      'config': fileURLToPath(new URL('./getConfig', import.meta.url)),
+      'GameVuex': fileURLToPath(new URL('./src/components/Game/Core/GameVuex', import.meta.url))
     }
   },
   server:{
