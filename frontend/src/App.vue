@@ -11,7 +11,7 @@
         <TopbarView />
       </div>
 
-      <div v-if="shouldShowErrorMessage" :class="errorMessageClass">
+      <div v-if="shouldShowErrorMessage" class="errorIndex" :class="errorMessageClass">
         <span v-if="success">
           <span>{{ errorMessage }}</span>
         </span>
@@ -86,7 +86,8 @@ const errorMessage = ref('');
 const message = ref('');
 
 const handleRegistrationError = ({ code, messages, success: isSuccess }) => {
-  errorMessage.value = t(`serverMessage.${code}`);
+  // errorMessage.value = t(`serverMessage.${code}`);
+  errorMessage.value = t(`${code}`);
   success.value = isSuccess;
   message.value = messages;
 };
@@ -189,30 +190,32 @@ const errorMessageClass = computed(() => {
   bottom: 15px;
   left: 15px;
 }
-
+.success, .error, .info, .warning, .errorIndex{
+  z-index: 9999;
+}
 .error {
-  background-color: rgba(221, 38, 38, 0.1);
+  background-color: rgba(221, 38, 38, 0.3);
   font-size: 16px;
   padding: 10px;
   color: rgb(255, 47, 47);
 }
 
 .success {
-  background-color: rgba(18, 225, 18, 0.1);
+  background-color: rgba(18, 225, 18, 0.3);
   font-size: 16px;
   padding: 10px;
   color: greenyellow;
 }
 
 .info {
-  background-color: rgba(7, 171, 226, 0.1);
+  background-color: rgba(7, 171, 226, 0.3);
   font-size: 16px;
   padding: 10px;
   color: #0ab8ff;
 }
 
 .warning {
-  background-color: rgba(226, 211, 7, 0.1);
+  background-color: rgba(226, 211, 7, 0.3);
   font-size: 16px;
   padding: 10px;
   color: rgb(255, 170, 0);

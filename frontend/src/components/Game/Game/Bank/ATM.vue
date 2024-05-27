@@ -4,7 +4,7 @@
     <p>{{ t('bank.balance') }}: $ {{ getPlayerMoney }}</p>
 
     
-    <h2>{{ $t('bank.cashDepositMachine') }}</h2>
+    <h2>{{ $t('bank.atm') }}</h2>
     <div class="input-group">
       <label for="deposit-amount">{{ $t('bank.depositTitle') }}</label>
       <input v-model="amount" id="deposit-amount" type="number" min="0" :placeholder="$t('bank.depositPlaceholder')" />
@@ -39,7 +39,7 @@ const message = ref<string | null>(null);
 const makeDeposit = async () => {
   if (amount.value !== null && amount.value > 0) {
     try {
-      const response = await fetch(`${config.API_URL}/game/bank/deposit`, {
+      const response = await fetch(`${config.API_URL}/game/bank/withdraw`, {
         method: config.method,
         credentials: config.credentials,
         headers: config.headers,

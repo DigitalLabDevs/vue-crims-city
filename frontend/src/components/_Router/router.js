@@ -43,6 +43,7 @@ import LanguageSelector from '../Language/LanguageSelector.vue';
 import LanguageComponent from '../Settings/LanguageComponent.vue';
 import ChangePassword from '../Settings/ChangePassword.vue';
 import ChangeEmail from '../Settings/ChangeEmail.vue';
+import ATM from '../Game/Game/Bank/ATM.vue';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -234,6 +235,14 @@ const router = createRouter({
               components: {
                 game: Bank,
                 bank: Desposit,
+              },
+              props: true
+            },
+            {
+              path: 'atm',
+              components: {
+                game: Bank,
+                bank: ATM,
               },
               props: true
             },

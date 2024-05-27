@@ -7,8 +7,8 @@
     </div>
     <div class="tab-content">
       <div v-if="currentShop === 0">
-       <GunshopChoose />
-       <router-view name="gunshops"></router-view>
+        <GunshopChoose />
+        <router-view name="gunshops"></router-view>
       </div>
       <div v-else-if="currentShop === 1">
         <h2>Sklep z odzieżą</h2>
@@ -20,20 +20,11 @@
     </div>
     <div class="inventory">
       <div class="inventory-grid">
-        <div
-          v-for="(item, index) in filteredItems"
-          :key="index"
-          class="inventory-slot"
-          @dragover.prevent
-          @drop="onDrop($event, index)"
-        >
-          <div
-            v-if="item"
-            class="inventory-item"
-            draggable="true"
-            @dragstart="onDragStart($event, item, index)"
-          >
-            <img v-if="item.img_url" :src="'/game/items/' + item.category.toLowerCase() + '/' + item.img_url" :alt="item.name" />
+        <div v-for="(item, index) in filteredItems" :key="index" class="inventory-slot" @dragover.prevent
+          @drop="onDrop($event, index)">
+          <div v-if="item" class="inventory-item" draggable="true" @dragstart="onDragStart($event, item, index)">
+            <img v-if="item.img_url" :src="'/game/items/' + item.category.toLowerCase() + '/' + item.img_url"
+              :alt="item.name" />
             <p>{{ item.name }}</p>
             <p>{{ item.description }}</p>
           </div>
@@ -91,7 +82,7 @@ const onDrop = (event, index) => {
 
 onMounted(() => {
   fetchData();
-  
+
   const handleResize = () => {
     const containerWidth = document.querySelector('.inventory-grid').offsetWidth;
     columns.value = Math.floor(containerWidth / (itemSize.value + 10)); // 10 is the gap size

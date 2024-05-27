@@ -20,7 +20,7 @@
         <router-link to="/crims-city/bank/deposit">{{ t('bank.deposit') }}</router-link>
       </span>
 
-      <span><router-link to="/crims-city/bank/withdraw">{{ t('bank.withdraw') }}</router-link></span>
+      <span><router-link to="/crims-city/bank/atm">{{ t('bank.withdraw') }}</router-link></span>
       <span><router-link to="/crims-city/bank/safedepositboxes">{{ t('bank.safeDepositBoxes') }}</router-link></span>
       <span><router-link to="/crims-city/bank/investment">{{ t('bank.investment') }}</router-link></span>
       <span><router-link to="/crims-city/bank/transfers">{{ t('bank.transfers') }}</router-link></span>

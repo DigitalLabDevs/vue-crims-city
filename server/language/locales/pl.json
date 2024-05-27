@@ -9,5 +9,11 @@
 	"emailActivationSender": "Aktywacja",
 	"activationEmailSubject": "Aktywacja konta",
 	"activationEmailMessage": "<p>Odblokuj bramy <strong style=\"font-style: italic;\">Crims City</strong> i zanurz się w podziemnych przygodach, aktywuj swoje konto teraz!</p><p>Kliknij <a href=\"{{activationLink}}\" style=\"color: #0000ff; text-decoration: underline; font-style: italic;\">tutaj</a>, aby aktywować swoje konto.</p>"
+  },
+  "LOGIN":{
+	  "INCOMPLETE_DATA": "Uzupełnij Dane.",
+	  "WRONG_DATA": "Niepoprawne dane logowania.",
+	  "USER_BLOCKED": "Użytkownik zablokowany.",
+	  "ACCOUNT_ACTIVATE_FALSE": "Konto nie zostało aktywowane, sprawdź adres E-mail.",
   }
 }

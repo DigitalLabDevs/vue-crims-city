@@ -19,9 +19,6 @@ router.post('/game/bank/deposit', verifyJwtToken, async (req, res) => {
   const userId = req.user.userEmail;
   const { amount } = req.body;
 
-  console.log(userId);
-  console.log(amount);
-  // return;
   try {
     const result = await PlayerMoneyToBank(userId);
 
@@ -43,11 +40,11 @@ router.post('/game/bank/deposit', verifyJwtToken, async (req, res) => {
 
         
 
-        console.log(`newPlayerMoneyFunc: ${newPlayerMoneyFunc}`);
-        console.log*(`newBankPlayerMoneyFunc: ${newBankPlayerMoneyFunc}`)
+        // console.log(`newPlayerMoneyFunc: ${newPlayerMoneyFunc}`);
+        // console.log*(`newBankPlayerMoneyFunc: ${newBankPlayerMoneyFunc}`)
 
-        console.log(`Nowe saldo gracza: ${newPlayerMoneyCalc}`);
-        console.log(`Nowe saldo gracza w banku: ${newBankPlayerMoneyCalc}`);
+        // console.log(`Nowe saldo gracza: ${newPlayerMoneyCalc}`);
+        // console.log(`Nowe saldo gracza w banku: ${newBankPlayerMoneyCalc}`);
 
         return res.status(200).json({
           newPlayerMoney: newPlayerMoneyCalc,
@@ -65,6 +62,59 @@ router.post('/game/bank/deposit', verifyJwtToken, async (req, res) => {
     return;
 
     
+  } catch (error) {
+    console.error('Błąd Bank:', error);
+  }
+});
+//=====================================================================================
+// Wypłata kasy z banku gracza do player_money
+//=====================================================================================
+router.post('/game/bank/withdraw', verifyJwtToken, async (req, res) => {
+  const userId = req.user.userEmail;
+  const { amount } = req.body;
+
+  console.log(userId);
+  console.log(amount);
+  // return;
+  try {
+    const result = await PlayerMoneyToBank(userId);
+
+    console.log(result);
+
+    // Sprawdzenie, czy użytkownik ma wystarczającą ilość pieniędzy w banku
+    if (result.length === 1) {
+      const playerMoney = result[0].p_money;
+      const bankPlayerMoney = result[0].b_player_money;
+
+      // Logika dalszej obróbki danych
+      if (bankPlayerMoney >= amount) {
+        const newPlayerMoneyCalc = playerMoney + amount;
+        const newBankPlayerMoneyCalc = bankPlayerMoney - amount;
+
+        const newPlayerMoneyFunc = await updatePlayerMoney(userId, newPlayerMoneyCalc);
+
+        const newBankPlayerMoneyFunc = await updateBankMoney(userId, newBankPlayerMoneyCalc);
+
+        console.log(`newPlayerMoneyFunc: ${newPlayerMoneyFunc}`);
+        console.log(`newBankPlayerMoneyFunc: ${newBankPlayerMoneyFunc}`);
+
+        console.log(`Nowe saldo gracza: ${newPlayerMoneyCalc}`);
+        console.log(`Nowe saldo gracza w banku: ${newBankPlayerMoneyCalc}`);
+
+        return res.status(200).json({
+          newPlayerMoney: newPlayerMoneyCalc,
+          newBankPlayerMoney: newBankPlayerMoneyCalc
+        });
+
+      } else {
+        console.log('Brak wystarczających środków w banku.');
+      }
+    } else {
+      console.log('Nie znaleziono danych dla danego użytkownika.');
+    }
+
+    return;
+
   } catch (error) {
     console.error('Błąd Bank:', error);
   }

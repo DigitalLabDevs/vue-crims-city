@@ -87,7 +87,8 @@
     "WRONG_DATA": "Niepoprawne dane logowania",
     "LOGOUT_SUCCESS": "Wylogowano pomyślnie, Miłego dnia",
     "TRY_LATER": "Wystąpił nieoczekiwany błąd, spóbuj jeszcze raz lub skontaktuj się z supportem",
-    "PASSWORD_ERROR": "Wystąpił błąd przy zmianie hasła, spróbuj później lub skontaktuj się z supportem (405)"
+    "PASSWORD_ERROR": "Wystąpił błąd przy zmianie hasła, spróbuj później lub skontaktuj się z supportem (405)",
+    "Error": "Błąd"
   },
   "game": {
     "settings": "Ustawienia",
@@ -144,6 +145,7 @@
     "insurance": "Ubezpieczenia",
     "specialTasks": "Zadania specialne",
     "atm": "Bankomat",
+    "cashDepositMachine": "Wpłatomat",
     "depositPlaceholder": "Wprowadź kwotę",
     "depositTitle": "Wpłać gotówkę na swoje konto",
     "depositButton": "Wpłać",

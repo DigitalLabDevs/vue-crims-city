@@ -9,6 +9,7 @@
         :imageName="building.buildings_img" 
         :name="t(`buildings.names.${building.buildings_name}`)"
         :level="building.pb_level"
+        :description="t(`buildings.names.${building.buildings_name}`)"
       />
     </div>
   </div>

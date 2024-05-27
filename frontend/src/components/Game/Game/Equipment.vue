@@ -40,8 +40,7 @@
             <img 
             :title="`${filteredItems[currentTab][index].name} - ${filteredItems[currentTab][index].description}`" v-if="filteredItems[currentTab][index].img_url" 
             :src="`/game/items/${filteredItems[currentTab][index].img_url}`" :alt="filteredItems[currentTab][index].name" />
-            <!-- <p>{{ filteredItems[currentTab][index].name }}</p> -->
-            <!-- <p>{{ filteredItems[currentTab][index].description }}</p> -->
+
           </div>
         </div>
       </div>
@@ -97,6 +96,7 @@ const fetchItems = async () => {
         body: JSON.stringify({ category })
       });
       const data = await response.json();
+      console.log(data);
       gridItems.value[index] = data;
     });
     await Promise.all(promises);
@@ -145,13 +145,7 @@ onMounted(() => {
 });
 </script>
 
-<style>
-:root {
-  --item-size: 50px;
-  --grid-gap: 10px;
-  --columns: 10;
-}
-
+<style scoped>
 .tabs0v {
   background-color: rgba(0, 0, 0, 0.8);
   padding: 10px 20px;
@@ -181,13 +175,13 @@ span {
 
 .inventory-grid {
   display: grid;
-  grid-template-columns: repeat(var(--columns), var(--item-size));
-  gap: var(--grid-gap);
+  grid-template-columns: repeat(10, 50px);
+  gap: 10px;
 }
 
 .inventory-slot {
-  width: var(--item-size);
-  height: var(--item-size);
+  width: 50px;
+  height: 50px;
   border: 1px solid #ccc;
   background-color: #5a5a5a;
 }

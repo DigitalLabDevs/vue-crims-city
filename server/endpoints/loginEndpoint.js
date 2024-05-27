@@ -1,132 +1,158 @@
 const express = require('express');
 const db = require('../db');
 const bcrypt = require('bcrypt');
-const { generateAccessToken, deleteSessionTokenFromDatabase }  = require('../tools/tokenTools');
 
-const getUserByEmail = require('../tools/loginTools');
+const { i18n } = require('../language/i18nSetup');
+
+const { generateAccessToken, deleteSessionTokenFromDatabase } = require('../tools/tokenTools');
+
+const serverLogs = require('../tools/server_logs');
 const router = express.Router();
 // ================================ LOGIN ===================================
 router.post('/api/login', async (req, res) => {
-
   const { email, password } = req.body;
 
   if (!email || !password) {
     return res.status(400).json({
       message: 'Brak wymaganych danych',
-      messages: 'info',
+      messages: 'warning',
       success: true,
       isLoggedIn: false,
-      code: 'INCOMPLETE_DATA',
+      code: `${i18n.__('LOGIN.INCOMPLETE_DATA')}`,
     });
   }
   try {
-    const userBlock = await checkUserBlock(email);
 
-    if(userBlock === 1){
+    const userDetails = await checkUserDetails(email);
+
+  console.log(`userDetails.email: ${userDetails.email}`);
+
+    if (!userDetails.email) {
+      return res.status(400).json({
+        message: 'Brak użytkownika',
+        messages: 'warning',
+        success: true,
+        isLoggedIn: false,
+        code: `${i18n.__('LOGIN.WRONG_DATA')}`,
+      });
+    }
+    return;
+  // =======================================================================
+  // Sprawdzenie czy użytkownik jest zablokowany
+  // =======================================================================
+    if (userDetails.userBlock === 1) {
       return res.status(400).json({
         message: 'Użytkownik zablokowany',
         messages: 'error',
         success: true,
         isLoggedIn: false,
-        code: 'USER_BLOCKED',
+        code: `${i18n.__('LOGIN.USER_BLOCKED')}`,
       });
     }
-
+  // =======================================================================
+  // Czy konto zostało aktywowane
+  // =======================================================================
+    if (userDetails.isActivationTokenNull === false) {
+      return res.status(400).json({
+        message: 'Nieaktywne konto',
+        messages: 'error',
+        success: true,
+        isLoggedIn: false,
+        code: `${i18n.__('LOGIN.ACCOUNT_ACTIVATE_FALSE')}`,
+      });
+    }
+  // =======================================================================
+  // Pobieranie ids, email, hasło
+  // =======================================================================
     const user = await getUserByEmail(email);
 
-    if(!user){
+    if (!user) {
       return res.status(400).json({
         message: 'Nieprawidłowe dane logowania',
         messages: 'warning',
         success: true,
         isLoggedIn: false,
-        code: 'WRONG_DATA'
+        code: `${i18n.__('LOGIN.WRONG_DATA')}`,
       });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.pass);
 
-    if(!isPasswordValid){ 
+    if (!isPasswordValid) {
       return res.status(400).json({
         message: 'Nieprawidłowe dane logowania',
         messages: 'warning',
         success: true,
         isLoggedIn: false,
-        code: 'WRONG_DATA'
+        code: `${i18n.__('LOGIN.WRONG_DATA')}`,
       });
     }
 
     const token = await generateAccessToken(user.ids);
 
-    if(!token){
+    if (!token) {
       return res.status(400).json({
         message: 'Ups',
         messages: 'error',
         success: true,
         isLoggedIn: false,
-        code: 'SOME_WRONG'
+        code: 'SOME_WRONG',
       });
     }
 
     const isupdateLoginCount = await updateLoginCount(email);
 
-    if(!isupdateLoginCount){
+    if (!isupdateLoginCount) {
       return res.status(400).json({
         message: 'Ups',
         messages: 'error',
         success: true,
         isLoggedIn: false,
-        code: 'SOME_WRONG'
+        code: `SOME_WRONG`,
       });
     }
 
     // Pomyślne logowanie
 
-      req.session.user = { email };
+    req.session.user = { email };
 
-      res.cookie(process.env.AT_NAME, token.accessToken, {
-        httpOnly: true,
-        sameSite: process.env.C_SAMESITE,
-        secure: process.env.C_SECURE,
-        maxAge: process.env.C_MAX_AGE,
-      });
+    res.cookie(process.env.AT_NAME, token.accessToken, {
+      httpOnly: true,
+      sameSite: process.env.C_SAMESITE,
+      secure: process.env.C_SECURE,
+      maxAge: process.env.C_MAX_AGE,
+    });
 
-      res.cookie(process.env.ST_NAME, token.sessionToken, {
-        httpOnly: false,
-        sameSite: process.env.C_SAMESITE,
-        secure: process.env.C_SECURE,
-        maxAge: process.env.C_MAX_AGE,
-      });
+    res.cookie(process.env.ST_NAME, token.sessionToken, {
+      httpOnly: false,
+      sameSite: process.env.C_SAMESITE,
+      secure: process.env.C_SECURE,
+      maxAge: process.env.C_MAX_AGE,
+    });
 
-
-      return res.status(200).json({
-        message: 'Logowanie przebiegło pomyślnie',
-        success: false,
-        isLoggedIn: true,
-        email: email,
-      });
-    
-
+    return res.status(200).json({
+      message: 'Logowanie przebiegło pomyślnie',
+      success: false,
+      isLoggedIn: true,
+      email: email,
+    });
   } catch (error) {
-    console.error('Błąd logowania:', error);
     return res.status(500).json({
       message: `Wystąpił błąd podczas logowania - ${error}`,
-      success: false,
-      code: 'INTERNAL_SERVER_ERROR',
+      success: true,
+      code: `SOME_WRONG`,
       messages: 'error',
     });
   }
 });
 // ============================ LOGOUT ================================
 router.post('/api/logout', async (req, res, next) => {
-
   const sessionToken = req.sessionToken;
   console.log(`API/LOGOUT ${sessionToken}`);
 
-await deleteSessionTokenFromDatabase(sessionToken);
+  await deleteSessionTokenFromDatabase(sessionToken);
 
-
-// Usuń dane sesji
+  // Usuń dane sesji
   req.session.destroy((err) => {
     if (err) {
       console.error('Błąd podczas usuwania sesji:', err);
@@ -147,14 +173,34 @@ await deleteSessionTokenFromDatabase(sessionToken);
       messages: 'success',
       code: 'LOGOUT_SUCCESS',
       isLoggedIn: false,
-      
-
     });
   });
 });
+// ===============================================================================
+// Funkcja do sprawdzania statusu blokady użytkownika
+// ===============================================================================
+async function isActivationTokenNull(email) {
+  return new Promise((resolve, reject) => {
+    const query = 'SELECT activation_token FROM users WHERE email = ?';
+    db.query(query, [email], (error, results) => {
+      if (error) {
+        console.error('Błąd podczas sprawdzania pola activation_token', error);
+        serverLogs(`Błąd podczas sprawdzania pola activation_token', ${error}`);
+        reject(error);
+      } else {
+        if (results.length > 0) {
+          resolve(results[0].activation_token === null);
+        } else {
+          reject(new Error('Nie znaleziono użytkownika'));
+        }
+      }
+    });
+  });
+}
 
-
-// ============= Funkcja do sprawdzania statusu blokady użytkownika ==============
+// ===============================================================================
+// Funkcja do sprawdzania statusu blokady użytkownika
+// ===============================================================================
 async function checkUserBlock(email) {
   return new Promise((resolve, reject) => {
     // Tutaj wykonaj zapytanie do bazy danych, aby sprawdzić pole userBlock
@@ -174,7 +220,9 @@ async function checkUserBlock(email) {
     });
   });
 }
-// ===================== UPDATE LOGIN_COUNT +1 =======================
+// ===============================================================================
+// UPDATE LOGIN_COUNT +1
+// ===============================================================================
 async function updateLoginCount(email) {
   return new Promise((resolve, reject) => {
     // Pobierz aktualną liczbę logowań użytkownika
@@ -205,7 +253,52 @@ async function updateLoginCount(email) {
     });
   });
 }
-
+// ===============================================================================
+// Sprawdzenie czy użytkownik jest zablokowany i czy aktywował konto
+// ===============================================================================
+async function checkUserDetails(email) {
+  return new Promise((resolve, reject) => {
+    const query = 'SELECT activation_token, userBlock, email FROM users WHERE email = ?';
+    db.query(query, [email], (error, results) => {
+      if (error) {
+        console.error('Błąd podczas sprawdzania użytkownika:', error);
+        serverLogs(`Błąd podczas sprawdzania użytkownika: ${error}`);
+        reject(error);
+      } else {
+        if (results.length > 0) {
+          const { activation_token, userBlock } = results[0];
+          resolve({
+            isActivationTokenNull: activation_token === null,
+            userBlock,
+            email
+          });
+        } else {
+          reject(new Error('Nie znaleziono użytkownika'));
+        }
+      }
+    });
+  });
+}
+// ===============================================================================
+// Funkcja do pobierania użytkownika z bazy danych na podstawie adresu e-mail
+// ===============================================================================
+async function getUserByEmail(email) {
+  return new Promise((resolve, reject) => {
+    const query = 'SELECT email, pass, ids FROM users WHERE email = ?';
+    db.query(query, [email], (error, results) => {
+      if (error) {
+        console.error('Błąd podczas pobierania użytkownika:', error);
+        reject(error);
+      } else {
+        if (results.length > 0) {
+          resolve(results[0]); // Zwróć użytkownika, jeśli został znaleziony
+        } else {
+          resolve(null); // Zwróć null, jeśli użytkownik nie został znaleziony
+        }
+      }
+    });
+  });
+}
 
 
 module.exports = router;

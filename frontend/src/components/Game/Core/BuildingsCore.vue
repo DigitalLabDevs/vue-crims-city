@@ -7,11 +7,12 @@
       <span title="Destrukcja">D</span>
     </div>
     <router-link :to="`/crims-city/buildings/${props.imageName}`">
-      <img 
-        :title="`${props.name}`" 
+      <Tooltip :description="`${props.description}`">
+      <img
         :src="`/game/images/buildings/${props.imageName}.jpg`" 
         :alt="props.imageName" 
       />
+    </Tooltip>
     </router-link>
     <div class="BuildingsCorefooter">
       {{ t('game.level') }}: {{ level }}
@@ -23,6 +24,7 @@
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
+import Tooltip from './Tooltip.vue';
 const { t } = useI18n();
 const router = useRouter;
 
@@ -38,9 +40,13 @@ const props = defineProps({
   name: {
     type: String,
     required: true
+  },
+  description: {
+    type: String,
+    default: 'EEl',
+    required: false
   }
 });
-
 
 </script>
 

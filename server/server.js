@@ -15,6 +15,7 @@ const playerItems = require('./endpoints/playerItems');
 const buildings = require('./endpoints/buildingsEndpoint');
 const dashboard = require('./endpoints/dashboardEndpoint');
 const bank = require('./endpoints/bankEndpoint');
+const players = require('./endpoints/playersEndpoint');
 
 app.use(express.json());
 // Middleware dla CORS
@@ -60,6 +61,7 @@ app.use(playerItems);
 app.use(buildings);
 app.use(dashboard);
 app.use(bank);
+app.use(players);
 
 
 
