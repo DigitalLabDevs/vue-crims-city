@@ -12,31 +12,34 @@ const router = express.Router();
 router.post('/api/login', async (req, res) => {
   const { email, password } = req.body;
 
-  if (!email || !password) {
-    return res.status(400).json({
-      message: 'Brak wymaganych danych',
-      messages: 'warning',
-      success: true,
-      isLoggedIn: false,
-      code: `${i18n.__('LOGIN.INCOMPLETE_DATA')}`,
-    });
-  }
+  
   try {
-
+  // =======================================================================
+  // Sprawdzenie czy email lub hasło nie jest puste
+  // =======================================================================
+    if (!email || !password) {
+      return res.status(400).json({
+        message: 'Brak wymaganych danych',
+        messages: 'error',
+        success: true,
+        isLoggedIn: false,
+        code: `${i18n.__('LOGIN.INCOMPLETE_DATA')}`,
+      });
+    }
+// =======================================================================
+  // Sprawdzenie czy użytkownik istnieje
+  // =======================================================================
     const userDetails = await checkUserDetails(email);
 
-  console.log(`userDetails.email: ${userDetails.email}`);
-
-    if (!userDetails.email) {
+    if (!userDetails) {
       return res.status(400).json({
         message: 'Brak użytkownika',
-        messages: 'warning',
+        messages: 'error',
         success: true,
         isLoggedIn: false,
         code: `${i18n.__('LOGIN.WRONG_DATA')}`,
       });
     }
-    return;
   // =======================================================================
   // Sprawdzenie czy użytkownik jest zablokowany
   // =======================================================================
@@ -55,7 +58,7 @@ router.post('/api/login', async (req, res) => {
     if (userDetails.isActivationTokenNull === false) {
       return res.status(400).json({
         message: 'Nieaktywne konto',
-        messages: 'error',
+        messages: 'info',
         success: true,
         isLoggedIn: false,
         code: `${i18n.__('LOGIN.ACCOUNT_ACTIVATE_FALSE')}`,
@@ -66,22 +69,12 @@ router.post('/api/login', async (req, res) => {
   // =======================================================================
     const user = await getUserByEmail(email);
 
-    if (!user) {
-      return res.status(400).json({
-        message: 'Nieprawidłowe dane logowania',
-        messages: 'warning',
-        success: true,
-        isLoggedIn: false,
-        code: `${i18n.__('LOGIN.WRONG_DATA')}`,
-      });
-    }
-
     const isPasswordValid = await bcrypt.compare(password, user.pass);
 
     if (!isPasswordValid) {
       return res.status(400).json({
         message: 'Nieprawidłowe dane logowania',
-        messages: 'warning',
+        messages: 'error',
         success: true,
         isLoggedIn: false,
         code: `${i18n.__('LOGIN.WRONG_DATA')}`,
@@ -96,7 +89,7 @@ router.post('/api/login', async (req, res) => {
         messages: 'error',
         success: true,
         isLoggedIn: false,
-        code: 'SOME_WRONG',
+        code: `${i18n.__('LOGIN.WRONG_DATA')}`,
       });
     }
 
@@ -108,7 +101,7 @@ router.post('/api/login', async (req, res) => {
         messages: 'error',
         success: true,
         isLoggedIn: false,
-        code: `SOME_WRONG`,
+        code: `${i18n.__('LOGIN.WRONG_DATA')}`,
       });
     }
 
@@ -258,33 +251,36 @@ async function updateLoginCount(email) {
 // ===============================================================================
 async function checkUserDetails(email) {
   return new Promise((resolve, reject) => {
-    const query = 'SELECT activation_token, userBlock, email FROM users WHERE email = ?';
+    const query = 'SELECT activation_token, userBlock, email FROM users WHERE email = ? LIMIT 1';
     db.query(query, [email], (error, results) => {
       if (error) {
         console.error('Błąd podczas sprawdzania użytkownika:', error);
-        serverLogs(`Błąd podczas sprawdzania użytkownika: ${error}`);
         reject(error);
       } else {
+        // console.log('Wyniki zapytania:', results); // Debugowanie wyników zapytania
         if (results.length > 0) {
-          const { activation_token, userBlock } = results[0];
+          const { activation_token, userBlock, email: userEmail } = results[0];
           resolve({
             isActivationTokenNull: activation_token === null,
             userBlock,
-            email
+            email: userEmail
           });
         } else {
-          reject(new Error('Nie znaleziono użytkownika'));
+          // console.log(`KUTAS`); // Debugowanie wyników zapytania
+          resolve(false); 
+          // reject(null); // Zwraca null, jeśli użytkownik nie został znaleziony
         }
       }
     });
   });
 }
+ 
 // ===============================================================================
 // Funkcja do pobierania użytkownika z bazy danych na podstawie adresu e-mail
 // ===============================================================================
 async function getUserByEmail(email) {
   return new Promise((resolve, reject) => {
-    const query = 'SELECT email, pass, ids FROM users WHERE email = ?';
+    const query = 'SELECT pass, ids FROM users WHERE email = ? LIMIT 1';
     db.query(query, [email], (error, results) => {
       if (error) {
         console.error('Błąd podczas pobierania użytkownika:', error);
