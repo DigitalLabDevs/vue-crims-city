@@ -1,25 +1,14 @@
 <template>
-  <div class="building-details">
-    <div class="bImg">
-      <img :src="`/game/images/buildings/${imageName}.jpg`" />
+  <div class="building-details" :style="`background-image: url(/game/images/buildings/${imageName}.jpg);`">
+    <h2>{{ t(`buildings.names.${imageName}`) }}</h2>
+    <p>{{ t('buildings.level') }}: {{ level }}</p>
+    <div class="building-actions">
+      <span @click="upgradeBuilding">{{ t('buildings.upgrade') }}</span>
+      <span @click="destroyBuilding">{{ t('buildings.destroy') }}</span>
     </div>
-
-    <div class="bInfo">
-      <h2>{{ t(`buildings.names.${imageName}`) }}</h2>
-      <p>{{ t('buildings.level') }}: {{ data.pb_level }}</p>
-      <div class="building-actions">
-        <span @click="upgradeBuilding">{{ t('buildings.upgrade') }}</span>
-        <span @click="destroyBuilding">{{ t('buildings.destroy') }}</span>
-      </div>
-      <div class="buildings-upgrades">
-        <p>Następny poziom : {{ data.level }}</p>
-        <p>Koszt : {{ data.upgrade_cost }} $</p>
-        <p>Czas : {{ data.build_time }} min</p>
-      </div>
-      <div class="building-info">
-        <h3>{{ t('buildings.productionTitle') }}</h3>
-        <p>{{ productionInfo }}</p>
-      </div>
+    <div class="building-info">
+      <h3>{{ t('buildings.productionTitle') }}</h3>
+      <p>{{ productionInfo }}</p>
     </div>
   </div>
 </template>
@@ -35,10 +24,9 @@ const config = getConfig();
 const { t } = useI18n();
 const route = useRoute();
 
-const data = ref({});
-
 const imageName = ref(route.params.imageName as string);
 // const level = ref(0);
+let level;
 const productionInfo = ref("Loading...");
 const imageSrc = computed(() => `/game/images/buildings/${imageName.value}.jpg`);
 
@@ -51,13 +39,10 @@ const fetchBuildingData = async () => {
     });
     if (response.ok) {
       const buildingDataArray = await response.json();
-      const buildingData = buildingDataArray[0]; // Przypisanie pierwszego elementu tablicy
-      data.value = buildingData; 
-      console.log(`=====================================================`);
-      console.log(`buildingData.pb_level: ${JSON.stringify(data)}`);
-      console.log(`=====================================================`);
-      // level = buildingData.pb_level;
-      // productionInfo.value = buildingData.pb_capacity;
+      let buildingData = buildingDataArray[0];
+      console.log(`buildingData.pb_level: ${buildingData.pb_level}`);
+      level = buildingData.pb_level;
+      productionInfo.value = buildingData.pb_capacity;
     }
 
   } catch (error) {
@@ -108,30 +93,20 @@ fetchBuildingData(); // Fetch initial data on component mount
 </script>
 
 <style scoped>
-.bImg {
-  width: 300px;
-  height: 300px;
-}
-
-.bImg img {
-  width: 100%;
-  height: 100%;
-  border-radius: 15px;
-}
-
 .span {
   cursor: pointer;
 }
 
 .building-details * {
+  /* background-color: rgba(0, 0, 0, 0.6); */
   padding: 5px;
 }
 
 .building-details {
-  background-color: rgba(0, 0, 0, 0.5);
-  padding: 5px;
-  display: flex;
-  flex-direction: row;
+  text-align: center;
+  height: 300px;
+  background-size: cover;
+
 }
 
 .building-image {

@@ -148,14 +148,27 @@ const router = createRouter({
           components: {
             game: Buildings,
           },
+          children:[
+            {
+              path: ':imageName', // Nowa trasa z parametrem imageName
+              components: {
+                buildings: BuildingDetails,
+                buildings2: BuildingDetails,
+              },
+              props:{
+                menu2: true,
+              }
+            },
+          ],
         },
-        {
-          path: 'buildings/:imageName', // Nowa trasa z parametrem imageName
-          components: {
-            game: Buildings,
-            menu2: BuildingDetails,
-          },
-        },
+        // {
+        //   path: 'buildings/:imageName', // Nowa trasa z parametrem imageName
+        //   components: {
+        //     game: Buildings,
+        //     // menu2: BuildingDetails,
+        //     buildings: BuildingDetails,
+        //   },
+        // },
         {
           path: 'trade',
           components: {

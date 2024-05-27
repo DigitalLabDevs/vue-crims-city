@@ -12,19 +12,48 @@ const { verifyJwtToken } = require('../tools/tokenTools');
 const router = express.Router();
 router.use(cookieParser());
 //=====================================================================================
+// Upgrade budynku
+//=====================================================================================
+// app.post('/game/buildings/upgrade', verifyJwtToken, async (req, res) => {
+//   const imageName = req.params.imageName;
+//   const userId = req.user.userEmail;
+
+//   console.log(`imageName: ${imageName}`);
+//   console.log(`userId: ${userId}`);
+
+//   return;
+
+//   try {
+//     // Pobierz informacje o ulepszeniu dla danego budynku
+//     const buildingUpgradeInfo = await BuildingUpgrade.findOne({ where: { imageName } });
+
+//     if (!buildingUpgradeInfo) {
+//       return res.status(404).json({ message: 'Building upgrade info not found' });
+//     }
+
+//     // Zwróć czas ulepszenia dla aktualnego poziomu budynku
+//     res.json({ upgradeTime: buildingUpgradeInfo.upgradeTime });
+//   } catch (error) {
+//     console.error('Error upgrading building:', error);
+//     res.status(500).json({ message: 'Internal server error' });
+//   }
+// });
+//=====================================================================================
 // Pobieranie danych po kliknięciu na dany budynek więcej informacji
 //=====================================================================================
 router.post('/game/buildings/:imageName', verifyJwtToken, async (req, res) => {
   const imageName = req.params.imageName;
   const userId = req.user.userEmail;
+
+  console.log(`imageName: ${imageName}`);
+  console.log(`userId: ${userId}`);
   try {
     const result = await getBuildingsPlayerWithName(userId, imageName);
-
-    console.log(`FUNCTION: ${JSON.stringify(result)}`);
+   
+    console.log(`F => :
+    ${JSON.stringify(result, null, 2)}`);
 
     res.status(200).json(result);
-
-    
   } catch (error) {
     console.error('Błąd podczas pobierania danych z tabeli buildings:', error);
     res.status(500).json({ message: 'Błąd serwera podczas pobierania danych budynków' });
@@ -86,6 +115,37 @@ WHERE
 // Funkcja do pobierania danych o budynku dla użytkownika na podstawie jego identyfikatora i nazwy budynku
 //=====================================================================================
 async function getBuildingsPlayerWithName(userId, buildingName) {
+  return new Promise((resolve, reject) => {
+    const query = `
+    SELECT 
+    pb.*,
+    b.buildings_name,
+    bu.*
+FROM 
+    player_buildings pb
+LEFT JOIN
+    buildings b ON pb.pb_buildings_ids = b.buildings_ids
+LEFT JOIN
+    buildings_upgrades bu ON pb.pb_level + 1 = bu.level AND b.buildings_ids = bu.building_id
+WHERE 
+    pb.pb_player_ids = ? AND
+    b.buildings_name = ?;
+    `;
+
+    db.query(query, [userId, buildingName], (error, results) => {
+      if (error) {
+        console.error('Błąd podczas pobierania danych z tabeli player_buildings:', error);
+        reject(error);
+      } else {
+        resolve(results);
+      }
+    });
+  });
+}
+//=====================================================================================
+// UPGRADE BUILDINGS
+//=====================================================================================
+async function getupgradeBuildingsInfo(userId, imageName) {
   return new Promise((resolve, reject) => {
     const query = `
       SELECT 

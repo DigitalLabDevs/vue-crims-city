@@ -1,17 +1,20 @@
 <template>
-  <Loader v-if="!isLoading"/>
+  <Loader v-if="!isLoading" />
   <div v-else class="Buildings">
     <h1>{{ t('buildings.title') }}</h1>
     <div class="BuildingsView">
-      <BuildingsCore 
-        v-for="(building, index) in buildings" 
-        :key="index" 
-        :imageName="building.buildings_img" 
-        :name="t(`buildings.names.${building.buildings_name}`)"
-        :level="building.pb_level"
-        :description="t(`buildings.names.${building.buildings_name}`)"
-      />
+      <BuildingsCore v-for="(building, index) in buildings" :key="index" :imageName="building.buildings_img"
+        :name="t(`buildings.names.${building.buildings_name}`)" :level="building.pb_level"
+        :description="t(`buildings.names.${building.buildings_name}`)" />
     </div>
+
+    <router-view name="buildings"></router-view>
+
+
+    <div class="buildings-build2">
+      <router-view name="buildings2"></router-view>
+    </div>
+
   </div>
 </template>
 
@@ -31,7 +34,7 @@ const isLoading = ref(false);
 
 onMounted(async () => {
   try {
-    const response = await fetch(`${API_URL}/game/buildings`,{
+    const response = await fetch(`${API_URL}/game/buildings`, {
       method: config.method,
       credentials: config.credentials,
       headers: config.headers
@@ -59,5 +62,12 @@ onMounted(async () => {
 h1 {
   text-align: center;
   margin-bottom: 20px;
+}
+
+.buildings-build2 {
+  position: fixed;
+  width: 600px;
+  top: 90px;
+  right: 10px;
 }
 </style>
