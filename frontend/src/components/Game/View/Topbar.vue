@@ -1,20 +1,15 @@
 <template>
   <div class="Game-Topbar">
-    <div class="fx">
-      <div class="ssk">{{ t('bank.balance') }}: 345,543 $</div>
-      <div class="ssk">Zdrowie: 87%</div>
+    <div class="fx ssk">
+       <router-link to="/crims-city">Crims City</router-link>
     </div>
 
-    <div class="fx">
+    <div class="rMenu">
       <MusicPlayer />
       <DropdownMenu>
-      <!-- <div class="ssk"> -->
         <router-link to="/crims-city/settings">{{ t('game.settings') }}</router-link>
-      <!-- </div> -->
-      <!-- <div class="ssk"> -->
-        <LogoutView />
-      <!-- </div> -->
-    </DropdownMenu>
+      </DropdownMenu>
+      <LogoutView />
     </div>
   </div>
 </template>
@@ -29,15 +24,23 @@ const { t } = useI18n();
 </script>
 
 <style scoped>
-.Game-Topbar{
+.Game-Topbar {
   display: flex;
   justify-content: space-evenly;
 }
-.ssk{
+
+.ssk {
   background-color: rgba(0, 0, 0, 0.5);
   padding: 2px 5px 2px 5px;
-  margin-left: 10px;
   box-shadow: 0 0 5px black;
 }
+.rMenu{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.rMenu *{
+  margin: 0px 4px 0px 4px;
 
+}
 </style>

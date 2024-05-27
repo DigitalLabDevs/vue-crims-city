@@ -3,9 +3,11 @@
     <span class="btn-span" @click="confirmLogout">{{ t('logout.logoutButton') }}</span>
     <div v-if="showModal" class="modal">
       <div class="modal-content">
-        <p class="w1">{{ t('logout.confirmMessage') }}</p>
-        <button class="btn-yes" @click="logout">{{ t('logout.confirmButton') }}</button>
-        <button class="btn-no" @click="cancelLogout">{{ t('logout.cancelButton') }}</button>
+        <p class="w2">{{ t('logout.confirmMessage') }}</p>
+        <div class="dBtn">
+          <button class="btn-yes" @click="logout">{{ t('logout.confirmButton') }}</button>
+          <button class="btn-no" @click="cancelLogout">{{ t('logout.cancelButton') }}</button>
+        </div>
       </div>
     </div>
   </div>
@@ -39,8 +41,8 @@ const cancelLogout = () => {
 };
 
 const logout = () => {
-    logoutFunc();
-    showModal.value = false;
+  logoutFunc();
+  showModal.value = false;
 };
 
 async function logoutFunc() {
@@ -54,12 +56,12 @@ async function logoutFunc() {
         'Content-Type': 'application/json'
       }
     });
-    
+
     // Sprawdzenie, czy odpowiedź jest udana
     if (!response.ok) {
       const data = await response.json();
       throw new Error(`Błąd podczas wylogowywania: ${errorMessage}`);
-    }else{
+    } else {
       store.commit('clearSessionToken');
       // Przekierowanie użytkownika na stronę główną
       router.push('/');
@@ -72,45 +74,60 @@ async function logoutFunc() {
 </script>
 
 <style scoped>
-.btn-logout{
+.dBtn{
+  display: flex;
+  justify-content: space-around;
+}
+/* Przyciski wylogowywania */
+.btn-yes:hover,
+.btn-no:hover {
+  color: var(--black);
+  background-color: var(--colorSky)
+}
+
+.btn-no,
+.btn-yes {
   cursor: pointer;
-}
-.btn-yes{
-  background-color: rgb(187, 131, 26);
-}
-
-.btn-no{
-  background-color: rgb(27, 192, 137);
+  transition: background-color 0.3s ease;
+  /* Płynne przejścia */
 }
 
-p{
-  color: aqua;
+.modal button {
+  margin: 0px 3px 0px 3px;
 }
+
+/* Formularz wylogowywania */
 .logout-form {
   max-width: 300px;
 }
 
+.w2 {
+  color: var(--colorSky);
+  font-size: 1rem;
+  padding: 10px;
+}
+
+/* Okno modalne */
 .modal {
   z-index: 9999;
+  /* Na wierzchu */
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
+  /* Przezroczyste tło */
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+/* Zawartość okna modalnego */
 .modal-content {
-  background-color: rgb(56, 137, 155);
+  background-color: #34495e;
+  /* Ciemny szary */
   padding: 20px;
   border-radius: 5px;
-  
-}
-
-.modal-content button {
-  margin-right: 10px;
 }
 </style>

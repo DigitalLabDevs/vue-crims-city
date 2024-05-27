@@ -20,9 +20,9 @@
   },
   "logout": {
     "logoutButton": "Wyloguj",
-    "confirmButton": "YEAAA NARA",
+    "confirmButton": "YEAAA",
     "cancelButton": "NIEE ZOSTAJE!",
-    "confirmMessage": "Wylogować z burdelu?"
+    "confirmMessage": "Wylogować z Crims City?"
   },
   "registration": {
     "title": "Rejestracja"

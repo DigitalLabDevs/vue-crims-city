@@ -1,6 +1,8 @@
 <template>
   <div class="audio-player">
-    <span @click="togglePlay">{{ isPlaying ? 'Pause' : 'Play' }}</span>
+    <a>
+      <span @click="togglePlay">{{ isPlaying ? 'Pause' : 'Play' }}</span>
+    </a>
   </div>
 </template>
 
@@ -41,8 +43,7 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.audio-player {
-  display: flex;
-  align-items: center;
+span {
+  cursor: pointer;
 }
 </style>
