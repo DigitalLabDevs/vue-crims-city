@@ -87,7 +87,8 @@ const message = ref('');
 
 const handleRegistrationError = ({ code, messages, success: isSuccess }) => {
   // errorMessage.value = t(`serverMessage.${code}`);
-  errorMessage.value = t(`${code}`);
+  // errorMessage.value = t(`${code}`);
+  errorMessage.value = `${code}`;
   success.value = isSuccess;
   message.value = messages;
 };

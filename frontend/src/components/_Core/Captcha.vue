@@ -44,7 +44,7 @@ const generateCaptcha = () => {
 
 
       captchaText.value = text;
-      userInput.value = text;
+      // userInput.value = text;
 
       ctx.fillStyle = 'black';
       ctx.fillRect(0, 0, captchaWidth.value, captchaHeight.value);
@@ -83,7 +83,7 @@ onMounted(() => {
   generateCaptcha();
 });
 
-defineExpose({ isCaptchaValid });
+defineExpose({ isCaptchaValid, refreshCaptcha });
 </script>
 
 <style scoped>

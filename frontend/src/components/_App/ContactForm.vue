@@ -36,7 +36,7 @@
           </span>
         </div>
       </div>
-      <Captcha :onCaptchaValid="handleCaptcha" />
+      <Captcha ref="captcha" :onCaptchaValid="handleCaptcha" />
       <span v-if="!isCaptchaValid && submitted" class="error-message">
             {{ t('captcha.invalidCaptcha') }}
       </span>
@@ -66,6 +66,7 @@ const isCaptchaValid = ref(false);
 const submitted = ref(false); 
 const isEmailValid = ref(false);
 const emit = defineEmits(['registrationError']);
+const captcha = ref();
 
 const subjectOptions = [
   'general_inquiry',
@@ -108,8 +109,6 @@ const handleSubmit = async () => {
     message: message.value,
   };
 
-
-
   try {
     const response = await fetch(`${config.API_URL}/api/contact`, {
       method: config.method,
@@ -122,16 +121,16 @@ const handleSubmit = async () => {
       throw new Error('Network response was not ok');
     }
 
-    const data = await response.json();
-    console.log(`${JSON.stringify(data)}`);
-  
+    const data = await response.json(); 
     emit('registrationError', { messages: data.messages, code: data.code, success: data.success });
-
-    // alert(t('contact.alert_successMessage'));
-    console.log('TAK')
+    email.value = '';
+    subject.value = '';
+    message.value = '';
+    submitted.value = false;
+    captcha.value.refreshCaptcha();
+    characterCount.value = 0;
   } catch (error) {
-    console.error('There was a problem with the fetch operation:', error);
-    console.log('NIE')
+    console.error('There was a problem with the fetch operation:');
   }
 };
 </script>
