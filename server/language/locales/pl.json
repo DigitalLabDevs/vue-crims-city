@@ -14,6 +14,18 @@
 	  "INCOMPLETE_DATA": "Uzupełnij Dane.",
 	  "WRONG_DATA": "Niepoprawne dane logowania.",
 	  "USER_BLOCKED": "Użytkownik zablokowany.",
-	  "ACCOUNT_ACTIVATE_FALSE": "Konto nie zostało aktywowane, sprawdź adres E-mail."
+	  "ACCOUNT_ACTIVATE_FALSE": "Konto nie zostało aktywowane, sprawdź adres E-mail.",
+    "INVALID_TOKEN": "Nieprawidłowy token",
+    "WEAK_PASSWORD": "Hasło nie spełania wymagań, minimum 6 znaków, 1 duża litera, 1 cyfra, 1 znak specialny.",
+    "PASSWORD_UPDATE_ERROR": "Nie udało się zaktualizować hasła.",
+    "INTERNAL_SERVER_ERROR": "Wystąpił wewnętrzym błąd serwera. Skontaktuj się Administratorem.",
+    "NO_TOKEN": "Brak tokenu",
+    "PASSWORD_SUCCESS_UPDATE": "Hasło zostało pomyślnie zaktualizowane.",
+    "USER_NOT_FOUND": "Nie ma użytkownika z tym adresem e-mail",
+    "EMAIL_WITH_RESET": "E-mail z linkiem do resetowania hasła został wysłany.",
+    "PASSWORD_TOO_SHORT": "Hasło musi mieć minimum 6 znaków, 1 duża, 1 mała (litera) 1 cyfrę i 1 znak specjalny.",
+    "EMAIL_EXIST": "Adres e-mail już istnieje.",
+    "CONTACT_SUCCESS": "Dziękujemy za wiadomość, odpowiemy najszybciej jak to możliwe.",
+    "CONTACT_NO_SUCCESS": "Wystapił nieoczekiwany błąd, skontaktuj się z support@crims-city.ct8.pl."
   }
 }

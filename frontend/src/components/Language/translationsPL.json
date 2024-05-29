@@ -57,7 +57,12 @@
     "technical_support": "Wsparcie techniczne",
     "feedback": "Opinia",
     "sponsors": "Sponsoring",
-    "other": "Inne"
+    "other": "Inne",
+    "selectOption": "Wybierz temat",
+    "InvalidemailAddress": "Niepoprawny adres E-mail.",
+    "PleaseSelectASubject": "Wybierz temat",
+    "PleaseEnterAMessage": "Wpisz wiadomość",
+    "alert_successMessage": "Wiadomość została wysłana pomyślnie"
   },
   "captcha": {
     "title": "Captcha",

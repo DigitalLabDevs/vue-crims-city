@@ -11,13 +11,12 @@ input, button{
   padding: 8px;
   border-radius: 3px;
   /* border: 1px solid #ccc; */
-
-  background-color: rgba(0, 0, 0, 0.6);
-  border: 0px;
-  color: white;
 }
 input, button, select, textarea{
   outline: none;
+  background-color: rgba(0, 0, 0, 0.6);
+  border: 1px solid var(--RGBA-WHITE-50);
+  color: var(--white);
 }
 
 /* Ukryj strzałki w Chrome, Safari, Edge, Opera */
@@ -35,7 +34,6 @@ input[type="number"] {
 select{
   padding: 3px;
   border-radius: 3px;
-  border: 1px solid #ccc;
 }
 html{
   user-select: none;

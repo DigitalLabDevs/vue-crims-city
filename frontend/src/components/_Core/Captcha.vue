@@ -2,7 +2,7 @@
   <div class="captcha-container">
     <label for="captcha">{{ t('captcha.title') }}</label>
     <div class="captchaInput">
-      <input v-model="userInput" @input="validateCaptcha" :placeholder="t('captcha.placeholder')" required />
+      <input class="capInp" v-model="userInput" @input="validateCaptcha" :placeholder="t('captcha.placeholder')" required />
     </div>
     <div class="captchaView">
       <canvas ref="captchaCanvas" :width="captchaWidth" :height="captchaHeight"></canvas>
@@ -19,7 +19,7 @@ import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 const props = defineProps({
-  onCaptchaValid: Boolean
+  onCaptchaValid: Function
 });
 
 const captchaText = ref('');
@@ -44,7 +44,7 @@ const generateCaptcha = () => {
 
 
       captchaText.value = text;
-      // userInput.value = text;
+      userInput.value = text;
 
       ctx.fillStyle = 'black';
       ctx.fillRect(0, 0, captchaWidth.value, captchaHeight.value);
@@ -87,6 +87,9 @@ defineExpose({ isCaptchaValid });
 </script>
 
 <style scoped>
+.capInp{
+  width: 160px;
+}
 label{
   margin-bottom: 5px;
 }
@@ -99,6 +102,7 @@ label{
 .captcha-container {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
 }
 
 canvas {

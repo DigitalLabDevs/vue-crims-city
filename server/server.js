@@ -11,6 +11,7 @@ const { API_URL } = require('./config');
 
 const registrationEndpoint = require('./endpoints/registrationEndpoint');
 const loginEndpoint = require('./endpoints/loginEndpoint');
+const contactEndpoint = require('./endpoints/contactEndpoint');
 const playerItems = require('./endpoints/playerItems');
 const buildings = require('./endpoints/buildingsEndpoint');
 const dashboard = require('./endpoints/dashboardEndpoint');
@@ -42,13 +43,10 @@ sessionManager(app);
 
 // Middleware zapisujący adres IP użytkownika w danych sesji
 app.use((req, res, next) => {
-  // Odczytaj adres IP użytkownika z żądania
-  const userIp = req.ip;
-  // Jeśli dane sesji nie zawierają jeszcze adresu IP, zainicjuj je jako pusty obiekt
+  const userIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   if (!req.session.data) {
     req.session.data = {};
   }
-  // Zapisz adres IP użytkownika w danych sesji
   req.session.data.user_ip = userIp;
   next();
 });
@@ -57,6 +55,7 @@ app.use((req, res, next) => {
 
 app.use(registrationEndpoint);
 app.use(loginEndpoint);
+app.use(contactEndpoint);
 app.use(playerItems);
 app.use(buildings);
 app.use(dashboard);

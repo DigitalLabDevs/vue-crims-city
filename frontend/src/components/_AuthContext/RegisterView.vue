@@ -55,7 +55,6 @@ function validateForm() {
 }
 
 function handleCaptcha(isValid) {
-  console.log('Props onCaptchaValid wysłany. Wartość:', isValid);
   isCaptchaValid.value = isValid;
 }
 
@@ -85,16 +84,15 @@ async function register() {
       body: JSON.stringify({ email: email.value, password: password.value })
     });
 
-
+    if (!response.ok) {
+      throw new Error('Błąd rejestracji');
+    }
 
     // Rejestracja zakończona sukcesem, można przekierować użytkownika lub wyświetlić komunikat
     const data = await response.json();
     console.log(`${JSON.stringify(data)}`);
     emit('registrationError', { messages: data.messages, code: data.code, success: data.success });
 
-    if (!response.ok) {
-      throw new Error('Błąd rejestracji');
-    }
 
   } catch (error) {
     console.error('Błąd rejestracji:', error);
@@ -106,8 +104,8 @@ async function register() {
 <style scoped>
 @media (max-width: 480px) {
   .Registration-form {
-    width: 100%!important;
-    padding: 7px!important;
+    width: 100% !important;
+    padding: 7px !important;
   }
 }
 

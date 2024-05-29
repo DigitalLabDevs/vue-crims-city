@@ -39,7 +39,6 @@ function validateForm() {
 }
 
 function handleCaptcha(isValid) {
-  console.log('Props onCaptchaValid wysłany. Wartość:', isValid);
   isCaptchaValid.value = isValid;
 }
 

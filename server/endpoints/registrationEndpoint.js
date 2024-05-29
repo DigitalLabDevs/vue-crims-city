@@ -5,38 +5,32 @@ const { i18n } = require('../language/i18nSetup');
 const { sendEmail } = require('../tools/emailUtils');
 const { SYSTEM, API_URL } = require('../config'); // Importujemy plik konfiguracyjny
 
+const server_logs = require('../tools/server_logs');
+
 const router = express.Router();
 
 // =================================================================
+// Ustawianie nowego hasła
 // =================================================================
-// =================================================================
-// =================================================================
-// =================================================================
-// =================================================================
-// =================================================================
-// =================================================================
-// =================================================================
-// =================================================================
-
 router.post('/api/set-new-password', async (req, res) => {
   const { token, newPassword } = req.body;
 
-  if (!token || !newPassword) {
-    return res.status(400).json({
-      message: 'Brak wymaganych danych',
-      success: false,
-      code: 'INCOMPLETE_DATA',
-      messages: 'warning',
-    });
-  }
-
   try {
+    if (!token || !newPassword) {
+      return res.status(400).json({
+        message: 'Brak wymaganych danych',
+        success: true,
+        code: `${i18n.__('LOGIN.INCOMPLETE_DATA')}`,
+        messages: 'error',
+      });
+    }
+
     const user = await getUserByResetToken(token);
     if (!user) {
       return res.status(400).json({
         message: 'Nieprawidłowy lub wygasły token resetowania hasła',
-        success: false,
-        code: 'INVALID_TOKEN',
+        success: true,
+        code: `${i18n.__('INVALID_TOKEN')}`,
         messages: 'error',
       });
     }
@@ -45,8 +39,8 @@ router.post('/api/set-new-password', async (req, res) => {
     if (!isStrongPassword) {
       return res.status(400).json({
         message: 'Hasło nie spełnia wymagań',
-        success: false,
-        code: 'WEAK_PASSWORD',
+        success: true,
+        code: `${i18n.__('WEAK_PASSWORD')}`,
         messages: 'warning',
       });
     }
@@ -55,8 +49,8 @@ router.post('/api/set-new-password', async (req, res) => {
     if (!isPasswordUpdated) {
       return res.status(500).json({
         message: 'Błąd podczas aktualizacji hasła',
-        success: false,
-        code: 'PASSWORD_UPDATE_ERROR',
+        success: true,
+        code: `${i18n.__('PASSWORD_UPDATE_ERROR')}`,
         messages: 'error',
       });
     }
@@ -66,7 +60,6 @@ router.post('/api/set-new-password', async (req, res) => {
       return res.status(500).json({
         message: 'Błąd podczas usuwania tokenu resetowania hasła',
         success: false,
-        code: 'TOKEN_CLEAR_ERROR',
         messages: 'error',
       });
     }
@@ -79,16 +72,18 @@ router.post('/api/set-new-password', async (req, res) => {
     });
   } catch (error) {
     console.error('Error setting new password:', error);
+    server_logs(`${error}`);
     return res.status(500).json({
       message: 'Wystąpił błąd wewnętrzny serwera',
-      success: false,
-      code: 'INTERNAL_SERVER_ERROR',
+      success: true,
+      code: `${i18n.__('INTERNAL_SERVER_ERROR')}`,
       messages: 'error',
     });
   }
 });
-
-// ========= Endpoint obsługujący resetowanie hasła na podstawie tokena ==========
+// =================================================================
+// Endpoint obsługujący resetowanie hasła na podstawie tokena
+// =================================================================
 router.post('/reset-password', async (req, res) => {
   try {
     const { token, newPassword } = req.body; // Pobierz token i nowe hasło z ciała żądania
@@ -97,9 +92,9 @@ router.post('/reset-password', async (req, res) => {
     if (!token || !newPassword) {
       return res.status(400).json({
         message: 'Brak wymaganych danych',
-        success: false,
-        code: 'INCOMPLETE_DATA',
-        messages: 'warning',
+        success: true,
+        code: `${i18n.__('LOGIN.INCOMPLETE_DATA')}`,
+        messages: 'error',
       });
     }
 
@@ -109,9 +104,9 @@ router.post('/reset-password', async (req, res) => {
     if (!user) {
       return res.status(400).json({
         message: 'Invalid or expired token',
-        success: false,
-        code: 'NO_TOKEN',
-        messages: 'warning',
+        success: true,
+        code: `${i18n.__('NO_TOKEN')}`,
+        messages: 'error',
       });
     }
 
@@ -120,8 +115,8 @@ router.post('/reset-password', async (req, res) => {
     if (!isStrongPassword) {
       return res.status(400).json({
         message: 'Hasło nie spełnia wymagań',
-        success: false,
-        code: 'WEAK_PASSWORD',
+        success: true,
+        code: `${i18n.__('WEAK_PASSWORD')}`,
         messages: 'warning',
       });
     }
@@ -134,8 +129,8 @@ router.post('/reset-password', async (req, res) => {
     if (!isPasswordUpdated) {
       return res.status(500).json({
         message: 'Błąd podczas aktualizacji hasła',
-        success: false,
-        code: 'PASSWORD_UPDATE_ERROR',
+        success: true,
+        code: `${i18n.__('PASSWORD_UPDATE_ERROR')}`,
         messages: 'error',
       });
     }
@@ -144,8 +139,8 @@ router.post('/reset-password', async (req, res) => {
     if (!isTokenCleared) {
       return res.status(500).json({
         message: 'Błąd podczas usuwania tokenu resetowania hasła',
-        success: false,
-        code: 'TOKEN_CLEAR_ERROR',
+        success: true,
+        code: `${i18n.__('INTERNAL_SERVER_ERROR')}`,
         messages: 'error',
       });
     }
@@ -153,21 +148,24 @@ router.post('/reset-password', async (req, res) => {
     res.status(200).json({
       message: 'Password has been reset successfully',
       success: true,
-      code: 'PASSWORD_SUCCESS_UPDATE',
+      code: `${i18n.__('PASSWORD_SUCCESS_UPDATE')}`,
       messages: 'success',
     });
   } catch (error) {
     console.error('Error resetting password:', error);
+    server_logs(`${error}`);
     res.status(500).json({
       message: 'Wystąpił błąd wewnętrzny serwera',
-      success: false,
-      code: 'INTERNAL_SERVER_ERROR',
+      success: true,
+      code: `${i18n.__('INTERNAL_SERVER_ERROR')}`,
       messages: 'error',
     });
   }
 });
 
-// ======== Endpoint obsługujący żądanie przypomnienia hasła ==============
+// ==============================================================================
+// Endpoint obsługujący żądanie przypomnienia hasła
+// ==============================================================================
 router.post('/api/forgot-password', async (req, res) => {
   const { email } = req.body;
 
@@ -175,7 +173,7 @@ router.post('/api/forgot-password', async (req, res) => {
     if (!email) {
       return res.status(400).json({
         message: `Uzupełnij dane`,
-        code: `MISSING_EMAIL`,
+        code: `${i18n.__('LOGIN.INCOMPLETE_DATA')}`,
         success: true,
         messages: 'info',
       });
@@ -186,9 +184,9 @@ router.post('/api/forgot-password', async (req, res) => {
     if (!userExists) {
       return res.status(404).json({
         message: `Nie ma użytkownika z tym adresem e-mail`,
-        code: `USER_NOT_FOUND`,
+        code: `${i18n.__('USER_NOT_FOUND')}`,
         success: true,
-        messages: 'warning',
+        messages: 'info',
       });
     }
 
@@ -200,7 +198,7 @@ router.post('/api/forgot-password', async (req, res) => {
 
     // Wygeneruj link do resetowania hasła
     const resetLink = `${API_URL}/reset-password?token=${token}`;
-
+    // Tłumaczenie przed wysłaniem
     const emailSender = i18n.__('email.emailResetName');
     const resetPasswordSubject = i18n.__('email.resetPasswordSubject');
     const resetPasswordBody = i18n.__('email.resetPasswordBody', { resetLink: resetLink });
@@ -220,26 +218,29 @@ router.post('/api/forgot-password', async (req, res) => {
         res.status(200).json({
           message: 'E-mail z linkiem do resetowania hasła został wysłany.',
           messages: 'success',
-          code: 'EMAIL_WITH_RESET',
+          code: `${i18n.__('EMAIL_WITH_RESET')}`,
           success: true,
         });
       })
       .catch((error) => {
         console.error('Błąd podczas wysyłania e-maila:', error);
         res.status(500).json({
-          message: `${SYSTEM} Błąd podczas wysyłania e-maila z linkiem resetującym hasło.`,
+          message: `Błąd podczas wysyłania e-maila z linkiem resetującym hasło.`,
           success: false,
         });
       });
   } catch (error) {
     console.error('Błąd podczas przetwarzania żądania przypomnienia hasła:', error);
+    server_logs(`${error}`);
     res.status(500).json({
-      message: `${SYSTEM} Wystąpił błąd podczas przetwarzania żądania przypomnienia hasła.`,
+      message: `Wystąpił błąd podczas przetwarzania żądania przypomnienia hasła.`,
       success: false,
     });
   }
 });
-// ====================== /api/registration ===============================
+// ==============================================================================
+// Rejestracja, odbiera dane i łąduje w mysql
+// ==============================================================================
 router.post('/api/registration', async (req, res) => {
   const { email, password } = req.body;
 
@@ -250,7 +251,7 @@ router.post('/api/registration', async (req, res) => {
     res.status(400).json({
       message: `${SYSTEM} Uzupełnij Dane`,
       messages: 'warning',
-      code: `INCOMPLETE_DATA`,
+      code: `${i18n.__('LOGIN.INCOMPLETE_DATA')}`,
       success: true,
     });
     return;
@@ -264,7 +265,7 @@ router.post('/api/registration', async (req, res) => {
       return res.status(400).json({
         message: `${SYSTEM} Hasło jest niepoprawne`,
         messages: 'warning',
-        code: 'PASSWORD_TOO_SHORT',
+        code: `${i18n.__('PASSWORD_TOO_SHORT')}`,
         success: true,
       });
     }
@@ -273,9 +274,9 @@ router.post('/api/registration', async (req, res) => {
 
     if (emailExists) {
       return res.status(400).json({
-        message: 'EMail nie istieje',
+        message: 'Email exist',
         messages: 'warning',
-        code: 'EMAIL_EXIST',
+        code: `${i18n.__('EMAIL_EXIST')}`,
         success: true,
       });
     }
@@ -285,8 +286,8 @@ router.post('/api/registration', async (req, res) => {
     if (!hashedPassword) {
       return res.status(400).json({
         message: 'Błąd podczas hashowania hasła',
-        messages: 'warning',
-        code: 'TRY_LATER',
+        messages: 'error',
+        code: `${i18n.__('INTERNAL_SERVER_ERROR')}`,
         success: true,
       });
     }
@@ -298,9 +299,9 @@ router.post('/api/registration', async (req, res) => {
     db.query(insertUserQuery, [email, hashedPassword, token], (insertError, insertResults) => {
       if (insertError) {
         return res.status(500).json({
-          message: `${SYSTEM} Błąd podczas dodawania nowego użytkownika.`,
+          message: `Błąd podczas dodawania nowego użytkownika.`,
           messages: 'error',
-          code: 'TRY_LATER',
+          code: `${i18n.__('INTERNAL_SERVER_ERROR')}`,
           success: true,
         });
       }
@@ -312,7 +313,6 @@ router.post('/api/registration', async (req, res) => {
       const emailAcrivateSender = i18n.__('emailActivationSender');
       const subject = i18n.__('activationEmailSubject');
       const activationMessage = i18n.__('activationEmailMessage', { activationLink: activationLink });
-      
 
       // Przygotuj e-mail z linkiem aktywacyjnym
       const mailOptions = {
@@ -334,15 +334,18 @@ router.post('/api/registration', async (req, res) => {
       });
     });
   } catch (error) {
+    server_logs(`${error}`);
     return res.status(500).json({
       message: `Błąd podczas rejestracji`,
       messages: `error`,
-      code: `TRY_LATER`,
+      code: `${i18n.__('INTERNAL_SERVER_ERROR')}`,
       success: true,
     });
   }
 });
-// ========================== ACTIVATION ACCOUNT ================================
+// ==============================================================================
+// Aktywacja konto na podstawie linku wysłanego na e-mail
+// ==============================================================================
 router.get('/activation/:token', async (req, res) => {
   try {
     const token = req.params.token;
@@ -373,6 +376,7 @@ router.get('/activation/:token', async (req, res) => {
       code: 'ACCOUNT_ACTIVATE',
     });
   } catch (error) {
+    server_logs(`${error}`);
     console.error('Błąd podczas aktywacji konta:', error);
     res.status(500).json({
       success: false,
@@ -381,7 +385,9 @@ router.get('/activation/:token', async (req, res) => {
   }
 });
 
-// ============= Funkcja do generowania tokena  ====================
+// ==============================================================================
+// Funkcja do generowania tokena
+// ==============================================================================
 function generateToken(length = 64) {
   const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let token = '';
@@ -391,8 +397,10 @@ function generateToken(length = 64) {
   }
   return token;
 }
-
-// ==================== Sprawdzanie siły hasła =================================
+// ==============================================================================
+// Sprawdzanie siły hasła
+// 1 Duża litera, 1 znak specdialny, 1 cyfra, minimum 6 znaków
+// ==============================================================================
 async function checkPasswordStrength(password, minLength = 6, minDigit = 1, minSpecial = 1) {
   return new Promise((resolve, reject) => {
     // Sprawdź minimalną długość hasła
@@ -423,8 +431,9 @@ async function checkPasswordStrength(password, minLength = 6, minDigit = 1, minS
     return resolve(true);
   });
 }
-
-// ============== Funkcja do aktualizacji pola userBlock w bazie danych ===============
+// ==============================================================================
+// Funkcja do aktualizacji pola userBlock w bazie danych
+// ==============================================================================
 async function updateUserBlock(user) {
   return new Promise((resolve, reject) => {
     // Tutaj wykonaj zapytanie do bazy danych, aby zaktualizować pole userBlock
@@ -441,8 +450,9 @@ async function updateUserBlock(user) {
     });
   });
 }
-
-// ============ Funkcja do pobierania użytkownika z bazy danych na podstawie tokenu ==========
+// ==============================================================================
+// Funkcja do pobierania użytkownika z bazy danych na podstawie tokenu
+// ==============================================================================
 async function findUserByToken(token) {
   return new Promise((resolve, reject) => {
     // Tutaj wykonaj zapytanie do bazy danych, aby znaleźć użytkownika na podstawie tokenu
@@ -463,8 +473,9 @@ async function findUserByToken(token) {
     });
   });
 }
-
-// =============  Funkcja sprawdzająca istnienie adresu e-mail w bazie danych ==============
+// ==============================================================================
+// Funkcja sprawdzająca istnienie adresu e-mail w bazie danych
+// ==============================================================================
 async function checkEmailExistence(email) {
   return new Promise((resolve, reject) => {
     const checkEmailQuery = 'SELECT email FROM users WHERE email = ?';
@@ -478,8 +489,9 @@ async function checkEmailExistence(email) {
     });
   });
 }
-
+// ==============================================================================
 // Funkcja do pobierania użytkownika z bazy danych na podstawie tokenu resetowania hasła
+// ==============================================================================
 async function getUserByResetToken(token) {
   return new Promise((resolve, reject) => {
     const query = 'SELECT ids FROM users WHERE reset_password_token = ?';
@@ -497,8 +509,9 @@ async function getUserByResetToken(token) {
     });
   });
 }
-
+// ==============================================================================
 // Funkcja do aktualizowania hasła użytkownika
+// ==============================================================================
 function updateUserPassword(userId, newPassword) {
   return new Promise(async (resolve, reject) => {
     try {
@@ -512,7 +525,6 @@ function updateUserPassword(userId, newPassword) {
           reject(error);
         } else {
           resolve(true); // Zwróć sukces, jeśli hasło zostało zaktualizowane poprawnie
-          console.log(`updateUserPassword: SUKCES`);
         }
       });
     } catch (error) {
@@ -521,8 +533,9 @@ function updateUserPassword(userId, newPassword) {
     }
   });
 }
-
-// ================ Funkcja do usuwania tokenu resetowania hasła użytkownika ==============
+// ==============================================================================
+// Funkcja do usuwania tokenu resetowania hasła użytkownika
+// ==============================================================================
 async function clearResetToken(userId) {
   return new Promise((resolve, reject) => {
     const query = 'UPDATE users SET reset_password_token = NULL WHERE ids = ?';
@@ -532,12 +545,13 @@ async function clearResetToken(userId) {
         reject(error);
       } else {
         resolve(true); // Zwróć sukces, jeśli token został usunięty poprawnie
-        console.log(`clearResetToken: SUKCES`);
       }
     });
   });
 }
-// ===================== Funkcja do usuwania tokenu aktywacyjnego ==========================
+// ==============================================================================
+// Funkcja do usuwania tokenu aktywacyjnego
+// ==============================================================================
 async function clearActivationToken(userId) {
   return new Promise((resolve, reject) => {
     const query = 'UPDATE users SET activation_token = NULL WHERE ids = ?';
