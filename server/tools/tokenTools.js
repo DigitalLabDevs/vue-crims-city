@@ -37,7 +37,7 @@ async function verifyJwtToken(req, res, next) {
     // Przypisanie danych użytkownika do requestu
     req.user = decoded;
 
-    console.log(`${JSON.stringify(req.user)}`);
+    // console.log(`${JSON.stringify(req.user)}`);
 
     // Kontynuowanie do następnego middleware lub trasy
     next();

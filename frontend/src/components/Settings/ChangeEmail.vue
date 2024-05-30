@@ -8,7 +8,7 @@
         <input type="email" id="newEmail" v-model="newEmail">
 
         <label for="currentPassword">{{ t('password.currentPassword') }}</label>
-        <input type="password" id="currentPassword" v-model="currentPassword">
+        <input type="password" id="currentPassword" autocomplete="current-password" v-model="currentPassword">
 
         <div v-if="send" class="code">
           <span>{{ t('changeEmail.info') }}</span>
@@ -106,7 +106,7 @@ form * {
 }
 
 .eo0v2 {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--RGBA-BLACK-50);
   padding: 10px;
 }
 </style>

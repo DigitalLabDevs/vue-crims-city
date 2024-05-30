@@ -150,7 +150,6 @@ input,
 textarea,
 select {
   min-width: 70%;
-  max-width: 370px;
 }
 
 textarea {
@@ -177,4 +176,5 @@ form>div {
   color: red;
   font-size: 0.9em;
 }
+
 </style>

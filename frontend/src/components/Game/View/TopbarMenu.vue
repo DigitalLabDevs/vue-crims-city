@@ -21,7 +21,7 @@ span{
   padding: 5px;
 }
 span:hover{
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--RGBA-BLACK-50);
 }
 .TopbarMenu{
   display: flex;

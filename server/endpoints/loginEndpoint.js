@@ -127,14 +127,15 @@ router.post('/api/login', async (req, res) => {
       message: 'Logowanie przebiegło pomyślnie',
       success: false,
       isLoggedIn: true,
-      email: email,
     });
+
   } catch (error) {
     return res.status(500).json({
-      message: `Wystąpił błąd podczas logowania - ${error}`,
+      message: `Wystąpił błąd podczas logowania`,
       success: true,
-      code: `SOME_WRONG`,
+      code: `${i18n.__('INTERNAL_SERVER_ERROR')}`,
       messages: 'error',
+      isLoggedIn: false,
     });
   }
 });
@@ -151,8 +152,8 @@ router.post('/api/logout', async (req, res, next) => {
       console.error('Błąd podczas usuwania sesji:', err);
       return res.status(500).json({
         message: 'Wystąpił błąd podczas wylogowywania',
-        success: false,
-        code: 'INTERNAL_SERVER_ERROR',
+        success: true,
+        code: `${i18n.__('INTERNAL_SERVER_ERROR')}`,
         messages: 'error',
       });
     }
@@ -161,10 +162,8 @@ router.post('/api/logout', async (req, res, next) => {
     res.clearCookie(process.env.ST_NAME);
     res.clearCookie(process.env.SESSION_NAME);
     res.status(200).json({
-      success: true,
+      success: false,
       message: 'Wylogowanie przebiegło pomyślnie',
-      messages: 'success',
-      code: 'LOGOUT_SUCCESS',
       isLoggedIn: false,
     });
   });
@@ -289,7 +288,7 @@ async function getUserByEmail(email) {
         if (results.length > 0) {
           resolve(results[0]); // Zwróć użytkownika, jeśli został znaleziony
         } else {
-          resolve(null); // Zwróć null, jeśli użytkownik nie został znaleziony
+          resolve(false); // Zwróć null, jeśli użytkownik nie został znaleziony
         }
       }
     });

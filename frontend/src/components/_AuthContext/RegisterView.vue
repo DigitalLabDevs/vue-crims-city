@@ -34,13 +34,13 @@ import Captcha from '../_Core/Captcha.vue';
 
 const { t } = useI18n()
 
-// const email = ref('');
-// const password = ref('');
-// const confirmPassword = ref('');
+const email = ref('');
+const password = ref('');
+const confirmPassword = ref('');
 
-const email = ref('yovasec567@fincainc.com');
-const password = ref('Zaq1@wsx');
-const confirmPassword = ref('Zaq1@wsx');
+// const email = ref('yovasec567@fincainc.com');
+// const password = ref('Zaq1@wsx');
+// const confirmPassword = ref('Zaq1@wsx');
 
 
 const isCaptchaValid = ref(false);
@@ -102,7 +102,7 @@ async function register() {
 </script>
 
 <style scoped>
-@media (max-width: 480px) {
+@media (max-width: 880px) {
   .Registration-form {
     width: 100% !important;
     padding: 7px !important;
@@ -111,8 +111,8 @@ async function register() {
 
 
 .Registration-form {
-  width: 70%;
-  background-color: rgba(0, 0, 0, 0.5);
+  width: 50%;
+  background-color: var(--RGBA-BLACK-50);
   padding: 20px;
   border-radius: 10px;
 }
@@ -126,22 +126,9 @@ label {
   margin-bottom: 5px;
 }
 
-.chapta-flex {
-  display: flex;
-  justify-content: space-evenly;
-  margin-top: 10px;
-}
-
-.chapta-img {
-  border-radius: 7px;
-  border: 1px solid;
-}
-
 input[type="email"],
 input[type="text"],
 input[type="password"] {
   width: 100%;
-  /* padding: 10px; */
-  /* font-size: 14px; */
 }
 </style>

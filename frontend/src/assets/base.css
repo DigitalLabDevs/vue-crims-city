@@ -7,16 +7,25 @@
   font-weight: normal;
 }
 
-input, button{
+input, button, select{
   padding: 8px;
   border-radius: 3px;
-  /* border: 1px solid #ccc; */
 }
+
 input, button, select, textarea{
   outline: none;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: var(--RGBA-BLACK-50);
   border: 1px solid var(--RGBA-WHITE-50);
   color: var(--white);
+}
+
+/* Autocomplete */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active  {
+  -webkit-text-fill-color: var(--white);
+  transition: background-color 5000s ease-in-out 0s;
 }
 
 /* Ukryj strzałki w Chrome, Safari, Edge, Opera */
@@ -31,10 +40,6 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
-select{
-  padding: 3px;
-  border-radius: 3px;
-}
 html{
   user-select: none;
 }

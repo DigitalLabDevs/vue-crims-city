@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: May 26, 2024 at 08:37 AM
+-- Generation Time: May 29, 2024 at 04:37 PM
 -- Server version: 5.7.24
 -- PHP Version: 8.3.4
 
@@ -20,6 +20,26 @@ SET time_zone = "+00:00";
 --
 -- Database: `crimscity`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `bank`
+--
+
+CREATE TABLE `bank` (
+  `b_ids` int(11) NOT NULL,
+  `b_player_ids` int(11) NOT NULL,
+  `b_player_money` int(11) NOT NULL,
+  `b_bb` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `bank`
+--
+
+INSERT INTO `bank` (`b_ids`, `b_player_ids`, `b_player_money`, `b_bb`) VALUES
+(1, 77, 220000, 1);
 
 -- --------------------------------------------------------
 
@@ -46,6 +66,68 @@ INSERT INTO `buildings` (`buildings_ids`, `buildings_name`, `buildings_img`, `bu
 (5, 'WeaponsDepot', 'WeaponsDepot', 'WeaponsDepot - Descriptions'),
 (6, 'HackersHub', 'HackersHub', 'HackersHub - Descriptions'),
 (7, 'IllegalCasino', 'IllegalCasino', 'Illegal Casino - Descriptions');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `buildings_upgrades`
+--
+
+CREATE TABLE `buildings_upgrades` (
+  `id` int(11) NOT NULL,
+  `building_id` int(11) NOT NULL,
+  `level` int(11) NOT NULL,
+  `build_time` int(11) NOT NULL,
+  `upgrade_cost` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `buildings_upgrades`
+--
+
+INSERT INTO `buildings_upgrades` (`id`, `building_id`, `level`, `build_time`, `upgrade_cost`) VALUES
+(1, 5, 0, 9, 5),
+(2, 5, 1, 18, 5),
+(3, 5, 2, 52, 5),
+(4, 1, 0, 5, 5),
+(5, 1, 1, 5, 5),
+(6, 1, 2, 5, 158),
+(7, 2, 0, 10, 52),
+(8, 2, 1, 15, 45),
+(9, 2, 2, 5, 5),
+(10, 4, 0, 7, 5),
+(11, 4, 1, 11, 5),
+(12, 4, 2, 15, 5),
+(13, 6, 0, 7, 5),
+(14, 6, 1, 4, 5),
+(15, 6, 2, 45, 5),
+(16, 7, 0, 14, 5),
+(17, 7, 1, 4, 5),
+(18, 7, 2, 6, 5),
+(19, 3, 0, 11, 520),
+(20, 3, 1, 111, 5200),
+(21, 3, 2, 245, 52078);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `contact`
+--
+
+CREATE TABLE `contact` (
+  `id` int(11) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `subject` varchar(50) NOT NULL,
+  `message` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `contact`
+--
+
+INSERT INTO `contact` (`id`, `email`, `subject`, `message`, `created_at`) VALUES
+(1, 'matrix_neo@o2.pl', 'general_inquiry', '12', '2024-05-29 16:12:58');
 
 -- --------------------------------------------------------
 
@@ -93,15 +175,16 @@ CREATE TABLE `players` (
   `p_experience` int(11) NOT NULL DEFAULT '0',
   `p_level` smallint(11) DEFAULT '0',
   `p_health_points` tinyint(11) NOT NULL DEFAULT '100',
-  `p_reputation` int(11) NOT NULL DEFAULT '0'
+  `p_reputation` int(11) NOT NULL DEFAULT '0',
+  `p_eq_slots` int(11) NOT NULL DEFAULT '3'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `players`
 --
 
-INSERT INTO `players` (`p_ids`, `p_ids_user`, `p_nick`, `p_img`, `p_money`, `p_experience`, `p_level`, `p_health_points`, `p_reputation`) VALUES
-(1, 77, 'Admirał Admin', NULL, 345023, 127, 1, 100, 0);
+INSERT INTO `players` (`p_ids`, `p_ids_user`, `p_nick`, `p_img`, `p_money`, `p_experience`, `p_level`, `p_health_points`, `p_reputation`, `p_eq_slots`) VALUES
+(1, 77, 'Admirał Admin', NULL, 124836, 127, 1, 100, 0, 3);
 
 -- --------------------------------------------------------
 
@@ -122,8 +205,13 @@ CREATE TABLE `player_buildings` (
 --
 
 INSERT INTO `player_buildings` (`pb_ids`, `pb_player_ids`, `pb_buildings_ids`, `pb_level`, `pb_capacity`) VALUES
-(1, 77, 1, 1, 3),
-(2, 77, 2, 3, 3);
+(1, 77, 1, 0, 3),
+(2, 77, 2, 0, 3),
+(3, 77, 3, 0, 0),
+(4, 77, 4, 0, 0),
+(5, 77, 5, 0, 0),
+(6, 77, 6, 0, 0),
+(7, 77, 7, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -172,23 +260,8 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`ids`, `email`, `access_token`, `session_token`, `login_date`) VALUES
-(94, '77', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOjc3LCJzZXNzaW9uSWQiOiI1ZGQ2ODVmYy02MjRmLTQ4OGEtODc5Yi0zZWJiYjQ3ZjJjYjkiLCJpYXQiOjE3MTY1Mjk4NzQsImV4cCI6MTcxNjUzMzQ3NH0.hhe_Z5av-mHXY4ta5Gkq2Sog3FAwppDAyQ9qar5ksTM', '5dd685fc-624f-488a-879b-3ebbb47f2cb9', '2024-05-24 07:51:14'),
-(95, '77', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOjc3LCJzZXNzaW9uSWQiOiIwMGFhYTBkMS1kYmExLTQxODktOWE3OS02OGVhY2I3MWI3NmYiLCJpYXQiOjE3MTY1MzA2MTQsImV4cCI6MTcxNjUzNDIxNH0.6jn582LeOaKkizGWNCNL3xRPUWA2Ywhq8yKodtrmJEg', '00aaa0d1-dba1-4189-9a79-68eacb71b76f', '2024-05-24 08:03:34'),
-(96, '77', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOjc3LCJzZXNzaW9uSWQiOiI5ZDAxOTIzZC1mODg5LTQwOTQtOGViOC02ODcxZDk1ODI3NjgiLCJpYXQiOjE3MTY1NTU1OTUsImV4cCI6MTcxNjU1OTE5NX0.4C5zD6um7_IseUFLgzQphCUqTrDRzk9VWYonE8sQqzk', '9d01923d-f889-4094-8eb8-6871d9582768', '2024-05-24 14:59:55'),
-(97, '77', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOjc3LCJzZXNzaW9uSWQiOiIxZjU3ODdiNy0yYWE2LTRiZDYtOTBlNy1kMjg5NjM0MGNjOTYiLCJpYXQiOjE3MTY1NTkxOTgsImV4cCI6MTcxNjU2Mjc5OH0.F3P04jN2jl0IAyDrdxb7vrFlT1i4QZkxiQjV4wgavJA', '1f5787b7-2aa6-4bd6-90e7-d2896340cc96', '2024-05-24 15:59:58'),
-(98, '77', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOjc3LCJzZXNzaW9uSWQiOiIxZjU3ODdiNy0yYWE2LTRiZDYtOTBlNy1kMjg5NjM0MGNjOTYiLCJpYXQiOjE3MTY1NjI5NjksImV4cCI6MTcxNjU2NjU2OX0.fLk9iEm-m3zlOgVOlMtYETcb0WY-MoWQ3vXrMn4nyn4', '1f5787b7-2aa6-4bd6-90e7-d2896340cc96', '2024-05-24 17:02:49'),
-(99, '77', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOjc3LCJzZXNzaW9uSWQiOiJkY2ZmNmMyOC1iMjdlLTRiODAtOWE0Yi1kNWUxMGYxNTkyNDEiLCJpYXQiOjE3MTY1NjkwMjEsImV4cCI6MTcxNjU3MjYyMX0.LOVfFaiV5gXtZ274dxxShBX1rAAGgCw9yV901ZhWy1I', 'dcff6c28-b27e-4b80-9a4b-d5e10f159241', '2024-05-24 18:43:41'),
-(100, '77', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOjc3LCJzZXNzaW9uSWQiOiI3ZjUwMzIxNS04OWI3LTQzMzUtODM2NS03NTk1MTRjZTYzZmUiLCJpYXQiOjE3MTY2MTQzNDYsImV4cCI6MTcxNjYxNzk0Nn0.n1vMA3oyl3i6a36UiVAbPEkQqceCq_yhToLtsff80go', '7f503215-89b7-4335-8365-759514ce63fe', '2024-05-25 07:19:06'),
-(101, '77', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOjc3LCJzZXNzaW9uSWQiOiIzMGQyMjI3OC1mNmU4LTQ2OGUtODQ5Zi1hN2NhMDU0ZDMyNmIiLCJpYXQiOjE3MTY2MTg2NjQsImV4cCI6MTcxNjYyMjI2NH0.8OFiLhl8XyLtqaRnvH1J8q0Ft2tAlOsbKe2NufhTW-0', '30d22278-f6e8-468e-849f-a7ca054d326b', '2024-05-25 08:31:04'),
-(102, '77', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOjc3LCJzZXNzaW9uSWQiOiIzZjEyMDhkMC00NjJlLTQ2OWMtODJlYy01YmZiNTZjNzUyYzUiLCJpYXQiOjE3MTY2MjIzNjksImV4cCI6MTcxNjYyNTk2OX0.D_llhWpBwITl4mYrQZkl1xrA7sZt3mUHvwZPTHXlVyA', '3f1208d0-462e-469c-82ec-5bfb56c752c5', '2024-05-25 09:32:49'),
-(103, '77', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOjc3LCJzZXNzaW9uSWQiOiJjNjNhNjZhMy0zODdiLTQ2MWUtYjlhMC1lMjg1YmJkOWMzYzUiLCJpYXQiOjE3MTY2NTA4MDUsImV4cCI6MTcxNjY1NDQwNX0.DO0ehTge1QVQrSHuRv2NNDSj1A6WQYi6p93vM-T07Ac', 'c63a66a3-387b-461e-b9a0-e285bbd9c3c5', '2024-05-25 17:26:45'),
-(104, '77', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOjc3LCJpZHMiOm51bGwsImlhdCI6MTcxNjY1NDUwNSwiZXhwIjoxNzE2NjU4MTA1fQ.Vbqcytnt6gZRDp6SAbp6e3DzWz0L_06tIvUicMKb5UY', '548399ac-6f4a-4e67-82d2-98b631490ff5', '2024-05-25 18:28:25'),
-(105, '77', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOjc3LCJpZHMiOm51bGwsInNlc3Npb25JZCI6IjFiNTE1NzI5LWM0ZTEtNGI2ZS05NGRlLTk4N2NiNmVlY2NiZiIsImlhdCI6MTcxNjY1NTA2MiwiZXhwIjoxNzE2NjU4NjYyfQ.rxExWAov8wyZ0ffvXnvLMOitJJWXQ1EU7ftSeArPVek', '1b515729-c4e1-4b6e-94de-987cb6eeccbf', '2024-05-25 18:37:42'),
-(106, '77', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOjc3LCJpZHMiOm51bGwsInNlc3Npb25JZCI6ImFhNWU5YmQ0LTEwZGItNDdiMC04ZjEwLTQ5MTY1ZjU5ZGQzNyIsImlhdCI6MTcxNjY1ODg3OCwiZXhwIjoxNzE2NjYyNDc4fQ.Nm5J-7s5yFOtOKlEy7T8d4tV2FbEdEqL7HD5RpDYO1Y', 'aa5e9bd4-10db-47b0-8f10-49165f59dd37', '2024-05-25 19:41:18'),
-(107, '77', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOjc3LCJpZHMiOm51bGwsInNlc3Npb25JZCI6ImEyMjcxMzg1LTc3ZTItNDhjYy1iODg2LTljODA0YzU5NDE5NyIsImlhdCI6MTcxNjcwMTExMSwiZXhwIjoxNzE2NzA0NzExfQ.HEdr_k3x9qSC7HkR5fj89KALQGtD6swCC-ifZnOJyX0', 'a2271385-77e2-48cc-b886-9c804c594197', '2024-05-26 07:25:11'),
-(108, '77', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOjc3LCJpZHMiOm51bGwsInNlc3Npb25JZCI6ImEyMjcxMzg1LTc3ZTItNDhjYy1iODg2LTljODA0YzU5NDE5NyIsImlhdCI6MTcxNjcwNDc5MSwiZXhwIjoxNzE2NzA4MzkxfQ.2evN72y6zsuzTUPemLhwny5As7t5tRRDoIaimse9hQU', 'a2271385-77e2-48cc-b886-9c804c594197', '2024-05-26 08:26:31'),
-(109, '77', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOjc3LCJpZHMiOm51bGwsInNlc3Npb25JZCI6ImY0MmZiYjU1LTE4YWItNGQ4Ny05YTg5LWI4MWNhNjQzM2RiYyIsImlhdCI6MTcxNjcwODY4OSwiZXhwIjoxNzE2NzEyMjg5fQ.0OkVgMSe6JC8G7-VMXPXpfn5GxybpYPREogJJtw2zTc', 'f42fbb55-18ab-4d87-9a89-b81ca6433dbc', '2024-05-26 09:31:29'),
-(110, '77', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOjc3LCJpZHMiOm51bGwsInNlc3Npb25JZCI6IjM1MmNiN2RkLWQwMjItNGIxMi04NzNlLTg4NDhiNGZmMTNmZSIsImlhdCI6MTcxNjcxMjM4NCwiZXhwIjoxNzE2NzE1OTg0fQ.mP6w6TcIQNWnhMTuu5N7zS77YDKufWWLaEOI7bH8-C8', '352cb7dd-d022-4b12-873e-8848b4ff13fe', '2024-05-26 10:33:04');
+(126, '77', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOjc3LCJpZHMiOm51bGwsInNlc3Npb25JZCI6IjFiZDk4NzFlLWFlZGItNGY5NS1hM2Q1LTdkMTU0YzkyY2Y5NiIsImlhdCI6MTcxNjkxMzMzOCwiZXhwIjoxNzE2OTE2OTM4fQ.cfx_IEGJIPYaz_CB7Pxhw9bRH2pZFWTaZWDQaZTZYIM', '1bd9871e-aedb-4f95-a3d5-7d154c92cf96', '2024-05-28 18:22:18'),
+(127, '77', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyRW1haWwiOjc3LCJpZHMiOm51bGwsInNlc3Npb25JZCI6ImYxNGM5MzBmLTE1ZjUtNDQzZS04NGRjLTI5MWM4NTI4Mzc2ZSIsImlhdCI6MTcxNjk5OTAyMCwiZXhwIjoxNzE3MDAyNjIwfQ.Koolie1PvJjMNzRvnUZm7SRJ1WicVrQ5X3s1QVjw4iE', 'f14c930f-15f5-443e-84dc-291c8528376e', '2024-05-29 18:10:20');
 
 -- --------------------------------------------------------
 
@@ -207,7 +280,7 @@ CREATE TABLE `sessions_store` (
 --
 
 INSERT INTO `sessions_store` (`session_id`, `expires`, `data`) VALUES
-('QTKqBL_GtZd1C6UCJduFZDsMMCQNTgdF', 1716716163, '{\"cookie\":{\"originalMaxAge\":3600000,\"expires\":\"2024-05-26T06:25:11.853Z\",\"secure\":false,\"httpOnly\":false,\"path\":\"/\"},\"data\":{\"user_ip\":\"::1\"},\"user\":{\"email\":\"yovasec567@fincainc.com\"}}');
+('tnjn2kpDKBZZajJzBqUtjW8Bcz3VwNVy', 1717003925, '{\"cookie\":{\"originalMaxAge\":3600000,\"expires\":\"2024-05-29T17:10:23.393Z\",\"secure\":false,\"httpOnly\":false,\"path\":\"/\"},\"data\":{\"user_ip\":\"::1\"}}');
 
 -- --------------------------------------------------------
 
@@ -241,17 +314,37 @@ INSERT INTO `users` (`ids`, `email`, `user`, `pass`, `pin`, `notifications`, `ac
 (3, NULL, 'ADMIN1', '$2b$10$eMau1KnpQaBvqH7sTIx08OOmU4355hMgvfiw8OfaEdFQOXrQggRN2', NULL, NULL, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZHMiOjMsInJvbGUiOm51bGwsInVzZXIiOiJBRE1JTjEiLCJleHAiOjE3MDcwMzc0NjIsImlhdCI6MTcwNzAzMzg2Mn0.qiupxDDsYKOXjhZwJOGir9yBYDQa8c1PNkwYbc2NfiQ', NULL, '2024-02-04 09:04:22', NULL, NULL, NULL, 0),
 (4, NULL, '01585', '$2b$10$eMau1KnpQaBvqH7sTIx08OOmU4355hMgvfiw8OfaEdFQOXrQggRN2', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
 (71, 'hesidak940@bsomek.com', NULL, '$2b$10$nhksDTDiaqH/RMniHpx86ejMoq8SVvvNOCs427QQPAYQeSnMcRy8e', NULL, NULL, NULL, NULL, NULL, '2024-05-15 08:56:11', 0, NULL, 0),
-(77, 'yovasec567@fincainc.com', NULL, '$2b$10$Hw9clcQtRnjoOFO8yo69He0gFkxfNfnAlzIq1P8YlASAAShdc/CCO', NULL, NULL, NULL, NULL, '2024-05-26 10:33:04', '2024-05-17 17:40:34', 93, NULL, 0);
+(77, 'yovasec567@fincainc.com', NULL, '$2b$10$Hw9clcQtRnjoOFO8yo69He0gFkxfNfnAlzIq1P8YlASAAShdc/CCO', NULL, NULL, NULL, NULL, '2024-05-29 18:10:20', '2024-05-17 17:40:34', 110, NULL, 0);
 
 --
 -- Indexes for dumped tables
 --
 
 --
+-- Indexes for table `bank`
+--
+ALTER TABLE `bank`
+  ADD PRIMARY KEY (`b_ids`),
+  ADD KEY `b_player_ids` (`b_player_ids`);
+
+--
 -- Indexes for table `buildings`
 --
 ALTER TABLE `buildings`
   ADD PRIMARY KEY (`buildings_ids`);
+
+--
+-- Indexes for table `buildings_upgrades`
+--
+ALTER TABLE `buildings_upgrades`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `building_id` (`building_id`);
+
+--
+-- Indexes for table `contact`
+--
+ALTER TABLE `contact`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `items`
@@ -305,10 +398,28 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `bank`
+--
+ALTER TABLE `bank`
+  MODIFY `b_ids` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `buildings`
 --
 ALTER TABLE `buildings`
   MODIFY `buildings_ids` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `buildings_upgrades`
+--
+ALTER TABLE `buildings_upgrades`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+
+--
+-- AUTO_INCREMENT for table `contact`
+--
+ALTER TABLE `contact`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `items`
@@ -326,7 +437,7 @@ ALTER TABLE `players`
 -- AUTO_INCREMENT for table `player_buildings`
 --
 ALTER TABLE `player_buildings`
-  MODIFY `pb_ids` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `pb_ids` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `player_items`
@@ -338,7 +449,7 @@ ALTER TABLE `player_items`
 -- AUTO_INCREMENT for table `sessions`
 --
 ALTER TABLE `sessions`
-  MODIFY `ids` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=111;
+  MODIFY `ids` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=128;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -349,6 +460,18 @@ ALTER TABLE `users`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `bank`
+--
+ALTER TABLE `bank`
+  ADD CONSTRAINT `bank_ibfk_1` FOREIGN KEY (`b_player_ids`) REFERENCES `players` (`p_ids_user`);
+
+--
+-- Constraints for table `buildings_upgrades`
+--
+ALTER TABLE `buildings_upgrades`
+  ADD CONSTRAINT `buildings_upgrades_ibfk_1` FOREIGN KEY (`building_id`) REFERENCES `buildings` (`buildings_ids`);
 
 --
 -- Constraints for table `players`

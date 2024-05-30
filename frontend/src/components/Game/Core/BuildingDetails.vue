@@ -128,7 +128,7 @@ fetchBuildingData(); // Fetch initial data on component mount
 }
 
 .building-details {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--RGBA-BLACK-50);
   padding: 5px;
   display: flex;
   flex-direction: row;

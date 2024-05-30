@@ -26,7 +26,7 @@ const { t } = useI18n();
 ul{
   display: flex;
   flex-direction: column;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--RGBA-BLACK-50);
 }
 nav ul {
   list-style: none;

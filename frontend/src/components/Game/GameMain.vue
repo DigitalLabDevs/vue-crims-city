@@ -86,7 +86,7 @@ const { t } = useI18n();
 .rout {
   width: 80%;
   height: min-content;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--RGBA-BLACK-50);
   border: 1px solid green;
   padding-bottom: 15px;
 }

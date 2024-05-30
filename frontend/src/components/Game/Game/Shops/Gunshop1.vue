@@ -119,7 +119,7 @@ const closeMenu = (event) => {
   /* top: 50%; */
   /* left: 50%; */
   transform: translate(-250%, -200%);
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--RGBA-BLACK-50);
   color: white;
   padding: 20px;
   border-radius: 5px;

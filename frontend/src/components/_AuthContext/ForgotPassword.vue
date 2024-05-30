@@ -105,8 +105,8 @@ async function forgotPassword() {
   border: 1px solid;
 }
 .ForgotPassword-form {
-  width: 70%;
-  background-color: rgba(0, 0, 0, 0.5);
+  width: 50%;
+  background-color: var(--RGBA-BLACK-50);
   padding: 20px;
   border-radius: 10px;
   /* margin: 0 auto; */

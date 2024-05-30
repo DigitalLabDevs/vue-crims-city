@@ -97,7 +97,7 @@ onMounted(() => {
 
 .tooltip {
   /* position: fixed; */
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--RGBA-BLACK-50);
   width: 300px;
   color: white;
   padding: 10px;

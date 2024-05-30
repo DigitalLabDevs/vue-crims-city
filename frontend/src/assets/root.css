@@ -13,6 +13,7 @@
 
     --colorSky: rgb(12, 205, 227);
     --RGBA-WHITE-50: rgba(255, 255, 255, 0.5);
+    --RGBA-BLACK-50: rgba(0, 0, 0, 0.5);
     --white: rgb(255, 255, 255);
     --black: rgb(0,0,0);
   }

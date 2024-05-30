@@ -5,13 +5,13 @@
       <h2>{{ t('settings.changePassword') }}</h2>
       <form @submit.prevent="changePassword">
         <label for="currentPassword">{{ t('password.currentPassword') }}</label>
-        <input type="password" id="currentPassword" v-model="currentPassword">
+        <input type="password" id="currentPassword" autocomplete="current-password" v-model="currentPassword" >
 
         <label for="newPassword">{{ t('password.newPassword') }}</label>
-        <input type="password" id="newPassword" v-model="newPassword">
+        <input type="password" id="newPassword" autocomplete="new-password" v-model="newPassword">
 
         <label for="confirmNewPassword">{{ t('password.confirmNewPassword') }}</label>
-        <input type="password" id="confirmNewPassword" v-model="confirmNewPassword">
+        <input type="password" id="confirmNewPassword" autocomplete="new-password" v-model="confirmNewPassword">
         <!-- <Captcha /> -->
 
         <button class="btn-chP" type="submit">{{ t('global.submit') }}</button>
@@ -94,7 +94,7 @@ form * {
 }
 
 .po0v2 {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--RGBA-BLACK-50);
   padding: 10px;
 }
 </style>

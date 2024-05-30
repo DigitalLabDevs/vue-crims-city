@@ -1,7 +1,7 @@
 <template>
   <Loader v-if="isLoading" />
   <div v-else class="bank">
-    <h2>{{ t('bank.title') }}</h2>
+    <!-- <h2>{{ t('bank.title') }}</h2> -->
     <div class="bank_money">
       <div class="balance">{{ t('bank.balance') }}: $ {{ getPlayerMoney }}</div>
       <div class="balance">{{ t('bank.money') }}: $ {{ getBankMoney }}</div>
@@ -31,8 +31,9 @@
 
     </div>
 
-
-    <router-view name="bank" :pMoney="money.p_money"></router-view>
+    <div class="router-bank">
+      <router-view name="bank" :pMoney="money.p_money"></router-view>
+    </div>
   </div>
 </template>
 
@@ -66,7 +67,7 @@ const fetchPlayerBankMoney = async () => {
       isLoading.value = false;
 
       // console.log(money.value);
-      
+
       GameStore.commit('setPlayerMoney', money.value.p_money);
       GameStore.commit('setBankMoney', money.value.b_player_money);
 
@@ -84,11 +85,24 @@ const getBankMoney = computed(() => GameStore.state.bank_money);
 
 
 <style scoped>
-.bank_money{
+.router-bank{
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+.bank {
+  padding-top: 150px;
+  background-image: url(/game/images/buildings/Bank.jpg);
+  background-repeat: no-repeat;
+  background-size: contain;
+  height: 566px;
+}
+
+.bank_money {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
 }
+
 .balance {
   background-color: rgba(0, 0, 0, 0.7);
   padding: 7px;

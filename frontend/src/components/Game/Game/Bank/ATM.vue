@@ -110,13 +110,13 @@ const getPlayerMoney = computed(() => GameStore.state.player_money);
 }
 
 .deposit-button:hover {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--RGBA-BLACK-50);
 }
 
 .message {
   margin-top: 20px;
   color: rgb(0, 255, 255);
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--RGBA-BLACK-50);
   padding: 15px;
 }
 </style>

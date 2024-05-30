@@ -23,6 +23,9 @@ import { useRouter } from 'vue-router';
 import store from './StoreVuex';
 import { API_URL } from '../../config';
 import Cookies from 'js-cookie';
+import { getConfig } from 'config';
+
+const config = getConfig();
 
 const { t } = useI18n();
 const router = useRouter();
@@ -42,14 +45,12 @@ const submitForm = async () => {
 
 
 async function loginFunc() {
-  console.log("START");
+
   try {
     const response = await fetch(`${API_URL}/api/login`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      method: config.method,
+      credentials: config.credentials,
+      headers: config.headers,
       body: JSON.stringify({ email: email.value, password: password.value })
     });
 

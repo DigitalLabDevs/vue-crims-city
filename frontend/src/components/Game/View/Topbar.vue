@@ -30,7 +30,7 @@ const { t } = useI18n();
 }
 
 .ssk {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--RGBA-BLACK-50);
   padding: 2px 5px 2px 5px;
   box-shadow: 0 0 5px black;
 }
