@@ -12,7 +12,7 @@ const { API_URL } = require('./config');
 const registrationEndpoint = require('./endpoints/registrationEndpoint');
 const loginEndpoint = require('./endpoints/loginEndpoint');
 const contactEndpoint = require('./endpoints/contactEndpoint');
-const equipment = require('./endpoints/equipmentEndpoint');
+// const equipment = require('./endpoints/equipmentEndpoint');
 const buildings = require('./endpoints/buildingsEndpoint');
 const dashboard = require('./endpoints/dashboardEndpoint');
 const bank = require('./endpoints/bankEndpoint');
@@ -58,7 +58,7 @@ app.use((req, res, next) => {
 app.use(registrationEndpoint);
 app.use(loginEndpoint);
 app.use(contactEndpoint);
-app.use(equipment);
+// app.use(equipment);
 app.use(buildings);
 app.use(dashboard);
 app.use(bank);

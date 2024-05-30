@@ -13,6 +13,34 @@ const router = express.Router();
 router.use(cookieParser());
 
 // =========================================================================================
+// Zaposywanie save-item-position
+// =========================================================================================
+router.post('/game/save-item-position', verifyJwtToken, async (req, res) => {
+  const userId = req.user.userEmail;
+  const { itemId, newPosition } = req.body;
+
+  console.log(`======================================================`);
+  console.log(`ID => ${userId}`);
+  console.log(`itemId: ${itemId}`);
+  console.log(`newPosition: ${newPosition}`);
+  console.log(`======================================================`);
+
+  try {
+    await saveItemPosition(userId, itemId, newPosition);
+    // const slots = await getPlayerEq(userId);
+
+    // if (slots.length > 0) {
+    //   res.status(200).json(slots);
+    // } else {
+    //   res.status(404).json({ message: 'Nie znaleziono danych dla użytkownika' });
+    // }
+    res.status(200).json({message: 'OK'});
+  } catch (error) {
+    console.error('Błąd:', error);
+    res.status(500).json({ message: 'Błąd serwera podczas aktualizacji pozycji przedmiotu' });
+  }
+});
+// =========================================================================================
 // Pobieranie ilośc slotów gracza
 // =========================================================================================
 router.post('/game/player-slots', verifyJwtToken, async (req, res) => {
@@ -37,29 +65,6 @@ router.post('/game/player-slots', verifyJwtToken, async (req, res) => {
 // =========================================================================================
 // Funkcja do pobierania przedmiotów gracza z bazy danych na podstawie jego id i kategorii
 // =========================================================================================
-async function getPlayerSlots(userId) {
-  return new Promise((resolve, reject) => {
-    let query = `
-      SELECT 
-        p_eq_slots
-      FROM 
-        players
-      WHERE p_ids_user = ?
-    `;
-
-    db.query(query, [userId], (error, results) => {
-      if (error) {
-        console.error('Błąd podczas pobierania przedmiotów gracza:', error);
-        reject(error);
-      } else {
-        resolve(results); // Zwróć wyniki zapytania
-      }
-    });
-  });
-}
-// =========================================================================================
-// Funkcja do pobierania przedmiotów gracza z bazy danych na podstawie jego id i kategorii
-// =========================================================================================
 async function getPlayerEq(userId) {
   return new Promise((resolve, reject) => {
     let query = `
@@ -80,40 +85,61 @@ async function getPlayerEq(userId) {
     });
   });
 }
-
-
-
-async function getPlayerItems(userId, category) {
-  return new Promise((resolve, reject) => {
-    let query = `
-      SELECT items.name,
-             items.description,
-             items.img_url,
-             items.category,
-             items.attack,
-             items.defense,
-             items.price,
-             items.weight,
-             player_items.current_durability
-      FROM items
-      INNER JOIN player_items ON items.item_id = player_items.item_id
-      WHERE player_items.player_id = ?
+// =========================================================================================
+// Funkcja do aktualizacji pozycji przedmiotu w bazie danych
+// =========================================================================================
+async function saveItemPosition(userId, itemId, newPosition) {
+  try {
+    const checkQuery = `
+      SELECT item_id FROM players_items
+      WHERE player_id = ? AND item_slot = ?
     `;
-
-    // Dodaj warunek WHERE dla kategorii, jeśli została przekazana
-    if (category) {
-      query += ` AND items.category = ?`;
-    }
-
-    db.query(query, category ? [userId, category] : [userId], (error, results) => {
+    db.query(checkQuery, [userId, newPosition], async (error, results) => {
       if (error) {
-        console.error('Błąd podczas pobierania przedmiotów gracza:', error);
-        reject(error);
+        console.error('Błąd podczas sprawdzania pozycji przedmiotu:', error);
+        throw error;
       } else {
-        resolve(results); // Zwróć wyniki zapytania
+        if (results.length > 0) {
+          // Jeśli na nowej pozycji jest już przedmiot
+          const existingItemId = results[0].item_id;
+          const updateQuery = `
+            UPDATE players_items
+            SET item_slot = ?
+            WHERE player_id = ? AND item_id IN (?, ?)
+          `;
+          db.query(updateQuery, [newPosition, userId, itemId, existingItemId], (error, results) => {
+            if (error) {
+              console.error('Błąd podczas aktualizacji pozycji przedmiotów:', error);
+              throw error;
+            } else {
+              console.log(`Pozycje przedmiotów zostały zamienione miejscami.`);
+            }
+          });
+        } else {
+          // Aktualizuj pozycję przesuwanego przedmiotu
+          const updateQuery = `
+            UPDATE players_items
+            SET item_slot = ?
+            WHERE player_id = ? AND item_id = ?
+          `;
+          db.query(updateQuery, [newPosition, userId, itemId], (error, results) => {
+            if (error) {
+              console.error('Błąd podczas aktualizacji pozycji przedmiotu:', error);
+              throw error;
+            } else {
+              console.log(`Pozycja przedmiotu o ID ${itemId} została zaktualizowana.`);
+            }
+          });
+        }
       }
     });
-  });
+  } catch (error) {
+    throw error;
+  }
 }
+
+
+
+
 
 module.exports = router;

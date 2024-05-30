@@ -10,6 +10,8 @@
         </div>
       </div>
     </div>
+
+    
     <div class="tooltip" v-if="tooltip.show" :style="{ top: tooltip.top, left: tooltip.left }">
       <img :src="`/game/items/${tooltip.item.img_url}`" alt="Item" class="tooltip-img" />
       <div class="tooltip-info">
@@ -61,9 +63,12 @@ const onDrop = (targetIndex) => {
     inventory.value[targetIndex] = inventory.value[dragSourceIndex.value];
     inventory.value[dragSourceIndex.value] = temp;
 
+    console.log(inventory.value[targetIndex]);
+
     // Zapisz nowe pozycje do bazy danych
-    savePositionToDatabase(inventory.value[targetIndex]);
-    savePositionToDatabase(inventory.value[dragSourceIndex.value]);
+    // savePositionToDatabase(inventory.value[targetIndex]);
+    savePositionToDatabase(inventory.value[targetIndex], targetIndex); 
+    // savePositionToDatabase(inventory.value[dragSourceIndex.value]);
 
     dragSourceIndex.value = null;
   }
@@ -73,10 +78,32 @@ const onDragOver = (index) => {
   // Optional: Add some visual indication for the drop target
 };
 
+  
+// ========================================================================
 // Mock funkcja do zapisu pozycji do bazy danych
-const savePositionToDatabase = (square) => {
-  console.log(`Zapisz pozycję: ${square.position} dla elementu: ${square.desc}`);
+// ========================================================================
+const savePositionToDatabase = async (item, newPosition) => {
+
+  console.log(newPosition);
+  // return;
+  try {
+    const response = await fetch(`${config.API_URL}/game/save-item-position`, {
+      method: config.method,
+      credentials: config.credentials,
+      headers: config.headers,
+      body: JSON.stringify({ itemId: item.id, newPosition: newPosition })
+    });
+    if (response.ok) {
+      console.log(`Pozycja przedmiotu o id ${item.id} została zaktualizowana.`);
+    } else {
+      console.error('Wystąpił błąd podczas aktualizowania pozycji przedmiotu.');
+    }
+  } catch (error) {
+    console.error('Wystąpił błąd podczas komunikacji z serwerem:', error);
+  }
 };
+
+
 
 const showTooltip = (item) => {
   tooltip.value.show = true;
@@ -108,9 +135,9 @@ const getPlayerSlots = async () => {
 
       console.log(slots);
       inventory.value = slots; // Ustawienie danych ekwipunku
-      while (inventory.value.length < totalSlots) {
-        inventory.value.push({ img_url: null, name: null, description: null });
-      }
+      inventory.value = Array(totalSlots).fill(null).map((_, index) => {
+        return slots.find(item => item.item_slot === index) || { img_url: null, name: null, description: null };
+      });
 
     }
   } catch (error) {
