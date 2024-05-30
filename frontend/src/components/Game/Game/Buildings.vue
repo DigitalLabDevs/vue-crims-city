@@ -11,9 +11,9 @@
     <router-view name="buildings"></router-view>
 
 
-    <div class="buildings-build2">
+    <!-- <div class="buildings-build2">
       <router-view name="buildings2"></router-view>
-    </div>
+    </div> -->
 
   </div>
 </template>

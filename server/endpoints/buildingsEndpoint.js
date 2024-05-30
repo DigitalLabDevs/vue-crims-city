@@ -94,7 +94,7 @@ async function getAllBuildings(userId) {
 FROM 
     buildings b
 LEFT JOIN 
-    player_buildings pb ON b.buildings_ids = pb.pb_buildings_ids
+    players_buildings pb ON b.buildings_ids = pb.pb_buildings_ids
 WHERE 
     pb.pb_player_ids = ?;
 
@@ -122,7 +122,7 @@ async function getBuildingsPlayerWithName(userId, buildingName) {
     b.buildings_name,
     bu.*
 FROM 
-    player_buildings pb
+    players_buildings pb
 LEFT JOIN
     buildings b ON pb.pb_buildings_ids = b.buildings_ids
 LEFT JOIN

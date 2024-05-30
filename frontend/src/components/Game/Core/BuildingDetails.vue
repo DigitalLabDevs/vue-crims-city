@@ -68,11 +68,9 @@ const fetchBuildingData = async () => {
 const upgradeBuilding = async () => {
   try {
     const response = await fetch(`${config.API_URL}/game/buildings/${imageName.value}/upgrade`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json'
-      }
+      method: config.method,
+      credentials: config.credentials,
+      headers: config.credentials,
     });
     const updatedBuildingData = await response.json();
     level = updatedBuildingData.level;

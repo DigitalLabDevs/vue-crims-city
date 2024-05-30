@@ -6,9 +6,9 @@
     <img
       :src="imageSrc"
       class="gun"
-      @mouseover="showTooltip"
-      @mouseleave="hideTooltip"
-      @mousemove="updateTooltipPosition"
+      @mouseover="showtip"
+      @mouseleave="hidetip"
+      @mousemove="updatetipPosition"
     />
     <div v-if="visible" class="tooltip" :style="tooltipStyle">
       <img class="img-items" :src="imageSrc" />
@@ -56,15 +56,15 @@ const containerStyle = computed(() => ({
   left: `${props.posy}px`,
 }));
 
-const showTooltip = () => {
+const showtip = () => {
   visible.value = true;
 };
 
-const hideTooltip = () => {
+const hidetip = () => {
   visible.value = false;
 };
 
-const updateTooltipPosition = (event: MouseEvent) => {
+const updatetipPosition = (event: MouseEvent) => {
   const containerRect = event.currentTarget.getBoundingClientRect();
   const tooltipWidth = tooltipStyle.value.width || 150; // Domyślna wartość, jeśli width nie jest zdefiniowane
   const tooltipHeight = tooltipStyle.value.height || 150; // Domyślna wartość, jeśli height nie jest zdefiniowane

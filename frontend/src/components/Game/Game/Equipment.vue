@@ -1,202 +1,111 @@
 <template>
   <div>
-    <div class="tabs">
-      <span class="tabs0v" v-for="(tab, index) in tabsTranslation" :key="index" @click="currentTab = index">
-        {{ tab }}
-      </span>
+    <div class="info">
+      Wyświetlone sloty: {{ inventory.length }} / {{ totalSlots }}
     </div>
-    <div class="tab-content">
-      <div v-if="currentTab === 0">
-        <h2>Broń</h2>
-      </div>
-      <div v-else-if="currentTab === 1">
-        <h2>Obrona</h2>
-      </div>
-      <div v-else-if="currentTab === 2">
-        <h2>Przedmioty</h2>
-      </div>
-      <div v-else-if="currentTab === 3">
-        <h2>Śmieci</h2>
-      </div>
-    </div>
-    <div class="inventory">
-      <div class="inventory-grid">
-        <Loader v-if="isLoading" />
-        <div
-          v-else
-          v-for="(slot, index) in inventorySlots"
-          :key="index"
-          class="inventory-slot"
-          draggable="true"
-          @dragover.prevent
-          @drop="onDrop($event, index)"
-        >
-          <div
-            v-if="filteredItems[currentTab][index]"
-            class="inventory-item"
-            draggable="true"
-            @dragstart="onDragStart($event, filteredItems[currentTab][index], index)"
-          >
-            <img 
-            :title="`${filteredItems[currentTab][index].name} - ${filteredItems[currentTab][index].description}`" v-if="filteredItems[currentTab][index].img_url" 
-            :src="`/game/items/${filteredItems[currentTab][index].img_url}`" :alt="filteredItems[currentTab][index].name" />
-
-          </div>
-        </div>
+    <div class="container">
+      <div v-for="(item, index) in inventory" :key="index" class="square" @drop="onDrop(index)" @dragover.prevent="onDragOver(index)">
+        <img v-if="item.img_url" :src="`/game/items/${item.img_url}`" class="draggable" draggable="true" @dragstart="onDragStart(index)" />
+        <div v-if="item.img_url">{{ item.name }}</div>
+        <div v-else></div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue';
+import { onMounted, ref } from 'vue';
+import { getConfig } from 'config';
+// import Tooltip from '../Core/Tooltip.vue';
 
-import Loader from '../../_Core/Loader.vue';
-import { API_URL } from '../../../config';
-import { useI18n } from 'vue-i18n';
-const { t } = useI18n();
+const config = getConfig();
 
-// Przykładowe kategorie pobrane z bazy danych
-const categoriesFromDatabase = ['Weapon', 'Defense', 'Items', 'Trash'];
+// Stałe
+const totalSlots = 8;
 
-// Obiekt z przetłumaczonymi nazwami kategorii
-const translatedCategories = {
-  Weapon: t('category.Weapon'),
-  Defense: t('category.Defense'),
-  Items: t('category.Items'),
-  Trash: t('category.Trash')
+// Inicjalizacja ekwipunku
+const inventory = ref([]);
+
+const dragSourceIndex = ref(null)
+
+const onDragStart = (index) => {
+  dragSourceIndex.value = index
+}
+
+const onDrop = (targetIndex) => {
+  if (dragSourceIndex.value !== null && dragSourceIndex.value !== targetIndex) {
+    // Zamień miejscami elementy
+    const temp = inventory.value[targetIndex];
+    inventory.value[targetIndex] = inventory.value[dragSourceIndex.value];
+    inventory.value[dragSourceIndex.value] = temp;
+
+    // Zapisz nowe pozycje do bazy danych
+    savePositionToDatabase(inventory.value[targetIndex]);
+    savePositionToDatabase(inventory.value[dragSourceIndex.value]);
+
+    dragSourceIndex.value = null;
+  }
 };
 
-// Użyj nazw kategorii po angielsku w twojej aplikacji
-const tabs = categoriesFromDatabase;
+const onDragOver = (index) => {
+  // Optional: Add some visual indication for the drop target
+}
 
-// Użyj przetłumaczonych nazw kategorii do wyświetlania
-const tabsTranslation = Object.values(translatedCategories);
+// Mock funkcja do zapisu pozycji do bazy danych
+const savePositionToDatabase = (square) => {
+  console.log(`Zapisz pozycję: ${square.position} dla elementu: ${square.desc}`)
+}
 
-const isLoading = ref(true);
-const currentTab = ref(0);
+onMounted(async () => {
+  await getPlayerSlots();
+});
 
-const gridItems = ref(Array.from({ length: 4 }, () => [])); // Inicjalizacja tablicy 2D dla każdej kategorii
-const inventorySlots = ref(40);
-const itemSize = ref(50);
-const columns = ref(6);
-
-const draggedItem = ref(null);
-const draggedIndex = ref(null);
-
-const fetchItems = async () => {
+const getPlayerSlots = async () => {
   try {
-    const promises = categoriesFromDatabase.map(async (category, index) => {
-      const response = await fetch(`${API_URL}/game/player-items`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ category })
-      });
-      const data = await response.json();
-      console.log(data);
-      gridItems.value[index] = data;
+    const response = await fetch(`${config.API_URL}/game/player-slots`, {
+      method: config.method,
+      credentials: config.credentials,
+      headers: config.headers
     });
-    await Promise.all(promises);
-    isLoading.value = false;
+    if (response.ok) {
+      const slots = await response.json();
+
+      console.log(slots);
+      inventory.value = slots; // Ustawienie danych ekwipunku
+      while (inventory.value.length < totalSlots) {
+        inventory.value.push({ img_url: null, name: null, description: null });
+      }
+
+    }
   } catch (error) {
-    console.error('Error fetching items:', error);
+    console.error("Error Bank:", error);
   }
 };
-
-const filteredItems = computed(() => {
-  return gridItems.value.map(itemsInCategory => {
-    return [...itemsInCategory, ...Array(inventorySlots.value - itemsInCategory.length).fill(null)];
-  });
-});
-
-// Dodaj obserwację zmiany currentTab
-watch(currentTab, () => {
-  // Wywołaj ponownie computed property filteredItems, aby ponownie obliczyć wartość
-  filteredItems.value;
-});
-
-const onDragStart = (event, item, index) => {
-  draggedItem.value = item;
-  draggedIndex.value = index;
-};
-
-const onDrop = (event, index) => {
-  if (draggedIndex.value !== null) {
-    const temp = filteredItems[currentTab.value][index];
-    filteredItems[currentTab.value].splice(index, 1, draggedItem.value);
-    filteredItems[currentTab.value].splice(draggedIndex.value, 1, temp);
-    draggedItem.value = null;
-    draggedIndex.value = null;
-  }
-};
-
-onMounted(() => {
-  fetchItems();
-
-  const handleResize = () => {
-    const containerWidth = document.querySelector('.inventory-grid').offsetWidth;
-    columns.value = Math.floor(containerWidth / (itemSize.value + 10)); // 10 is the gap size
-  };
-  window.addEventListener('resize', handleResize);
-  handleResize();
-});
 </script>
 
 <style scoped>
-.tabs0v {
-  background-color: rgba(0, 0, 0, 0.8);
-  padding: 10px 20px;
-}
-
-span {
-  width: 100px;
-  text-align: center;
-  transition: 200ms;
-  color: aqua;
-  cursor: pointer;
-}
-
-.tabs {
+.container {
   display: flex;
-  gap: 10px;
-  justify-content: space-evenly;
-}
-
-.tab-content {
-  margin-top: 20px;
-}
-
-.inventory {
-  margin-top: 20px;
-}
-
-.inventory-grid {
-  display: grid;
-  grid-template-columns: repeat(10, 50px);
+  flex-wrap: wrap;
   gap: 10px;
 }
 
-.inventory-slot {
+.square {
   width: 50px;
   height: 50px;
-  border: 1px solid #ccc;
-  background-color: #5a5a5a;
+  border: 1px dashed #1cada8;
+  display: inline-block;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--BLACK50);
 }
 
-.inventory-item {
-  text-align: center;
+.square img {
+  max-width: 100%;
+  max-height: 100%;
 }
 
-.inventory-item img {
-  width: 100%;
-  height: auto;
-}
-
-.inventory-item p {
-  font-size: 12px;
-  margin: 0;
+.info {
+  margin-bottom: 10px;
 }
 </style>
