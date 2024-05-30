@@ -15,6 +15,14 @@
       <div class="tooltip-info">
         <h3>{{ tooltip.item.name }}</h3>
         <p>{{ tooltip.item.description }}</p>
+        <hr>
+        <p v-if="tooltip.item.durability !=null && tooltip.item.current_durability !=null" >
+          Wytrzymałość: {{ tooltip.item.current_durability }}/{{ tooltip.item.durability }}
+        </p>
+        <p>Cena: {{ tooltip.item.price }} $</p>
+        <p>Waga: {{ tooltip.item.weight }} kg</p>
+        <p v-if="tooltip.item.attack != null">Atak: {{ tooltip.item.attack }}</p>
+        <p v-if="tooltip.item.defense != null">Obrona: {{ tooltip.item.defense }}</p>
         <!-- Dodaj więcej właściwości, jeśli są dostępne -->
       </div>
     </div>
@@ -140,6 +148,7 @@ const getPlayerSlots = async () => {
 
 .tooltip {
   position: absolute;
+  width: 300px;
   background-color: rgba(0, 0, 0, 0.9);
   border: 1px solid #06f5e9;
   padding: 10px;
