@@ -16,7 +16,6 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import { getConfig } from 'config';
-// import Tooltip from '../Core/Tooltip.vue';
 
 const config = getConfig();
 
