@@ -44,6 +44,9 @@ import LanguageComponent from '../Settings/LanguageComponent.vue';
 import ChangePassword from '../Settings/ChangePassword.vue';
 import ChangeEmail from '../Settings/ChangeEmail.vue';
 import ATM from '../Game/Game/Bank/ATM.vue';
+import DefaultBank from '../Game/Game/Bank/DefaultBank.vue';
+import Investment from '../Game/Game/Bank/Investment.vue';
+import TransactionHistory from '../Game/Game/Bank/TransactionHistory.vue';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -244,6 +247,12 @@ const router = createRouter({
           },
           children: [
             {
+              path: '',
+              components:{
+                bank: DefaultBank,
+              }
+            },
+            {
               path: 'deposit',
               components: {
                 game: Bank,
@@ -256,6 +265,22 @@ const router = createRouter({
               components: {
                 game: Bank,
                 bank: ATM,
+              },
+              props: true
+            },
+            {
+              path: 'investment',
+              components: {
+                game: Bank,
+                bank: Investment,
+              },
+              props: true
+            },
+            {
+              path: 'transaction-history',
+              components: {
+                game: Bank,
+                bank: TransactionHistory,
               },
               props: true
             },

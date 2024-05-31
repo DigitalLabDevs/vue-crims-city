@@ -26,7 +26,7 @@
       <span><router-link to="/crims-city/bank/transfers">{{ t('bank.transfers') }}</router-link></span>
       <span><router-link to="/crims-city/bank/insurance">{{ t('bank.insurance') }}</router-link></span>
       <span><router-link to="/crims-city/bank/specialTasks">{{ t('bank.specialTasks') }}</router-link></span>
-      <span><router-link to="/crims-city/bank/transactionHistory">{{ t('bank.transactionHistory')
+      <span><router-link to="/crims-city/bank/transaction-history">{{ t('bank.transactionHistory')
           }}</router-link></span>
 
     </div>
@@ -87,14 +87,15 @@ const getBankMoney = computed(() => GameStore.state.bank_money);
 <style scoped>
 .router-bank{
   padding: 20px;
+  /* height: 224px; */
   background-color: rgba(0, 0, 0, 0.6);
 }
 .bank {
-  padding-top: 150px;
+  padding-top: 220px;
   background-image: url(/game/images/buildings/Bank.jpg);
   background-repeat: no-repeat;
   background-size: contain;
-  height: 566px;
+  min-height: 600px;
 }
 
 .bank_money {

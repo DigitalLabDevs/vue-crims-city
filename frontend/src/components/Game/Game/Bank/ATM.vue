@@ -9,7 +9,8 @@
       <label for="deposit-amount">{{ $t('bank.depositTitle') }}</label>
       <input v-model="amount" id="deposit-amount" type="number" min="0" :placeholder="$t('bank.depositPlaceholder')" />
     </div>
-    <span class="deposit-button" @click="makeDeposit">{{ $t('bank.depositButton') }}</span>
+    <span class="deposit-button" @click="makeDeposit">{{ $t('bank.ATMButton') }}</span>
+    <span class="deposit-button" @click="withdrawAll">{{ $t('bank.withdrawAllButton') }}</span>
     <p v-if="message" class="message">{{ message }}</p>
   </div>
 </template>
@@ -37,26 +38,21 @@ const amount = ref<number | null>(null);
 const message = ref<string | null>(null);
 
 const makeDeposit = async () => {
-  if (amount.value !== null && amount.value > 0) {
+  if (CanMakeDeposit(amount.value, getPlayerMoneyBank.value)) {
     try {
       const response = await fetch(`${config.API_URL}/game/bank/withdraw`, {
         method: config.method,
         credentials: config.credentials,
         headers: config.headers,
-        body: JSON.stringify({ amount: amount.value })        
+        body: JSON.stringify({ amount: amount.value })
       });
 
       if (response.ok) {
         const data = await response.json();
-
-
-        message.value = `${t('bank.message.success')} $ ${amount.value}`;
-
+        message.value = `${t('bank.message.ATM')} $ ${amount.value}`;
         amount.value = null; // Resetowanie pola po dokonaniu depozytu
-        // console.log(data);
-         // Odświeżenie stanu banku
-         GameStore.commit('setPlayerMoney', data.newPlayerMoney);
-         GameStore.commit('setBankMoney', data.newBankPlayerMoney);
+        GameStore.commit('setPlayerMoney', data.newPlayerMoney);
+        GameStore.commit('setBankMoney', data.newBankPlayerMoney);
       } else {
         const errorData = await response.json();
         message.value = `Error: ${errorData.message}`;
@@ -65,15 +61,32 @@ const makeDeposit = async () => {
       console.error('Error making deposit:', error);
       message.value = 'An error occurred. Please try again later.';
     }
-  } else {
-    message.value = t('errorMessage');
   }
 };
 
+const CanMakeDeposit = (depositAmount: number, playerMoney: number): boolean => {
+  console.log(`depositAmount: ${depositAmount}`);
+  console.log(`playerMoney: ${playerMoney}`);
+  if (depositAmount === null || depositAmount <= 0) {
+    message.value = t('bank.invalidAmount');
+    return false;
+  } else if (depositAmount > playerMoney) {
+    message.value = t('bank.insufficientFunds');
+    return false;
+  }
+  return true;
+};
+
+
+const withdrawAll = () => {
+  amount.value = getPlayerMoneyBank.value;
+  makeDeposit();
+};
 
 
 // Getter obliczony z Vuex
 const getPlayerMoney = computed(() => GameStore.state.player_money);
+const getPlayerMoneyBank = computed(() => GameStore.state.bank_money);
 </script>
 
 <style scoped>
@@ -83,7 +96,7 @@ const getPlayerMoney = computed(() => GameStore.state.player_money);
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 10px;
-  /* background-color: #f9f9f9; */
+  background-color: #000000;
   text-align: center;
 }
 

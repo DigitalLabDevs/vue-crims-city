@@ -24,7 +24,7 @@ const { t } = useI18n();
   padding: 10px 40px 10px 40px;
   box-shadow: 0 0 10px black;
   border: 1px solid rgba(26, 77, 94, 0.8);
-  min-width: 100px;
+  width: 200px;
   text-align: center;
   margin-top: 2px;
   margin-bottom: 2px;

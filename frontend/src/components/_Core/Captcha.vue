@@ -2,7 +2,7 @@
   <div class="captcha-container">
     <label for="captcha">{{ t('captcha.title') }}</label>
     <div class="captchaInput">
-      <input class="capInp" v-model="userInput" @input="validateCaptcha" :placeholder="t('captcha.placeholder')" required />
+      <input class="capInp" id="captcha" name="captcha" v-model="userInput" @input="validateCaptcha" :placeholder="t('captcha.placeholder')" required />
     </div>
     <div class="captchaView">
       <canvas ref="captchaCanvas" :width="captchaWidth" :height="captchaHeight"></canvas>
@@ -87,8 +87,11 @@ defineExpose({ isCaptchaValid, refreshCaptcha });
 </script>
 
 <style scoped>
+.btn-captcha{
+  width: 150px;
+}
 .capInp{
-  width: 160px;
+  width: 220px;
 }
 label{
   margin-bottom: 5px;

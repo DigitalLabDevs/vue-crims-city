@@ -30,7 +30,7 @@ router.post('/game/bank/deposit', verifyJwtToken, async (req, res) => {
       const bankPlayerMoney = result[0].b_player_money;
 
       // Logika dalszej obróbki danych
-      if (playerMoney > amount) {
+      if (playerMoney >= amount) {
         const newPlayerMoneyCalc = playerMoney - amount;
         const newBankPlayerMoneyCalc = bankPlayerMoney + amount;
 

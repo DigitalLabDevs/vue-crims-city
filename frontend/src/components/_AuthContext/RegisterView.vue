@@ -2,20 +2,20 @@
   <div class="Registration-form">
     <router-link to="/">{{ t('global.backToMain') }}</router-link>
     <h2>{{ t('registration.title') }}</h2>
-    <form @submit.prevent="submitForm">
+    <form @submit.prevent="submitForm"> 
       <div class="form-group">
         <label for="email">{{ t('global.emailLabel') }}</label>
-        <input type="email" id="email" :placeholder="t('global.emailLabel')" autocomplete="email" v-model="email"
+        <input type="email" id="email" name="email" :placeholder="t('global.emailLabel')" autocomplete="email" v-model="email"
           required>
       </div>
       <div class="form-group">
         <label for="password">{{ t('global.passwordLabel') }}</label>
-        <input type="password" id="password" :placeholder="t('global.passwordLabel')" autocomplete="new-password"
+        <input type="password" id="password" name="password" :placeholder="t('global.passwordLabel')" autocomplete="new-password"
           v-model="password" required>
       </div>
       <div class="form-group">
         <label for="confirmPassword">{{ t('global.confirmPasswordLabel') }}</label>
-        <input type="password" id="confirmPassword" :placeholder="t('global.confirmPasswordLabel')"
+        <input type="password" id="confirmPassword" name="confirmPassword" :placeholder="t('global.confirmPasswordLabel')"
           autocomplete="new-password" v-model="confirmPassword" required>
       </div>
       <div class="form-group captcha">
@@ -108,7 +108,6 @@ async function register() {
     padding: 7px !important;
   }
 }
-
 
 .Registration-form {
   width: 50%;

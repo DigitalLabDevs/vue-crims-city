@@ -133,8 +133,14 @@
     "depositPlaceholder": "Wprowadź kwotę",
     "depositTitle": "Wpłać gotówkę na swoje konto",
     "depositButton": "Wpłać",
+    "depositAllButton": "Wpłać wszystko",
+    "ATMButton": "Wypłać",
+    "withdrawAllButton": "Wypłać wszystko",
+    "invalidAmount": "Nieprawidłowa kwota",
+    "insufficientFunds": "Niewystarczające fundusze",
     "message":{
-      "success": "Wpłaciłeś do banku"
+      "ATM": "Wypłaciłeś z banku",
+      "Deposit": "Wpłaciłeś do banku"
     }
   },
   "dashboard": {

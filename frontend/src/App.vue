@@ -70,8 +70,6 @@ import MediaView from './components/_App/MainSite/MediaView.vue';
 
 const isAuthenticated = ref(store.getters.isAuthenticated);
 
-console.log(`APP: ${isAuthenticated.value}`);
-
 watch(
   () => store.getters.isAuthenticated,
   (newIsAuthenticated) => {

@@ -41,7 +41,7 @@
             {{ t('captcha.invalidCaptcha') }}
       </span>
       <div>{{ characterCount }}/{{ maxMessageLength }}</div>
-      <button type="submit">{{ t('global.submit') }}</button>
+      <button class="w30p" type="submit">{{ t('global.submit') }}</button>
     </form>
   </div>
 </template>
