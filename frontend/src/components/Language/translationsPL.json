@@ -74,27 +74,6 @@
   "descriptions": {
     "descriptionGame": "Wciel się w rolę bezwzględnego bossa, prowadząc organizację o kontrolę nad obszarami miasta."
   },
-  "serverMessage": {
-    "PASSWORD_TOO_SHORT": "Hasło musi mieć minimum 6 znaków, 1 duża, 1 mała (litera) 1 cyfrę i 1 znak specjalny.",
-    "EMAIL_EXIST": "Adres e-mail już istnieje.",
-    "REGISTRATION_SUCCESS": "Pomyślnie zarejestrowano nowego użytkownika. Sprawdź adres E-mail",
-    "INCOMPLETE_DATA": "Uzupełnij Dane",
-    "ACCOUNT_ACTIVATE": "Twoje konto zostało pomyślnie aktywowane. Możesz się zalogować",
-    "ACCOUNT_ACTIVATE_DONE": "Użytkownik nie istnieje lub konto zostało już aktywowane",
-    "ACCOUNT_ACTIVATE_DONE_MESSAGE": "Konto aktywowane, możesz się zalogować",
-    "USER_NOT_FOUND": "Nie ma użytkownika z tym adresem e-mail",
-    "EMAIL_WITH_RESET": "E-mail z linkiem do resetowania hasła został wysłany.",
-    "ACTIVATION_ERROR": "Błąd, spróbuj poźniej, lub skontaktuj się z supportem.",
-    "PASSWORD_SUCCESS_UPDATE": "Hasło zostało pomyślnie zaktualizowane.",
-    "NO_TOKEN": "Brak tokenu",
-    "USER_BLOCKED": "Użytkownik zablokowany",
-    "SOME_WRONG": "Ups, coś poszło nie tak",
-    "WRONG_DATA": "Niepoprawne dane logowania",
-    "LOGOUT_SUCCESS": "Wylogowano pomyślnie, Miłego dnia",
-    "TRY_LATER": "Wystąpił nieoczekiwany błąd, spóbuj jeszcze raz lub skontaktuj się z supportem",
-    "PASSWORD_ERROR": "Wystąpił błąd przy zmianie hasła, spróbuj później lub skontaktuj się z supportem (405)",
-    "Error": "Błąd"
-  },
   "game": {
     "settings": "Ustawienia",
     "main": "Tablica",
@@ -176,6 +155,28 @@
     "Defense": "Obrona",
     "Items": "Przemioty",
     "Trash": "Śmieci"
+  },
+  "equipment":{
+    "OccupiedSlots": "Zajęte sloty",
+    "Price": "Cena",
+    "Attack": "Atak",
+    "Defense": "Obrona",
+    "Weight": "Waga",
+    "Durability": "Wytrzymałość"
+  },
+  "items":{
+    "Karabin_MB14A4": "Karabin MB14A4",
+    "Karabin_MB14A4_Description": "Szybkostrzelny karabin automatyczny.",
+    "Phone": "Telefon",
+    "Phone_Description": "Nowoczesny smratfon WuDA Fon A704",
+    "BulletproofVest_AH64": "Kamizelka kuloodporna AH 67",
+    "BulletproofVest_AH64_Description": "Kamizelka chroniąca przed pociskami do 6.67 mm.",
+    "Helmet_CZ14": "Hełm CZ14",
+    "Helmet_CZ14_Description": "Hełm wykonany w części z kewlaru, chroni przed pociskami 9mm.",
+    "Pistol_9mm_BT14": "Pistolet 9mm BT 14",
+    "Pistol_9mm_BT14_Description": "Wyprodukowany w Japonii, solidnie wykonany, jego wytrzymałość jest ponadczasowa",
+    "Shoes_MH800": "Buty szturmowe MH800",
+    "Shoes_MH800_Description": "Wykonane w wytrzymałego materiału, wodoodporne, lekkie."
   }
   
 }

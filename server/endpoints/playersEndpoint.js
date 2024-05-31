@@ -88,7 +88,89 @@ async function getPlayerEq(userId) {
 // =========================================================================================
 // Funkcja do aktualizacji pozycji przedmiotu w bazie danych
 // =========================================================================================
+// async function saveItemPosition(userId, itemId, newPosition) {
+//   try {
+//     const checkQuery = `
+//       SELECT item_id, item_slot FROM players_items
+//       WHERE player_id = ? AND item_slot = ?
+//     `;
+//     db.query(checkQuery, [userId, newPosition], async (error, results) => {
+//       if (error) {
+//         console.error('Błąd podczas sprawdzania pozycji przedmiotu:', error);
+//         throw error;
+//       } else {
+//         if (results.length > 0) {
+//           // Jeśli na nowej pozycji jest już przedmiot
+//           const existingItemId = results[0].item_id;
+//           const existingItemSlot = results[0].item_slot;
+
+//           // Pobierz starą pozycję przesuwanego przedmiotu
+//           const getOldPositionQuery = `
+//             SELECT item_slot FROM players_items
+//             WHERE player_id = ? AND item_id = ?
+//           `;
+//           db.query(getOldPositionQuery, [userId, itemId], (error, oldPositionResults) => {
+//             if (error) {
+//               console.error('Błąd podczas pobierania starej pozycji przedmiotu:', error);
+//               throw error;
+//             } else {
+//               const oldPosition = oldPositionResults[0].item_slot;
+
+//               // Zamień pozycje przedmiotów
+//               const updateExistingItemQuery = `
+//                 UPDATE players_items
+//                 SET item_slot = ?
+//                 WHERE player_id = ? AND item_id = ?
+//               `;
+//               db.query(updateExistingItemQuery, [oldPosition, userId, existingItemId], (error, results) => {
+//                 if (error) {
+//                   console.error('Błąd podczas aktualizacji pozycji istniejącego przedmiotu:', error);
+//                   throw error;
+//                 } else {
+//                   const updateNewItemQuery = `
+//                     UPDATE players_items
+//                     SET item_slot = ?
+//                     WHERE player_id = ? AND item_id = ?
+//                   `;
+//                   db.query(updateNewItemQuery, [newPosition, userId, itemId], (error, results) => {
+//                     if (error) {
+//                       console.error('Błąd podczas aktualizacji pozycji nowego przedmiotu:', error);
+//                       throw error;
+//                     } else {
+//                       console.log(`Pozycje przedmiotów zostały zamienione miejscami.`);
+//                     }
+//                   });
+//                 }
+//               });
+//             }
+//           });
+//         } else {
+//           // Aktualizuj pozycję przesuwanego przedmiotu
+//           const updateQuery = `
+//             UPDATE players_items
+//             SET item_slot = ?
+//             WHERE player_id = ? AND item_id = ?
+//           `;
+//           db.query(updateQuery, [newPosition, userId, itemId], (error, results) => {
+//             if (error) {
+//               console.error('Błąd podczas aktualizacji pozycji przedmiotu:', error);
+//               throw error;
+//             } else {
+//               console.log(`Pozycja przedmiotu o ID ${itemId} została zaktualizowana.`);
+//             }
+//           });
+//         }
+//       }
+//     });
+//   } catch (error) {
+//     throw error;
+//   }
+// }
+// =========================================================================================
+// Funkcja do aktualizacji pozycji przedmiotu w bazie danych
+// =========================================================================================
 async function saveItemPosition(userId, itemId, newPosition) {
+  console.time('saveItemPosition');
   try {
     const checkQuery = `
       SELECT item_id FROM players_items
@@ -97,26 +179,45 @@ async function saveItemPosition(userId, itemId, newPosition) {
     db.query(checkQuery, [userId, newPosition], async (error, results) => {
       if (error) {
         console.error('Błąd podczas sprawdzania pozycji przedmiotu:', error);
+        console.timeEnd('saveItemPosition');
         throw error;
       } else {
         if (results.length > 0) {
-          // Jeśli na nowej pozycji jest już przedmiot
           const existingItemId = results[0].item_id;
-          const updateQuery = `
-            UPDATE players_items
-            SET item_slot = ?
-            WHERE player_id = ? AND item_id IN (?, ?)
+
+          const getOldPositionQuery = `
+            SELECT item_slot FROM players_items
+            WHERE player_id = ? AND item_id = ?
           `;
-          db.query(updateQuery, [newPosition, userId, itemId, existingItemId], (error, results) => {
+          db.query(getOldPositionQuery, [userId, itemId], (error, oldPositionResults) => {
             if (error) {
-              console.error('Błąd podczas aktualizacji pozycji przedmiotów:', error);
+              console.error('Błąd podczas pobierania starej pozycji przedmiotu:', error);
+              console.timeEnd('saveItemPosition');
               throw error;
             } else {
-              console.log(`Pozycje przedmiotów zostały zamienione miejscami.`);
+              const oldPosition = oldPositionResults[0].item_slot;
+
+              const swapPositionsQuery = `
+                UPDATE players_items
+                SET item_slot = CASE 
+                  WHEN item_id = ? THEN ?
+                  WHEN item_id = ? THEN ?
+                END
+                WHERE player_id = ? AND item_id IN (?, ?)
+              `;
+              db.query(swapPositionsQuery, [itemId, newPosition, existingItemId, oldPosition, userId, itemId, existingItemId], (error, results) => {
+                if (error) {
+                  console.error('Błąd podczas zamiany pozycji przedmiotów:', error);
+                  console.timeEnd('saveItemPosition');
+                  throw error;
+                } else {
+                  console.log('Pozycje przedmiotów zostały zamienione miejscami.');
+                  console.timeEnd('saveItemPosition');
+                }
+              });
             }
           });
         } else {
-          // Aktualizuj pozycję przesuwanego przedmiotu
           const updateQuery = `
             UPDATE players_items
             SET item_slot = ?
@@ -125,18 +226,24 @@ async function saveItemPosition(userId, itemId, newPosition) {
           db.query(updateQuery, [newPosition, userId, itemId], (error, results) => {
             if (error) {
               console.error('Błąd podczas aktualizacji pozycji przedmiotu:', error);
+              console.timeEnd('saveItemPosition');
               throw error;
             } else {
               console.log(`Pozycja przedmiotu o ID ${itemId} została zaktualizowana.`);
+              console.timeEnd('saveItemPosition');
             }
           });
         }
       }
     });
   } catch (error) {
+    console.timeEnd('saveItemPosition');
     throw error;
   }
 }
+
+
+
 
 
 

@@ -2,54 +2,67 @@
   "main": {
     "loginLabel": "Log in",
     "registerLabel": "Register",
-    "joinUs": "Join Us"
+    "joinUs": "Join us"
   },
   "login": {
-    "loginButton": "Log In",
-    "forgotPasswordLink": "Forgot Password",
-    "backToLogin": "Back to Login"
+    "loginButton": "Log in",
+    "forgotPasswordLink": "Forgot password",
+    "backToLogin": "Back to login"
+  },
+  "changeEmail": {
+    "info": "A code has been sent to your email address, please enter it here."
   },
   "settings": {
     "language": "Language",
-    "changePassword": "Change Password",
-    "changeEmail": "Update Email"
+    "changePassword": "Change password",
+    "changeEmail": "Update email",
+    "languageSettings": "Language settings"
   },
   "logout": {
-    "logoutButton": "Logout",
-    "confirmButton": "YES BYE",
-    "cancelButton": "NO STAY!",
-    "confirmMessage": "Logout from the mess?"
+    "logoutButton": "Log out",
+    "confirmButton": "YEAAA",
+    "cancelButton": "NOOO, I'M STAYING!",
+    "confirmMessage": "Log out from Crims City?"
   },
   "registration": {
     "title": "Registration"
   },
   "global": {
     "submit": "Submit",
-    "backToMain": "Back to Main Page",
-    "chooseLanguage": "Choose Language",
-    "emailLabel": "E-mail",
+    "backToMain": "Back to main page",
+    "chooseLanguage": "Choose language",
+    "emailLabel": "Email",
     "passwordLabel": "Password",
-    "confirmPasswordLabel": "Confirm Password",
+    "confirmPasswordLabel": "Confirm password",
     "registrationButton": "Register"
   },
   "forgotPassword": {
-    "title": "Forgot Password"
+    "title": "Forgot password"
   },
-  "password_reset": {
-    "title": "Reset Password"
+  "password": {
+    "title": "Reset password",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "confirmNewPassword": "Confirm new password",
+    "code": "Enter code"
   },
   "cookie": {
-    "title": "Privacy Policy and Data Usage"
+    "title": "Privacy policy and data usage"
   },
   "contact": {
     "contact": "Contact",
     "message": "Message",
     "subject": "Subject",
-    "general_inquiry": "General Inquiry",
-    "technical_support": "Technical Support",
+    "general_inquiry": "General inquiry",
+    "technical_support": "Technical support",
     "feedback": "Feedback",
-    "sponsors": "Sponsoring",
-    "other": "Other"
+    "sponsors": "Sponsorship",
+    "other": "Other",
+    "selectOption": "Select subject",
+    "InvalidemailAddress": "Invalid email address.",
+    "PleaseSelectASubject": "Please select a subject",
+    "PleaseEnterAMessage": "Please enter a message",
+    "alert_successMessage": "Message sent successfully"
   },
   "captcha": {
     "title": "Captcha",
@@ -59,27 +72,7 @@
     "placeholder": "Enter the code from the image"
   },
   "descriptions": {
-    "descriptionGame": "Step into the shoes of a ruthless boss, leading an organization to control areas of the city."
-  },
-  "serverMessage": {
-    "PASSWORD_TOO_SHORT": "Password must be at least 6 characters long, contain 1 uppercase, 1 lowercase letter, 1 digit, and 1 special character.",
-    "EMAIL_EXIST": "Email already exists.",
-    "REGISTRATION_SUCCESS": "Successfully registered a new user. Check your email address",
-    "INCOMPLETE_DATA": "Fill in the Data",
-    "ACCOUNT_ACTIVATE": "Your account has been successfully activated. You can log in",
-    "ACCOUNT_ACTIVATE_DONE": "User does not exist or the account has already been activated",
-    "ACCOUNT_ACTIVATE_DONE_MESSAGE": "Account activated, you can log in",
-    "USER_NOT_FOUND": "No user with this email address",
-    "EMAIL_WITH_RESET": "An email with a password reset link has been sent.",
-    "ACTIVATION_ERROR": "Error, try again later or contact support.",
-    "PASSWORD_SUCCESS_UPDATE": "Password has been successfully updated.",
-    "NO_TOKEN": "No token",
-    "USER_BLOCKED": "User blocked",
-    "SOME_WRONG": "Oops, something went wrong",
-    "WRONG_DATA": "Incorrect login data",
-    "LOGOUT_SUCCESS": "Successfully logged out, Have a nice day",
-    "TRY_LATER": "An unexpected error occurred, try again or contact support",
-    "PASSWORD_ERROR": "An error occurred while changing the password, try again later or contact support (405)"
+    "descriptionGame": "Take on the role of a ruthless boss, leading an organization to control city areas."
   },
   "game": {
     "settings": "Settings",
@@ -99,7 +92,7 @@
     "level": "Level",
     "messages": "Messages",
     "postOffice": "Post Office",
-    "statistics": "Statistics"
+    "statistics": "Ranking"
   },
   "buildings": {
     "title": "Buildings",
@@ -107,7 +100,7 @@
     "level": "Level",
     "upgrade": "Upgrade",
     "destroy": "Destroy",
-    "productionTitle": "Production Name",
+    "productionTitle": "Production name",
     "names": {
       "Garage": "Garage",
       "CounterfeitMoneyFactory": "Counterfeit Money Factory",
@@ -121,35 +114,40 @@
   "bank": {
     "title": "Crims City Bank",
     "balance": "Cash",
-    "deposit": "Deposit Cash",
-    "withdraw": "Withdraw Cash",
-    "transactionHistory": "Transaction History",
+    "money": "Cash in account",
+    "deposit": "Deposit cash",
+    "withdraw": "Withdraw cash",
+    "transactionHistory": "Transaction history",
     "loan": "Loan",
     "cancel": "Cancel",
     "loanTitle": "Loans in Crims City",
-    "applyForLoan": "Apply for a Loan",
-    "repayLoan": "Repay Loan",
-    "safeDepositBoxes": "Safe Deposit Boxes",
+    "applyForLoan": "Apply for loan",
+    "repayLoan": "Repay loan",
+    "safeDepositBoxes": "Safe deposit boxes",
     "investment": "Investments",
     "transfers": "Transfers",
     "insurance": "Insurance",
-    "specialTasks": "Special Tasks",
+    "specialTasks": "Special tasks",
     "atm": "ATM",
+    "cashDepositMachine": "Cash deposit machine",
     "depositPlaceholder": "Enter amount",
-    "depositTitle": "Deposit cash to your account",
-    "depositButton": "Deposit"
+    "depositTitle": "Deposit cash into your account",
+    "depositButton": "Deposit",
+    "message": {
+      "success": "You have deposited money in the bank"
+    }
   },
   "dashboard": {
     "level": "Level",
-    "title": "Your Character",
+    "title": "Your character",
     "experience": "Experience",
-    "notifications": "Notifications",
-    "quickLinks": "Quick Access",
-    "maingame": "Main Game Window",
+    "notifications": "Messages",
+    "quickLinks": "Quick access",
+    "maingame": "Main window",
     "settings": "Settings",
     "balance": "Cash",
     "resources": "Resources",
-    "healthPoints": "Health Points",
+    "healthPoints": "Health",
     "reputation": "Reputation"
   },
   "category": {
@@ -157,5 +155,27 @@
     "Defense": "Defense",
     "Items": "Items",
     "Trash": "Trash"
+  },
+  "equipment": {
+    "OccupiedSlots": "Occupied slots",
+    "Price": "Price",
+    "Attack": "Attack",
+    "Defense": "Defense",
+    "Weight": "Weight",
+    "Durability": "Durability"
+  },
+  "items": {
+    "Karabin_MB14A4": "Rifle MB14A4",
+    "Karabin_MB14A4_Description": "Rapid-fire automatic rifle.",
+    "Phone": "Phone",
+    "Phone_Description": "Modern WuDA Fon A704 smartphone",
+    "BulletproofVest_AH64": "Bulletproof Vest AH 67",
+    "BulletproofVest_AH64_Description": "Vest protecting against bullets up to 6.67 mm.",
+    "Helmet_CZ14": "Helmet CZ14",
+    "Helmet_CZ14_Description": "Helmet partially made of kevlar, protects against 9mm bullets.",
+    "Pistol_9mm_BT14": "Pistol 9mm BT 14",
+    "Pistol_9mm_BT14_Description": "Manufactured in Japan, solidly made, its durability is timeless",
+    "Shoes_MH800": "Assault Shoes MH800",
+    "Shoes_MH800_Description": "Made of durable material, waterproof, lightweight."
   }
 }

@@ -1,7 +1,8 @@
 <template>
-  <div>
+  <Loader v-if="!isLoading" />
+  <div v-else>
     <div class="info">
-      Wyświetlone sloty: {{ inventory.length }} / {{ totalSlots }}
+      {{ t('equipment.OccupiedSlots') }}: {{ totalEq }} / {{ totalSlots }}
     </div>
     <div class="container">
       <div v-for="(item, index) in inventory" :key="index" class="square" @drop="onDrop(index)" @dragover.prevent="onDragOver(index)">
@@ -15,16 +16,16 @@
     <div class="tooltip" v-if="tooltip.show" :style="{ top: tooltip.top, left: tooltip.left }">
       <img :src="`/game/items/${tooltip.item.img_url}`" alt="Item" class="tooltip-img" />
       <div class="tooltip-info">
-        <h3>{{ tooltip.item.name }}</h3>
-        <p>{{ tooltip.item.description }}</p>
+        <h3>{{ t(`items.${tooltip.item.name}`) }}</h3> 
+        <p>{{ t(`items.${tooltip.item.description}`) }}</p>
         <hr>
         <p v-if="tooltip.item.durability !=null && tooltip.item.current_durability !=null" >
-          Wytrzymałość: {{ tooltip.item.current_durability }}/{{ tooltip.item.durability }}
+          {{ t('equipment.Durability') }}: {{ tooltip.item.current_durability }}/{{ tooltip.item.durability }}
         </p>
-        <p>Cena: {{ tooltip.item.price }} $</p>
-        <p>Waga: {{ tooltip.item.weight }} kg</p>
-        <p v-if="tooltip.item.attack != null">Atak: {{ tooltip.item.attack }}</p>
-        <p v-if="tooltip.item.defense != null">Obrona: {{ tooltip.item.defense }}</p>
+        <p>{{ t('equipment.Weight') }}: {{ tooltip.item.weight }} kg</p>
+        <p v-if="tooltip.item.attack != null">{{ t('equipment.Attack') }}: {{ tooltip.item.attack }}</p>
+        <p v-if="tooltip.item.defense != null">{{ t('equipment.Defense') }}: {{ tooltip.item.defense }}</p>
+        <p><strong>{{ t('equipment.Price') }}:</strong> {{ tooltip.item.price }} $</p>
         <!-- Dodaj więcej właściwości, jeśli są dostępne -->
       </div>
     </div>
@@ -34,11 +35,16 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import { getConfig } from 'config';
+import Loader from '../../_Core/Loader.vue'
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
+const isLoading = ref(false);
 const config = getConfig();
-
-// Stałe
-const totalSlots = 8;
+// Ilośc slotów dostępnych dla użytkownika
+let totalSlots = 0;
+let totalEq = 0;
+// const totalSlots = ref(8);
 
 // Inicjalizacja ekwipunku
 const inventory = ref([]);
@@ -53,6 +59,7 @@ const tooltip = ref({
 });
 
 const onDragStart = (index) => {
+  tooltip.value.show = false;
   dragSourceIndex.value = index;
 };
 
@@ -106,8 +113,8 @@ const savePositionToDatabase = async (item, newPosition) => {
 
 
 const showTooltip = (item) => {
-  tooltip.value.show = true;
-  tooltip.value.item = item;
+  tooltip.value.show = true; // Ustawienie flagi, że tooltip ma być wyświetlany
+  tooltip.value.item = item; // Przypisanie elementu do tooltipu
 
   // Oblicz pozycję tooltipu
   const containerRect = event.currentTarget.getBoundingClientRect();
@@ -133,11 +140,13 @@ const getPlayerSlots = async () => {
     if (response.ok) {
       const slots = await response.json();
 
-      console.log(slots);
       inventory.value = slots; // Ustawienie danych ekwipunku
+      totalSlots = slots[0].p_eq_slots;
+      totalEq = inventory.value.length;
       inventory.value = Array(totalSlots).fill(null).map((_, index) => {
         return slots.find(item => item.item_slot === index) || { img_url: null, name: null, description: null };
       });
+      isLoading.value = true;
 
     }
   } catch (error) {
@@ -180,6 +189,7 @@ const getPlayerSlots = async () => {
   border: 1px solid #06f5e9;
   padding: 10px;
   z-index: 999;
+  transform: translate(-95%, 5%);
 }
 
 .tooltip-img {
